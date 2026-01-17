@@ -53,7 +53,7 @@ class Gdn_ErrorException extends ErrorException {
  * @return bool|null
  * @throws Gdn_ErrorException
  */
-function gdn_ErrorHandler($errorNumber, $message, $file, $line, $arguments) {
+function gdn_ErrorHandler($errorNumber, $message, $file, $line, $arguments = []) {
     $errorReporting = error_reporting();
 
     // Don't do anything for @supressed errors.

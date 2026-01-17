@@ -784,7 +784,8 @@ if (!function_exists('safeRedirect')) {
 }
 
 if (!function_exists('trueStripSlashes')) {
-    if (get_magic_quotes_gpc()) {
+    // get_magic_quotes_gpc() removed in PHP 8.0, magic quotes always off
+    if (PHP_VERSION_ID < 80000 && function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
         /**
          * @deprecated
          */

@@ -570,7 +570,12 @@ if (!function_exists('safeHeader')) {
         }
 
         if ($context == 'http') {
-            header($header, $replace, $http_response_code);
+            // PHP 8 compatibility: don't pass null to header()
+            if ($http_response_code !== null) {
+                header($header, $replace, $http_response_code);
+            } else {
+                header($header, $replace);
+            }
         }
     }
 }
