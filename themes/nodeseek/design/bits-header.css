@@ -20,6 +20,14 @@
     margin-left: 0;
 }
 
+.bits-nav-menu ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
 @media screen and (max-width: 500px) {
     .bits-nav-menu {
         flex: 1;
@@ -55,7 +63,15 @@
     flex: 1 1 170px;
 }
 
-.bits-search-box input[type="text"] {
+.bits-search-box form {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.bits-search-box input[type="search"],
+.bits-search-box input[type="text"],
+.bits-search-box input.InputBox {
     background-color: var(--bits-bg-sub);
     border: 1px solid var(--bits-glass);
     border-radius: 4px;
@@ -63,17 +79,27 @@
     color: var(--bits-text);
     font-size: 14px;
     height: 28px;
-    padding: 0 30px 0 10px;
+    padding: 0 10px;
     transition: all 0.5s ease-in-out;
     width: 100%;
 }
 
-.bits-search-box input[type="text"]:focus {
+.bits-search-box input[type="search"]:focus,
+.bits-search-box input[type="text"]:focus,
+.bits-search-box input.InputBox:focus {
     border-color: var(--bits-primary);
     outline: none;
 }
 
-body.dark-layout .bits-search-box input[type="text"] {
+.bits-search-box button,
+.bits-search-box input[type="submit"],
+.bits-search-box .Button {
+    display: none; /* Hide the Go button */
+}
+
+body.dark-layout .bits-search-box input[type="search"],
+body.dark-layout .bits-search-box input[type="text"],
+body.dark-layout .bits-search-box input.InputBox {
     background-color: var(--bits-bg-sub);
     border-color: var(--bits-glass);
 }

@@ -201,6 +201,29 @@ body.dark-layout .bits-category-list li.current-category a {
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+/* Sidebar Search Box Styling */
+.bits-search-panel input[type="text"],
+.bits-search-panel input.InputBox,
+#bits-right-panel input[type="text"],
+#bits-right-panel input.InputBox {
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: var(--bits-text);
+    font-size: 14px;
+    height: 28px;
+    padding: 0 10px;
+    width: 100%;
+}
+
+.bits-search-panel input[type="submit"],
+.bits-search-panel .Button,
+#bits-right-panel .bits-panel input[type="submit"],
+#bits-right-panel .bits-panel .Button {
+    display: none; /* Hide Go button in sidebar search */
+}
+
 /* Footer */
 footer.bits-footer {
     background-color: var(--bits-text);
