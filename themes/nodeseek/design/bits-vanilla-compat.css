@@ -12,9 +12,12 @@ ul.DataList.Discussions {
     padding: 0;
 }
 
-/* List Item */
+/* List Item - Card Style */
 ul.DataList.Discussions > li.ItemDiscussion {
     border-bottom: 1px solid var(--bits-glass);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
     padding: 12px 8px;
     position: relative;
     transition: background-color 0.2s;
@@ -24,20 +27,56 @@ ul.DataList.Discussions > li.ItemDiscussion:hover {
     background-color: var(--bits-bg-sub);
 }
 
+ul.DataList.Discussions > li.ItemDiscussion:last-child {
+    border-bottom: none;
+}
+
 body.dark-layout ul.DataList.Discussions > li.ItemDiscussion {
     border-bottom-color: rgba(0, 0, 0, 0.3);
 }
 
+/* Avatar Photo (IndexPhotos Plugin) */
+ul.DataList.Discussions .IndexPhoto {
+    flex-shrink: 0;
+    display: block;
+    float: none;
+}
+
+ul.DataList.Discussions .IndexPhoto img {
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 42px;
+    width: 42px;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+ul.DataList.Discussions .IndexPhoto:hover img {
+    transform: scale(1.05);
+}
+
+/* Content Area */
+ul.DataList.Discussions .ItemContent.Discussion {
+    flex: 1;
+    min-width: 0;
+    padding-left: 0;
+}
+
 /* Discussion Title */
 ul.DataList .ItemContent .Title {
-    margin: 0 0 4px 0;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
 }
 
 ul.DataList .ItemContent .Title a {
     color: var(--bits-text);
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: none;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 ul.DataList .ItemContent .Title a:hover {
@@ -51,12 +90,14 @@ ul.DataList .Meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px 12px;
+    gap: 4px 10px;
+    line-height: 1.5;
 }
 
 ul.DataList .Meta .MItem {
     display: inline-flex;
     align-items: center;
+    gap: 3px;
 }
 
 ul.DataList .Meta .MItem a {
@@ -65,6 +106,94 @@ ul.DataList .Meta .MItem a {
 
 ul.DataList .Meta .MItem a:hover {
     color: var(--bits-link);
+}
+
+/* Author Name in Meta */
+ul.DataList .Meta .DiscussionAuthor a {
+    color: var(--bits-text);
+    font-weight: 500;
+}
+
+/* View & Comment Counts */
+ul.DataList .Meta .MCount .Number {
+    font-weight: 600;
+    color: var(--bits-text);
+    margin-right: 2px;
+}
+
+/* Last Comment By */
+ul.DataList .Meta .LastCommentBy {
+    color: var(--bits-text-fade);
+}
+
+/* Timestamp */
+ul.DataList .Meta .LastCommentDate time {
+    color: var(--bits-text-fade);
+}
+
+/* Category Tag in Meta - Positioned to Title Row */
+ul.DataList .ItemContent.Discussion {
+    position: relative;
+    padding-right: 70px;
+}
+
+ul.DataList .Meta .Category {
+    position: absolute;
+    right: 0;
+    top: 2px;
+}
+
+ul.DataList .Meta .Category a {
+    background-color: var(--bits-bg-sub);
+    border-radius: 4px;
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    padding: 3px 10px;
+    transition: all 0.2s;
+}
+
+ul.DataList .Meta .Category a:hover {
+    background-color: var(--bits-primary);
+    color: #fff;
+}
+
+/* Hide Options Button */
+ul.DataList .Options {
+    display: none;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 500px) {
+    ul.DataList.Discussions > li.ItemDiscussion {
+        gap: 10px;
+        padding: 10px 6px;
+    }
+
+    ul.DataList.Discussions .IndexPhoto img {
+        height: 36px;
+        width: 36px;
+        border-radius: 6px;
+    }
+
+    ul.DataList .ItemContent.Discussion {
+        padding-right: 0;
+    }
+
+    ul.DataList .ItemContent .Title a {
+        font-size: 14px;
+        padding-right: 55px;
+    }
+
+    ul.DataList .Meta {
+        font-size: 11px;
+        gap: 3px 8px;
+    }
+
+    ul.DataList .Meta .Category {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
 }
 
 /* Tags */

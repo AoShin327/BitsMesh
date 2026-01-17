@@ -1,6 +1,6 @@
 <!-- Site Logo/Title -->
 <div class="bits-site-title">
-    <h1><a href="{link path="/"}">{$Title}</a></h1>
+    <a href="{link path="/"}">{logo}</a>
 </div>
 
 <!-- Main Navigation -->
@@ -24,9 +24,9 @@
 </nav>
 
 <!-- Search Box -->
-<form class="bits-search-box" role="search" action="{link path="/search"}" method="get">
-    <input type="search" name="Search" id="bits-search-input" placeholder="Search..." aria-label="Search" />
-</form>
+<div class="bits-search-box">
+    {searchbox placeholder="Search..."}
+</div>
 
 <!-- User Menu -->
 <div class="bits-user-menu">

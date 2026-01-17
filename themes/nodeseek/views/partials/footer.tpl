@@ -12,7 +12,7 @@
             <p>
                 Powered by <a href="https://vanillaforums.com" target="_blank" rel="noopener noreferrer">Vanilla Forums</a>
                 &middot;
-                BitsMesh Theme &copy; {date('Y')}
+                BitsMesh Theme &copy; {$smarty.now|date_format:"%Y"}
             </p>
         </div>
     </div>

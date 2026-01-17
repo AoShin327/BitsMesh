@@ -20,7 +20,7 @@
     <!-- Left Panel - Categories (Large screens only) -->
     <aside id="bits-left-panel" aria-label="Category navigation">
         <nav class="bits-category-list">
-            {categories_module}
+            {module name="CategoriesModule"}
         </nav>
     </aside>
 
@@ -43,7 +43,7 @@
             <aside id="bits-right-panel" aria-label="Sidebar">
                 <!-- Category list for medium screens -->
                 <nav class="bits-category-list">
-                    {categories_module}
+                    {module name="CategoriesModule"}
                 </nav>
 
                 {if !$SectionGroups}
