@@ -70,7 +70,7 @@ header.bits-header {
 #bits-left-panel {
     display: none;
     position: fixed;
-    left: calc(50% - 540px - 80px);
+    left: calc(50% - 540px - 170px);
     top: 55px;
     width: var(--bits-left-panel-width);
 }
@@ -78,6 +78,18 @@ header.bits-header {
 @media (min-width: 1360px) {
     #bits-left-panel {
         display: block;
+    }
+
+    /* Shift body right to prevent overlap with left panel */
+    #bits-body {
+        margin: 55px auto 20px calc(50% - 370px);
+        max-width: 920px;
+    }
+
+    /* Hide category lists in right panel when left panel is visible */
+    #bits-right-panel .bits-category-list,
+    #bits-right-panel .BoxCategories {
+        display: none !important;
     }
 }
 
