@@ -1,0 +1,397 @@
+/* BitsMesh Theme - Vanilla Forums Compatibility Styles */
+/* Maps Vanilla's default class names to BitsMesh styling */
+
+/* ============================================
+   Discussion List (.DataList.Discussions)
+   ============================================ */
+
+/* List Container */
+ul.DataList.Discussions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* List Item */
+ul.DataList.Discussions > li.ItemDiscussion {
+    border-bottom: 1px solid var(--bits-glass);
+    padding: 12px 8px;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+ul.DataList.Discussions > li.ItemDiscussion:hover {
+    background-color: var(--bits-bg-sub);
+}
+
+body.dark-layout ul.DataList.Discussions > li.ItemDiscussion {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Discussion Title */
+ul.DataList .ItemContent .Title {
+    margin: 0 0 4px 0;
+}
+
+ul.DataList .ItemContent .Title a {
+    color: var(--bits-text);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+ul.DataList .ItemContent .Title a:hover {
+    color: var(--bits-link);
+}
+
+/* Discussion Meta */
+ul.DataList .Meta {
+    color: var(--bits-text-gray);
+    font-size: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+}
+
+ul.DataList .Meta .MItem {
+    display: inline-flex;
+    align-items: center;
+}
+
+ul.DataList .Meta .MItem a {
+    color: var(--bits-text-gray);
+}
+
+ul.DataList .Meta .MItem a:hover {
+    color: var(--bits-link);
+}
+
+/* Tags */
+.Tag {
+    background-color: var(--bits-bg-sub);
+    border-radius: 3px;
+    color: var(--bits-text);
+    font-size: 11px;
+    padding: 2px 6px;
+    margin-right: 4px;
+}
+
+.Tag-Announcement {
+    background-color: var(--bits-text);
+    color: var(--bits-bg-main);
+}
+
+/* Category Link in Meta */
+.Meta .Category a {
+    background-color: var(--bits-bg-sub);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 11px;
+}
+
+/* ============================================
+   Sidebar Panels (.Box)
+   ============================================ */
+
+/* Generic Panel Box */
+.Box {
+    background-color: var(--bits-bg-main);
+    border-radius: 4px;
+    margin-bottom: 15px;
+    padding: 12px;
+}
+
+.Box h4 {
+    border-bottom: 1px solid var(--bits-glass);
+    color: var(--bits-text);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+}
+
+/* Panel Lists */
+.Box ul.PanelInfo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Box ul.PanelInfo li {
+    border-bottom: 1px solid var(--bits-glass);
+    padding: 6px 0;
+}
+
+.Box ul.PanelInfo li:last-child {
+    border-bottom: none;
+}
+
+.Box ul.PanelInfo li a {
+    color: var(--bits-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+}
+
+.Box ul.PanelInfo li a:hover {
+    color: var(--bits-link);
+}
+
+/* Count Badge */
+.Box .Count,
+.Aside .Count {
+    background-color: var(--bits-bg-sub);
+    border-radius: 10px;
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    padding: 2px 8px;
+}
+
+/* Guest Box (Sign In prompt) */
+.GuestBox {
+    text-align: center;
+}
+
+.GuestBox p {
+    color: var(--bits-text-gray);
+    font-size: 13px;
+    margin: 0 0 12px 0;
+}
+
+.GuestBox .P {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+/* ============================================
+   Buttons (.Button)
+   ============================================ */
+
+.Button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    border-radius: 6px;
+    box-sizing: border-box;
+    color: var(--bits-text);
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    padding: 6px 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.2s;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.Button:hover {
+    background-color: var(--bits-glass);
+    color: var(--bits-text);
+}
+
+/* Primary Button */
+.Button.Primary {
+    background-color: var(--bits-primary);
+    border-color: var(--bits-primary);
+    color: #fff;
+}
+
+.Button.Primary:hover {
+    background-color: var(--bits-secondary);
+    border-color: var(--bits-secondary);
+    color: #fff;
+}
+
+/* Apply Button (Register) */
+.Button.ApplyButton {
+    background-color: transparent;
+    border-color: var(--bits-glass);
+    color: var(--bits-text);
+}
+
+.Button.ApplyButton:hover {
+    background-color: var(--bits-bg-sub);
+}
+
+/* ============================================
+   Breadcrumbs
+   ============================================ */
+
+.Breadcrumbs {
+    color: var(--bits-text-gray);
+    font-size: 13px;
+    margin-bottom: 15px;
+    padding: 0;
+}
+
+.Breadcrumbs a {
+    color: var(--bits-text-gray);
+}
+
+.Breadcrumbs a:hover {
+    color: var(--bits-link);
+}
+
+/* ============================================
+   Page Headers
+   ============================================ */
+
+h1.H {
+    color: var(--bits-text);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+}
+
+h2.H {
+    color: var(--bits-text);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+/* Hide visual redundancy */
+.sr-only {
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/* ============================================
+   Pager / Pagination
+   ============================================ */
+
+.Pager {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 20px 0;
+}
+
+.Pager a,
+.Pager span {
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    border-radius: 4px;
+    color: var(--bits-text);
+    display: inline-block;
+    font-size: 13px;
+    min-width: 32px;
+    padding: 6px 12px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.Pager a:hover {
+    background-color: var(--bits-glass);
+}
+
+.Pager .Highlight {
+    background-color: var(--bits-primary);
+    border-color: var(--bits-primary);
+    color: #fff;
+}
+
+/* ============================================
+   Quick Links / Box Filter
+   ============================================ */
+
+.BoxFilter {
+    background-color: transparent;
+    padding: 0;
+}
+
+.BoxFilter .BoxFilter-Heading {
+    color: var(--bits-text);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+
+.BoxFilter ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.BoxFilter li {
+    padding: 4px 0;
+}
+
+.BoxFilter li a {
+    color: var(--bits-text-gray);
+    text-decoration: none;
+}
+
+.BoxFilter li a:hover {
+    color: var(--bits-link);
+}
+
+/* ============================================
+   Announcement Badge
+   ============================================ */
+
+li.Announcement .Tag-Announcement {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-layout li.Announcement .Tag-Announcement {
+    background-color: #555;
+}
+
+/* ============================================
+   Link Colors
+   ============================================ */
+
+a {
+    color: var(--bits-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--bits-link-hover);
+}
+
+/* ============================================
+   Form Elements
+   ============================================ */
+
+input.InputBox,
+textarea.InputBox {
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: var(--bits-text);
+    font-size: 14px;
+    padding: 8px 12px;
+    width: 100%;
+}
+
+input.InputBox:focus,
+textarea.InputBox:focus {
+    border-color: var(--bits-primary);
+    outline: none;
+}
+
+/* ============================================
+   Hidden Elements
+   ============================================ */
+
+.Hidden {
+    display: none !important;
+}
