@@ -1,0 +1,47 @@
+# ================================
+# Vanilla 3.3 深度定制版 .gitignore
+# ================================
+
+# 环境配置 - 每个环境不同
+conf/config.php
+
+# 用户数据 - 不应提交
+uploads/*
+!uploads/.gitkeep
+
+# 缓存 - 自动生成
+cache/*
+!cache/.gitkeep
+
+# 系统文件
+.DS_Store
+*.log
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 依赖 (如果用 composer)
+/vendor/
+
+# Playwright 测试产物
+themes/nodeseek/tests/test-results/
+themes/nodeseek/tests/playwright-report/
+themes/nodeseek/tests/playwright/.cache/
+
+# Node 依赖
+node_modules/
+
+# 临时文件
+*.tmp
+*.bak
+
+# Claude Code 会话数据
+.claude/
+.spec-workflow/
+
+# 临时快照
+nodeseek-web-snap/

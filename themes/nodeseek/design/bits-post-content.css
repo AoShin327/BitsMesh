@@ -1,0 +1,242 @@
+/* BitsMesh Theme - Post Content Styles */
+
+/* Post Wrapper */
+.bits-post-wrapper .content-item {
+    border-bottom: 1px solid var(--bits-glass);
+    padding: 8px;
+    position: relative;
+}
+
+/* Post Header */
+.bits-post .bits-post-title h1 {
+    font-size: 18px;
+    margin: 0 0 10px;
+    padding: 0 8px;
+}
+
+.bits-post .bits-post-title h1 > * {
+    vertical-align: middle;
+}
+
+/* Meta Info */
+.bits-content-meta-info {
+    display: flex;
+    padding: 0 8px;
+}
+
+.bits-content-meta-info .avatar-wrapper {
+    margin: 0 10px 4px 0;
+}
+
+.bits-content-meta-info .avatar-wrapper .avatar-normal {
+    height: 40px;
+    width: 40px;
+}
+
+.bits-content-meta-info .author-info,
+.bits-content-meta-info .content-info {
+    font-size: 11px;
+}
+
+.bits-content-meta-info .author-info > *,
+.bits-content-meta-info .content-info > * {
+    vertical-align: middle;
+}
+
+.bits-content-meta-info .content-info {
+    color: var(--bits-text-gray);
+}
+
+.bits-content-meta-info .author-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--bits-text);
+}
+
+/* Role Tags */
+.role-tag {
+    border: 1px solid var(--bits-text);
+    border-radius: 3px;
+    font-size: 12px;
+    margin-left: 4px;
+    margin-right: 4px;
+    padding: 0 3px;
+}
+
+.role-tag.role-admin {
+    background-color: var(--bits-primary);
+    border-color: var(--bits-primary);
+    color: #fafafa;
+}
+
+.role-tag.role-mod {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: #fafafa;
+}
+
+.role-tag.role-vip {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+    color: #fff;
+}
+
+.role-tag.role-banned {
+    border-color: #d74c4c;
+    color: #d74c4c;
+}
+
+/* Post Content Body */
+.bits-post-content {
+    color: var(--bits-text);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    margin-top: 14px;
+    overflow: hidden;
+    padding: 0 8px;
+}
+
+.bits-post-content p {
+    margin: 10px 0;
+}
+
+.bits-post-content h2 {
+    color: var(--bits-primary);
+    font-size: 17px;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--bits-glass);
+}
+
+body.dark-layout .bits-post-content h2 {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+.bits-post-content h3 {
+    font-size: 16px;
+}
+
+.bits-post-content a {
+    color: var(--bits-primary);
+}
+
+/* Code Blocks */
+.bits-post-content code,
+.bits-post-content pre {
+    background: #ffff9954;
+    border: 1px solid #eec;
+    border-radius: 2px;
+    font-family: monospace;
+    overflow: auto;
+    padding: 4px 8px;
+}
+
+body.dark-layout .bits-post-content code,
+body.dark-layout .bits-post-content pre {
+    background: #2e2e04;
+    border-color: #56560b;
+}
+
+.bits-post-content pre {
+    box-sizing: border-box;
+    margin: 1em 0;
+    max-width: 100%;
+}
+
+.bits-post-content pre code {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+/* Blockquote */
+.bits-post-content blockquote {
+    background: var(--bits-glass);
+    border-left: 4px solid rgba(0, 0, 0, 0.1);
+    margin: 1em;
+    min-width: 200px;
+    overflow-y: auto;
+    padding: 1ex 10px;
+}
+
+body.dark-layout .bits-post-content blockquote {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tables */
+.bits-post-content table {
+    background: #f2f6fc;
+    border: 1px solid #dcdcdc;
+    border-collapse: unset;
+    border-radius: 4px;
+    border-spacing: 0;
+    box-sizing: border-box;
+    font-size: 13px;
+    margin-bottom: 18px;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+}
+
+body.dark-layout .bits-post-content table {
+    background: #323232;
+    border-color: #1e1d1d;
+}
+
+.bits-post-content table thead th {
+    background: #ebeef5;
+    font-weight: 500;
+}
+
+body.dark-layout .bits-post-content table thead th {
+    background: #333435;
+}
+
+.bits-post-content table td,
+.bits-post-content table th {
+    border-bottom: 1px solid #dcdcdc;
+    border-right: 1px solid #dcdcdc;
+    padding: 8px;
+}
+
+body.dark-layout .bits-post-content table td,
+body.dark-layout .bits-post-content table th {
+    border-color: #1e1d1d;
+}
+
+/* Lists */
+.bits-post-content ol,
+.bits-post-content ul {
+    margin: 1em 0 1em 2em;
+}
+
+.bits-post-content ol li {
+    list-style: decimal !important;
+}
+
+.bits-post-content ul li {
+    list-style: none !important;
+    position: relative;
+}
+
+.bits-post-content ul li::before {
+    content: "\2022";
+    left: -1em;
+    position: absolute;
+}
+
+/* Images */
+.bits-post-content img {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    margin: 1rem 2.5%;
+    max-width: 95%;
+}
+
+.bits-post-content img.sticker {
+    box-shadow: none;
+    margin: 0;
+    max-width: 90px;
+    vertical-align: middle;
+}

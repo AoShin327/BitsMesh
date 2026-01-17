@@ -1,0 +1,15 @@
+{
+  "name": "nodeseek-theme-tests",
+  "version": "1.0.0",
+  "description": "Playwright tests for NodeSeek theme",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:e2e": "playwright test e2e/",
+    "test:visual": "playwright test visual/",
+    "test:update": "playwright test --update-snapshots"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

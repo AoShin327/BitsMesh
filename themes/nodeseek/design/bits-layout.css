@@ -1,0 +1,206 @@
+/* BitsMesh Theme - Layout Styles */
+
+/* Main Frame */
+#bits-frame {
+    background-color: transparent;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+/* Header */
+header.bits-header {
+    background-color: var(--bits-bg-main);
+    box-shadow: var(--bits-shadow-light);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    transition: background-color 0.5s;
+}
+
+@media screen and (max-width: 500px) {
+    header.bits-header {
+        position: relative;
+    }
+}
+
+/* Header Content */
+#bits-head {
+    align-items: center;
+    display: flex;
+    height: 40px;
+    max-width: var(--bits-container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+@media screen and (max-width: 500px) {
+    #bits-head {
+        height: 30px;
+    }
+}
+
+/* Body Container - Three Column Layout */
+#bits-body {
+    background-color: var(--bits-bg-main);
+    border-radius: var(--bits-border-radius);
+    box-shadow: var(--bits-shadow);
+    box-sizing: border-box;
+    display: flex;
+    margin: 55px auto 20px;
+    max-width: var(--bits-container-width);
+    padding: 25px 30px;
+    position: relative;
+    transition: background-color 0.5s;
+}
+
+@media screen and (max-width: 500px) {
+    #bits-body {
+        border-radius: 4px;
+        margin: 9px 4px 20px;
+        padding: 20px 3px;
+    }
+}
+
+/* Left Panel - Category Navigation */
+#bits-left-panel {
+    display: none;
+    position: fixed;
+    left: calc(50% - 540px - 80px);
+    top: 55px;
+    width: var(--bits-left-panel-width);
+}
+
+@media (min-width: 1360px) {
+    #bits-left-panel {
+        display: block;
+    }
+}
+
+.bits-category-list {
+    background-color: var(--bits-bg-main);
+    border-radius: 12px;
+    box-shadow: var(--bits-shadow-light);
+    font-size: 14px;
+    overflow: hidden;
+    width: 100px;
+    margin-left: auto;
+}
+
+.bits-category-list ul {
+    list-style: none;
+    margin: 0;
+    text-align: center;
+}
+
+.bits-category-list li a {
+    align-items: center;
+    color: var(--bits-text-fade);
+    display: flex;
+    justify-content: center;
+    padding: 6px 0;
+    transition: background 0.2s, color 0.2s;
+}
+
+.bits-category-list li a:hover,
+.bits-category-list li.current-category a {
+    background: var(--bits-glass);
+    color: var(--bits-primary);
+}
+
+body.dark-layout .bits-category-list li a:hover,
+body.dark-layout .bits-category-list li.current-category a {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Main Content Area */
+#bits-body-left {
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    padding-right: 20px;
+}
+
+@media screen and (max-width: 500px) {
+    #bits-body-left {
+        padding-right: 0;
+    }
+}
+
+/* Right Panel */
+#bits-right-panel {
+    flex: 0 0 var(--bits-right-panel-width);
+}
+
+@media screen and (max-width: 1200px) {
+    #bits-right-panel {
+        flex: 0 0 200px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    #bits-right-panel {
+        display: none;
+    }
+}
+
+/* Right Panel - Category List (shown on medium screens) */
+#bits-right-panel .bits-category-list {
+    display: none;
+}
+
+@media (max-width: 1359px) and (min-width: 801px) {
+    #bits-right-panel .bits-category-list {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Panel Box */
+.bits-panel {
+    border-radius: 1px;
+    box-shadow: var(--bits-shadow-light);
+    color: var(--bits-text-gray);
+    margin: 0 0 10px;
+    padding: 6px 10px;
+}
+
+.bits-panel h4 {
+    color: var(--bits-text);
+    margin: 0;
+}
+
+.bits-panel ul {
+    padding-left: 10px;
+}
+
+.bits-panel ul li {
+    height: 24px;
+    line-height: 24px;
+    padding-left: 10px;
+}
+
+.bits-panel ul li:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Footer */
+footer.bits-footer {
+    background-color: var(--bits-text);
+    color: var(--bits-text-gray);
+    padding: 20px 0;
+    width: 100%;
+}
+
+footer.bits-footer a {
+    color: var(--bits-text-gray);
+}
+
+footer.bits-footer a:hover {
+    color: var(--bits-bg-main);
+}

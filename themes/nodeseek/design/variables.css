@@ -1,0 +1,49 @@
+/* BitsMesh Theme - CSS Variables */
+/* These can be overridden by theme configuration */
+
+:root {
+    /* Primary Colors */
+    --bits-primary: #2ea44f;
+    --bits-secondary: #45ca6b;
+
+    /* Text Colors */
+    --bits-text: #333;
+    --bits-text-fade: #555;
+    --bits-text-gray: #888;
+
+    /* Link Colors */
+    --bits-link: #555;
+    --bits-link-hover: #333;
+
+    /* Background Colors */
+    --bits-bg-main: #fff;
+    --bits-bg-sub: #fbfbfb;
+    --bits-glass: rgba(0, 0, 0, 0.05);
+
+    /* Layout */
+    --bits-container-width: 1080px;
+    --bits-left-panel-width: 150px;
+    --bits-right-panel-width: 260px;
+    --bits-border-radius: 1rem;
+
+    /* Shadows */
+    --bits-shadow: 0 3px 8px rgba(0, 0, 0, 0.24);
+    --bits-shadow-light: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Variables */
+body.dark-layout {
+    --bits-text: #aaa;
+    --bits-text-fade: #999;
+    --bits-text-gray: #777;
+
+    --bits-link: #c5c5c5;
+    --bits-link-hover: #fcfcfc;
+
+    --bits-bg-main: #272727;
+    --bits-bg-sub: #3b3b3b;
+    --bits-glass: rgba(255, 255, 255, 0.05);
+
+    --bits-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+    --bits-shadow-light: 0 0 5px rgba(0, 0, 0, 0.4);
+}

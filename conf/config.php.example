@@ -1,0 +1,27 @@
+<?php if (!defined('APPLICATION')) exit();
+
+/**
+ * Vanilla 配置模板
+ *
+ * 复制此文件为 config.php 并填入实际配置值
+ * 注意: config.php 不应提交到 Git
+ */
+
+// 数据库配置
+$Configuration['Database']['Host'] = 'localhost';
+$Configuration['Database']['Name'] = 'vanilla_dev';  // 生产环境改为实际数据库名
+$Configuration['Database']['User'] = 'root';         // 生产环境改为实际用户名
+$Configuration['Database']['Password'] = '';         // 生产环境填入密码
+
+// 应用配置
+$Configuration['Garden']['Title'] = 'BitsMesh Forum';
+$Configuration['Garden']['Cookie']['Salt'] = '';     // 安装时自动生成
+$Configuration['Garden']['Cookie']['Domain'] = '';
+
+// 调试模式 (生产环境设为 false)
+$Configuration['Debug'] = true;
+
+// 启用的插件和应用
+$Configuration['EnabledPlugins']['rich-editor'] = true;
+$Configuration['EnabledApplications']['Vanilla'] = 'vanilla';
+$Configuration['EnabledApplications']['Conversations'] = 'conversations';

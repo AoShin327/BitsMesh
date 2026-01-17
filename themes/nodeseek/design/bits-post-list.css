@@ -1,0 +1,148 @@
+/* BitsMesh Theme - Post List Styles */
+
+/* Post List Container */
+.bits-post-list {
+    margin: 0;
+    padding: 0;
+}
+
+/* Post List Item */
+.bits-post-list-item {
+    border-bottom: 1px solid var(--bits-glass);
+    display: flex;
+    padding: 8px;
+    position: relative;
+}
+
+body.dark-layout .bits-post-list-item {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+@media screen and (max-width: 500px) {
+    .bits-post-list-item {
+        padding: 4px 8px;
+    }
+}
+
+/* Avatar */
+.bits-post-list-item .avatar-normal {
+    border-radius: 15%;
+    box-shadow: var(--bits-shadow-light);
+    flex-shrink: 0;
+    height: 40px;
+    width: 40px;
+}
+
+/* Content Area */
+.bits-post-list-content {
+    flex: 1;
+    margin-left: 10px;
+    min-width: 0;
+}
+
+/* Post Title */
+.bits-post-title {
+    color: var(--bits-text);
+    font-size: 14px;
+    font-weight: 700;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bits-post-title:hover {
+    color: var(--bits-link);
+}
+
+/* Post Info */
+.bits-post-info {
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.bits-post-info .info-item {
+    margin-left: 4px;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+.bits-post-info .info-item:first-child {
+    margin-left: 0;
+}
+
+.bits-post-info .info-item * {
+    vertical-align: middle;
+}
+
+/* Post Category Tag */
+.bits-post-category {
+    background: var(--bits-bg-sub);
+    border: none;
+    border-radius: 2px;
+    bottom: 8px;
+    box-shadow: var(--bits-shadow-light);
+    color: var(--bits-text);
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 4px;
+    position: absolute;
+    right: 13px;
+}
+
+/* Badges */
+.bits-badge {
+    border-radius: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+    padding: 0 4px;
+    vertical-align: middle;
+}
+
+.bits-badge.pined {
+    background-color: var(--bits-text);
+    color: var(--bits-bg-main);
+}
+
+.bits-badge.award {
+    background-color: #fddea9;
+    color: #774b00;
+}
+
+.bits-badge.hot {
+    background-color: #ff4444;
+    color: var(--bits-bg-main);
+}
+
+/* List Controller (Sort/Filter) */
+.bits-post-list-controler {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+/* Sorter */
+.bits-sorter {
+    background-color: var(--bits-text-gray);
+    border: 1px solid var(--bits-text-gray);
+    border-radius: 3px;
+    display: inline-flex;
+    margin: 0 8px;
+    overflow: hidden;
+}
+
+.bits-sorter > a {
+    background-color: var(--bits-bg-main);
+    cursor: pointer;
+    display: block;
+    padding: 0 5px;
+    color: var(--bits-text);
+}
+
+.bits-sorter > a.selected {
+    background-color: var(--bits-text-gray);
+    color: var(--bits-bg-main);
+}

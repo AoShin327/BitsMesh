@@ -1,0 +1,92 @@
+/* BitsMesh Theme - Base Styles */
+@import url('variables.css');
+
+/* Reset */
+a, abbr, acronym, address, applet, big, caption, cite, dd, del, dfn, div, dl, dt,
+em, fieldset, font, form, html, iframe, img, ins, kbd, label, legend, li, object,
+ol, q, s, samp, small, span, strike, sub, sup, table, tbody, td, tfoot, th, thead,
+tr, tt, ul, var {
+    border: 0;
+    font-size: inherit;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+/* Base Body */
+body {
+    background-color: var(--bits-bg-sub);
+    color: var(--bits-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+        "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC",
+        "WenQuanYi Micro Hei", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+/* Links */
+a {
+    color: var(--bits-link);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--bits-link-hover);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    margin: 5px 0;
+    color: var(--bits-text);
+}
+
+h1 { font-size: 1.5em; }
+h2 { font-size: 1.25em; }
+h3, h4 { font-size: 1.1em; }
+h5, h6 { font-size: 1em; }
+
+p {
+    margin: 5px 0;
+}
+
+/* Lists */
+ol, ul {
+    list-style: none;
+}
+
+/* Form Elements */
+input, textarea {
+    outline: none;
+}
+
+/* Tables */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Utility Classes */
+.bits-container {
+    box-sizing: border-box;
+    margin: auto;
+    max-width: var(--bits-container-width);
+    width: 100%;
+}
+
+@media screen and (max-width: 1200px) {
+    .bits-container {
+        margin: 0 20px;
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .bits-container {
+        margin: 0;
+    }
+}

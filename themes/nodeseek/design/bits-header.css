@@ -1,0 +1,147 @@
+/* BitsMesh Theme - Header Styles */
+
+/* Site Title */
+.bits-site-title {
+    font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+.bits-site-title a {
+    color: var(--bits-text);
+}
+
+/* Navigation Menu */
+.bits-nav-menu {
+    align-items: center;
+    display: flex;
+    height: 40px;
+    margin-left: 0;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-nav-menu {
+        flex: 1;
+        font-size: 14px;
+        height: 30px;
+    }
+}
+
+.bits-nav-menu li {
+    margin: 0 8px;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-nav-menu li {
+        margin: 0 5px;
+    }
+}
+
+.bits-nav-menu .current-category {
+    font-weight: 700;
+}
+
+/* Search Box */
+.bits-search-box {
+    flex: 0 1 170px;
+    margin-left: auto;
+    max-width: 290px;
+    position: relative;
+    transition: all 0.5s ease-in-out;
+}
+
+.bits-search-box:hover {
+    flex: 1 1 170px;
+}
+
+.bits-search-box input[type="text"] {
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: var(--bits-text);
+    font-size: 14px;
+    height: 28px;
+    padding: 0 30px 0 10px;
+    transition: all 0.5s ease-in-out;
+    width: 100%;
+}
+
+.bits-search-box input[type="text"]:focus {
+    border-color: var(--bits-primary);
+    outline: none;
+}
+
+body.dark-layout .bits-search-box input[type="text"] {
+    background-color: var(--bits-bg-sub);
+    border-color: var(--bits-glass);
+}
+
+/* User Menu */
+.bits-user-menu {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.bits-user-menu .avatar-normal {
+    border-radius: 15%;
+    box-shadow: var(--bits-shadow-light);
+    height: 30px;
+    width: 30px;
+}
+
+/* Dark Mode Toggle */
+.bits-dark-toggle {
+    color: var(--bits-link);
+    cursor: pointer;
+    padding: 0 10px;
+    font-size: 18px;
+}
+
+.bits-dark-toggle:hover {
+    color: var(--bits-link-hover);
+}
+
+/* Mobile Navigation */
+.bits-mobile-nav {
+    display: none;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-mobile-nav {
+        background-color: var(--bits-bg-main);
+        border-radius: 4px;
+        box-shadow: var(--bits-shadow-light);
+        display: flex;
+        flex-wrap: wrap;
+        margin: 9px 4px 0;
+    }
+
+    .bits-mobile-nav li {
+        margin: 3px 6px;
+    }
+}
+
+/* Hamburger Menu Button */
+.bits-hamburger {
+    display: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-hamburger {
+        display: block;
+    }
+}
+
+.bits-hamburger span {
+    background-color: var(--bits-text);
+    display: block;
+    height: 2px;
+    margin: 4px 0;
+    width: 20px;
+    transition: all 0.3s;
+}

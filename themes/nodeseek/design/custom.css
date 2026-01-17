@@ -1,0 +1,201 @@
+/* BitsMesh Theme - Main Stylesheet */
+/* Version: 1.0.0 */
+
+/* Import all component stylesheets */
+@import url('variables.css');
+@import url('bits-base.css');
+@import url('bits-layout.css');
+@import url('bits-header.css');
+@import url('bits-post-list.css');
+@import url('bits-post-content.css');
+@import url('bits-comments.css');
+
+/* Additional utilities and overrides */
+
+/* Button Styles */
+.bits-btn {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bits-primary);
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 6px;
+    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.1);
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    height: 27px;
+    line-height: 25px;
+    padding: 0 1rem;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.bits-btn:hover {
+    background-color: var(--bits-secondary);
+    color: #fff;
+}
+
+body.dark-layout .bits-btn {
+    background-color: #158736;
+}
+
+body.dark-layout .bits-btn:hover {
+    background-color: #23af4a;
+}
+
+/* Pager Styles */
+.bits-pager {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.bits-pager a,
+.bits-pager span {
+    border: 1px solid rgba(0, 0, 0, 0.01);
+    margin: 0 2px;
+}
+
+.bits-pager .pager-pos {
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: var(--bits-text-gray);
+    display: inline-block;
+    font-family: monospace;
+    font-size: 16px;
+    height: 18px;
+    line-height: 18px;
+    min-width: 18px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.bits-pager .pager-pos:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-layout .bits-pager .pager-pos:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bits-pager .pager-cur {
+    background-color: var(--bits-bg-sub) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    cursor: not-allowed;
+}
+
+/* Image Lightbox */
+.bits-image-box {
+    background-color: rgba(0, 0, 0, 0.8);
+    box-sizing: border-box;
+    height: 100%;
+    left: 50%;
+    line-height: 100vh;
+    overflow: auto;
+    padding: 0 10%;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    width: 100%;
+    z-index: 9999;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-image-box {
+        padding: 0;
+    }
+}
+
+.bits-image-box img {
+    margin: auto;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+/* Fast Navigation Buttons */
+#bits-fast-nav {
+    bottom: 40px;
+    position: fixed;
+    right: calc(50% - 590px);
+    z-index: 99;
+}
+
+@media screen and (max-width: 500px) {
+    #bits-fast-nav {
+        right: 30px;
+    }
+}
+
+.bits-nav-btn {
+    align-items: center;
+    background-color: var(--bits-bg-main);
+    border: 1px solid var(--bits-glass);
+    border-radius: 20%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    margin-bottom: 10px;
+    width: 30px;
+}
+
+.bits-nav-btn:hover {
+    color: var(--bits-link-hover);
+}
+
+/* Skeleton Loading */
+.bits-skeleton {
+    animation: bits-loading 2s ease infinite;
+}
+
+@keyframes bits-loading {
+    0% {
+        background: #aaa;
+        background-image: linear-gradient(100deg, #eee 40%, #fff 50%, #eee 60%);
+        background-position: 100% 50%;
+        background-size: 300% 100%;
+    }
+    100% {
+        background: #aaa;
+        background-image: linear-gradient(100deg, #eee 40%, #fff 50%, #eee 60%);
+        background-position: 0 50%;
+        background-size: 300% 100%;
+    }
+}
+
+body.dark-layout .bits-skeleton {
+    animation: bits-loading-dark 2s ease infinite;
+}
+
+@keyframes bits-loading-dark {
+    0% {
+        background-image: linear-gradient(100deg, #3f3f3f 40%, #2f2f2f 50%, #3f3f3f 60%);
+        background-position: 100% 50%;
+        background-size: 300% 100%;
+    }
+    100% {
+        background-image: linear-gradient(100deg, #3f3f3f 40%, #2f2f2f 50%, #3f3f3f 60%);
+        background-position: 0 50%;
+        background-size: 300% 100%;
+    }
+}
+
+/* Background Patterns */
+body.bits-bg-grid {
+    background-image: linear-gradient(#d4d4d4 1px, transparent 0),
+        linear-gradient(90deg, #d4d4d4 1px, transparent 0);
+    background-size: 32px 32px;
+}
+
+body.dark-layout.bits-bg-grid {
+    background-image: linear-gradient(var(--bits-text-fade) 1px, transparent 1px),
+        linear-gradient(to right, var(--bits-text-fade) 1px, transparent 1px);
+}
