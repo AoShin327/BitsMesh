@@ -24,8 +24,8 @@ Thumbs.db
 *.swp
 *.swo
 
-# 依赖 (如果用 composer)
-/vendor/
+# 依赖 (完整Fork模式下跟踪vendor)
+# /vendor/
 
 # Playwright 测试产物
 themes/nodeseek/tests/test-results/
