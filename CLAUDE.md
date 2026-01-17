@@ -4,6 +4,7 @@
 
 | 日期 | 变更内容 | 负责人 |
 |------|---------|-------|
+| 2026-01-18 00:10:00 | 添加源代码修改规范（健壮性、性能、安全） | Claude AI |
 | 2026-01-17 20:57:17 | 增量补扫：完成 22 个插件和 5 个主题的文档生成 | Claude AI |
 | 2026-01-17 20:48:21 | 初始化项目架构文档，完成模块扫描 | Claude AI |
 
@@ -367,6 +368,174 @@ yarn test
 ---
 
 ## AI 使用指引
+
+### ⚠️ 源代码修改规范（重要）
+
+> **本项目基于 Vanilla 3.3（EOL 版本）深度定制，对原始源代码的任何修改都需要严格遵循以下规范。**
+
+#### 1. 代码健壮性要求
+
+**修改前必须完成：**
+- [ ] 阅读并理解原代码的完整上下文（至少 ±50 行）
+- [ ] 分析该代码被调用的所有路径（使用 `grep -r` 全局搜索）
+- [ ] 识别所有可能的边界条件和异常情况
+- [ ] 确认修改不会破坏向后兼容性
+
+**编码原则：**
+```php
+// ❌ 错误示例：直接假设变量存在
+$value = $array['key'];
+
+// ✅ 正确示例：防御性编程
+$value = $array['key'] ?? null;
+if ($value === null) {
+    // 适当的错误处理或默认值
+}
+```
+
+**必须处理的场景：**
+- 空值（null）和空数组的处理
+- 类型不匹配的情况（使用 `is_array()`, `is_string()` 等检查）
+- 数组越界访问
+- 对象属性/方法不存在的情况
+- 文件/资源不存在的情况
+
+#### 2. 性能考量
+
+**禁止的操作：**
+- 在循环内执行数据库查询
+- 在频繁调用的函数中进行文件 I/O
+- 未限制的递归调用
+- 在模板渲染路径中进行重计算
+
+**优化要求：**
+```php
+// ❌ 错误示例：循环内查询
+foreach ($userIds as $id) {
+    $user = $userModel->getID($id);  // N+1 问题
+}
+
+// ✅ 正确示例：批量查询
+$users = $userModel->getIDs($userIds);  // 单次查询
+foreach ($users as $user) {
+    // 处理
+}
+```
+
+**缓存策略：**
+- 对重复计算的结果使用 `Gdn::cache()` 缓存
+- 对配置项使用静态变量缓存
+- 避免在请求生命周期内重复实例化相同对象
+
+#### 3. 安全规范
+
+**输入验证（必须）：**
+```php
+// 所有用户输入必须验证和清洗
+$input = filter_input(INPUT_GET, 'param', FILTER_SANITIZE_STRING);
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+// 使用 Vanilla 内置验证
+$this->Validation->applyRule('Field', 'Required');
+$this->Validation->applyRule('Email', 'Email');
+```
+
+**SQL 注入防护：**
+```php
+// ❌ 危险：直接拼接 SQL
+$sql = "SELECT * FROM User WHERE Name = '$name'";
+
+// ✅ 安全：使用参数化查询
+$result = Gdn::sql()
+    ->select('*')
+    ->from('User')
+    ->where('Name', $name)  // 自动转义
+    ->get();
+```
+
+**XSS 防护：**
+```php
+// 输出到 HTML 时必须转义
+echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8');
+
+// 使用 Vanilla 的格式化方法
+echo Gdn_Format::html($content);
+```
+
+**权限检查：**
+```php
+// 在执行敏感操作前必须验证权限
+$this->permission('Garden.Settings.Manage');
+
+// 或使用 Session 检查
+if (!Gdn::session()->checkPermission('Vanilla.Discussions.Edit')) {
+    throw permissionException();
+}
+```
+
+**敏感数据处理：**
+- 密码必须使用 `Gdn_PasswordHash` 加密存储
+- 禁止在日志中记录密码、Token 等敏感信息
+- Session 数据必须经过验证才能信任
+
+#### 4. PHP 8.x 兼容性检查清单
+
+由于本项目运行在 PHP 8.2 环境，修改代码时必须注意：
+
+| 检查项 | 说明 |
+|-------|------|
+| 花括号数组访问 | `$str{0}` → `$str[0]` |
+| 命名参数冲突 | `call_user_func_array()` 需要 `array_values()` 包装 |
+| 已移除函数 | `get_magic_quotes_gpc()`, `each()` 等已移除 |
+| 类型声明 | 子类不能改变父类属性/方法的类型声明 |
+| null 参数 | 内置函数不再接受 null 作为某些参数 |
+| 错误处理 | `set_error_handler` 的回调参数数量变化 |
+
+#### 5. 修改审核流程
+
+**每次修改必须：**
+1. **记录修改原因**：在代码注释中说明为何需要修改
+2. **标注 PHP 版本**：如果是兼容性修复，注明 `// PHP 8.x compatibility fix`
+3. **保留原代码**：复杂修改时，用注释保留原代码以便回溯
+4. **测试验证**：修改后必须手动测试相关功能
+5. **更新文档**：重大修改需更新本文档的变更记录
+6. **Git 提交**：每次修改完成并验证通过后，必须立即提交 git（使用语义化提交消息）
+
+**Git 提交规范：**
+```bash
+# 提交消息格式
+<type>(<scope>): <subject>
+
+# type 类型：
+# - fix: 修复 bug
+# - feat: 新功能
+# - style: 样式/UI 修改
+# - refactor: 重构（不改变功能）
+# - docs: 文档更新
+# - chore: 构建/配置相关
+
+# 示例：
+git commit -m "fix(theme): 修复大屏幕侧边栏重叠问题"
+git commit -m "style(header): 隐藏搜索框 Go 按钮"
+```
+
+**示例注释格式：**
+```php
+/**
+ * PHP 8.x 兼容性修复
+ *
+ * 问题：Exception::$line 是 protected 属性，子类不能重新声明为 public
+ * 解决：使用 setter 方法替代直接属性访问
+ *
+ * @see https://www.php.net/manual/en/migration80.incompatible.php
+ * @modified 2026-01-18
+ */
+public function setTemplateLine($line) {
+    $this->line = (int)$line;
+}
+```
+
+---
 
 ### 代码修改注意事项
 
