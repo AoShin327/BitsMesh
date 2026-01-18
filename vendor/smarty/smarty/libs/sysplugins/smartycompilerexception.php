@@ -15,12 +15,17 @@ class SmartyCompilerException extends SmartyException
         return ' --> Smarty Compiler: ' . $this->message . ' <-- ';
     }
 
+    // Note: $line is inherited from Exception class (PHP 8.x compatibility)
+    // The line number of the template error is stored in the inherited $line property
+
     /**
-     * The line number of the template error
-     *
-     * @type int|null
+     * Set the template line number (PHP 8.x compatibility)
+     * @param int $line
      */
-    public $line = null;
+    public function setTemplateLine($line)
+    {
+        $this->line = (int)$line;
+    }
 
     /**
      * The template source snippet relating to the error
