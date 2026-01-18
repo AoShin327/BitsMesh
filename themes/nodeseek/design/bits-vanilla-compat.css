@@ -835,3 +835,204 @@ body.dark-layout .DiscussionSorter .Flyout {
 body.dark-layout .FilterMenu li a:hover {
     background-color: rgba(255, 255, 255, 0.05);
 }
+
+/* ============================================
+   Colorful Category Tags
+   ============================================ */
+
+/* Base Category Tag Style */
+ul.DataList .Meta .Category a,
+.Meta .Category a {
+    background-color: var(--bits-bg-sub);
+    border-radius: 4px;
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    transition: all 0.2s;
+}
+
+/* Category Color Palette - Auto-assign based on nth-child or specific classes */
+/* These colors work well in both light and dark modes */
+
+/* Default Categories with URL-based colors */
+/* Higher specificity to override .Meta .Category a */
+.Meta .Category a[href*="/categories/general"],
+.Meta .Category a[href*="/categories/default"],
+ul.DataList a[href*="/categories/general"],
+ul.DataList a[href*="/categories/default"] {
+    background-color: rgba(99, 102, 241, 0.15) !important;
+    color: #6366f1 !important;
+}
+.Meta .Category a[href*="/categories/general"]:hover,
+.Meta .Category a[href*="/categories/default"]:hover,
+ul.DataList a[href*="/categories/general"]:hover,
+ul.DataList a[href*="/categories/default"]:hover {
+    background-color: #6366f1 !important;
+    color: #fff !important;
+}
+
+.Meta .Category a[href*="/categories/tech"],
+.Meta .Category a[href*="/categories/technology"],
+ul.DataList a[href*="/categories/tech"],
+ul.DataList a[href*="/categories/technology"] {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    color: #10b981 !important;
+}
+.Meta .Category a[href*="/categories/tech"]:hover,
+.Meta .Category a[href*="/categories/technology"]:hover,
+ul.DataList a[href*="/categories/tech"]:hover,
+ul.DataList a[href*="/categories/technology"]:hover {
+    background-color: #10b981 !important;
+    color: #fff !important;
+}
+
+.Meta .Category a[href*="/categories/news"],
+.Meta .Category a[href*="/categories/announcement"],
+ul.DataList a[href*="/categories/news"],
+ul.DataList a[href*="/categories/announcement"] {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+}
+.Meta .Category a[href*="/categories/news"]:hover,
+.Meta .Category a[href*="/categories/announcement"]:hover,
+ul.DataList a[href*="/categories/news"]:hover,
+ul.DataList a[href*="/categories/announcement"]:hover {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+}
+
+.Meta .Category a[href*="/categories/help"],
+.Meta .Category a[href*="/categories/support"],
+ul.DataList a[href*="/categories/help"],
+ul.DataList a[href*="/categories/support"] {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    color: #f59e0b !important;
+}
+.Meta .Category a[href*="/categories/help"]:hover,
+.Meta .Category a[href*="/categories/support"]:hover,
+ul.DataList a[href*="/categories/help"]:hover,
+ul.DataList a[href*="/categories/support"]:hover {
+    background-color: #f59e0b !important;
+    color: #fff !important;
+}
+
+.Meta .Category a[href*="/categories/off-topic"],
+.Meta .Category a[href*="/categories/chat"],
+ul.DataList a[href*="/categories/off-topic"],
+ul.DataList a[href*="/categories/chat"] {
+    background-color: rgba(236, 72, 153, 0.15) !important;
+    color: #ec4899 !important;
+}
+.Meta .Category a[href*="/categories/off-topic"]:hover,
+.Meta .Category a[href*="/categories/chat"]:hover,
+ul.DataList a[href*="/categories/off-topic"]:hover,
+ul.DataList a[href*="/categories/chat"]:hover {
+    background-color: #ec4899 !important;
+    color: #fff !important;
+}
+
+/* Sidebar Category List Colors */
+.bits-category-list li a[href*="/categories/general"],
+.BoxCategories a[href*="/categories/general"] {
+    border-left: 3px solid #6366f1;
+}
+
+.bits-category-list li a[href*="/categories/tech"],
+.BoxCategories a[href*="/categories/tech"] {
+    border-left: 3px solid #10b981;
+}
+
+/* Category Count Badge */
+.bits-category-list .Count,
+.BoxCategories .Count {
+    background-color: var(--bits-bg-sub);
+    border-radius: 10px;
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 20px;
+    padding: 2px 8px;
+    text-align: center;
+}
+
+/* ============================================
+   Last Replier Avatar (Mini)
+   ============================================ */
+
+/* Style for "Most recent by" with mini avatar */
+ul.DataList .Meta .LastCommentBy {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+ul.DataList .Meta .LastCommentBy a {
+    color: var(--bits-text);
+    font-weight: 500;
+}
+
+/* Add visual indicator for last reply */
+ul.DataList .Meta .LastCommentBy::before {
+    content: '↩';
+    color: var(--bits-text-fade);
+    font-size: 10px;
+}
+
+/* ============================================
+   Sidebar Category Count Badge Enhancement
+   ============================================ */
+
+/* Left panel category badges */
+#bits-left-panel .bits-category-list li a {
+    position: relative;
+}
+
+/* Category list item count display */
+.bits-category-list .category-count,
+nav.bits-category-list .Count {
+    background: linear-gradient(135deg, var(--bits-primary), var(--bits-secondary));
+    border-radius: 8px;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    padding: 1px 6px;
+}
+
+/* Sidebar Panel Category Badges */
+#bits-right-panel .Box .Count,
+.Panel .Box .Count {
+    background-color: var(--bits-primary);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+}
+
+/* Dark Mode Adjustments */
+body.dark-layout a[href*="/categories/general"],
+body.dark-layout a[href*="/categories/default"] {
+    background-color: rgba(99, 102, 241, 0.25);
+}
+
+body.dark-layout a[href*="/categories/tech"],
+body.dark-layout a[href*="/categories/technology"] {
+    background-color: rgba(16, 185, 129, 0.25);
+}
+
+body.dark-layout a[href*="/categories/news"],
+body.dark-layout a[href*="/categories/announcement"] {
+    background-color: rgba(239, 68, 68, 0.25);
+}
+
+body.dark-layout a[href*="/categories/help"],
+body.dark-layout a[href*="/categories/support"] {
+    background-color: rgba(245, 158, 11, 0.25);
+}
+
+body.dark-layout a[href*="/categories/off-topic"],
+body.dark-layout a[href*="/categories/chat"] {
+    background-color: rgba(236, 72, 153, 0.25);
+}

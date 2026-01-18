@@ -2,7 +2,7 @@
     "key": "nodeseek",
     "name": "BitsMesh Theme",
     "description": "A NodeSeek-style theme for Vanilla Forums with configurable colors and dark mode support.",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "theme",
     "license": "GPL-2.0-only",
     "author": [

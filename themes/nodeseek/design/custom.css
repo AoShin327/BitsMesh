@@ -1,5 +1,5 @@
 /* BitsMesh Theme - Main Stylesheet */
-/* Version: 1.0.0 */
+/* Version: 1.0.1 - Updated 2026-01-18 */
 
 /* Import all component stylesheets */
 @import url('variables.css');
@@ -199,4 +199,109 @@ body.bits-bg-grid {
 body.dark-layout.bits-bg-grid {
     background-image: linear-gradient(var(--bits-text-fade) 1px, transparent 1px),
         linear-gradient(to right, var(--bits-text-fade) 1px, transparent 1px);
+}
+
+/* ============================================
+   Colorful Category Tags (Override)
+   Placed here to bypass @import loading issues
+   ============================================ */
+
+/* General - Indigo */
+.Meta .Category a[href*="/categories/general"],
+ul.DataList a[href*="/categories/general"] {
+    background-color: rgba(99, 102, 241, 0.15) !important;
+    color: #6366f1 !important;
+}
+.Meta .Category a[href*="/categories/general"]:hover,
+ul.DataList a[href*="/categories/general"]:hover {
+    background-color: #6366f1 !important;
+    color: #fff !important;
+}
+
+/* Tech - Emerald */
+.Meta .Category a[href*="/categories/tech"],
+ul.DataList a[href*="/categories/tech"] {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    color: #10b981 !important;
+}
+.Meta .Category a[href*="/categories/tech"]:hover,
+ul.DataList a[href*="/categories/tech"]:hover {
+    background-color: #10b981 !important;
+    color: #fff !important;
+}
+
+/* News/Announcement - Red */
+.Meta .Category a[href*="/categories/news"],
+.Meta .Category a[href*="/categories/announcement"],
+ul.DataList a[href*="/categories/news"],
+ul.DataList a[href*="/categories/announcement"] {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+}
+.Meta .Category a[href*="/categories/news"]:hover,
+.Meta .Category a[href*="/categories/announcement"]:hover,
+ul.DataList a[href*="/categories/news"]:hover,
+ul.DataList a[href*="/categories/announcement"]:hover {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+}
+
+/* Help/Support - Amber */
+.Meta .Category a[href*="/categories/help"],
+.Meta .Category a[href*="/categories/support"],
+ul.DataList a[href*="/categories/help"],
+ul.DataList a[href*="/categories/support"] {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    color: #f59e0b !important;
+}
+.Meta .Category a[href*="/categories/help"]:hover,
+.Meta .Category a[href*="/categories/support"]:hover,
+ul.DataList a[href*="/categories/help"]:hover,
+ul.DataList a[href*="/categories/support"]:hover {
+    background-color: #f59e0b !important;
+    color: #fff !important;
+}
+
+/* Off-topic/Chat - Pink */
+.Meta .Category a[href*="/categories/off-topic"],
+.Meta .Category a[href*="/categories/chat"],
+ul.DataList a[href*="/categories/off-topic"],
+ul.DataList a[href*="/categories/chat"] {
+    background-color: rgba(236, 72, 153, 0.15) !important;
+    color: #ec4899 !important;
+}
+.Meta .Category a[href*="/categories/off-topic"]:hover,
+.Meta .Category a[href*="/categories/chat"]:hover,
+ul.DataList a[href*="/categories/off-topic"]:hover,
+ul.DataList a[href*="/categories/chat"]:hover {
+    background-color: #ec4899 !important;
+    color: #fff !important;
+}
+
+/* Dark Mode Adjustments */
+body.dark-layout .Meta .Category a[href*="/categories/general"],
+body.dark-layout ul.DataList a[href*="/categories/general"] {
+    background-color: rgba(99, 102, 241, 0.25) !important;
+}
+body.dark-layout .Meta .Category a[href*="/categories/tech"],
+body.dark-layout ul.DataList a[href*="/categories/tech"] {
+    background-color: rgba(16, 185, 129, 0.25) !important;
+}
+body.dark-layout .Meta .Category a[href*="/categories/news"],
+body.dark-layout .Meta .Category a[href*="/categories/announcement"],
+body.dark-layout ul.DataList a[href*="/categories/news"],
+body.dark-layout ul.DataList a[href*="/categories/announcement"] {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+}
+body.dark-layout .Meta .Category a[href*="/categories/help"],
+body.dark-layout .Meta .Category a[href*="/categories/support"],
+body.dark-layout ul.DataList a[href*="/categories/help"],
+body.dark-layout ul.DataList a[href*="/categories/support"] {
+    background-color: rgba(245, 158, 11, 0.25) !important;
+}
+body.dark-layout .Meta .Category a[href*="/categories/off-topic"],
+body.dark-layout .Meta .Category a[href*="/categories/chat"],
+body.dark-layout ul.DataList a[href*="/categories/off-topic"],
+body.dark-layout ul.DataList a[href*="/categories/chat"] {
+    background-color: rgba(236, 72, 153, 0.25) !important;
 }
