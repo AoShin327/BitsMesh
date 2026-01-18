@@ -1,15 +1,52 @@
 /* BitsMesh Theme - Header Styles */
 
-/* Site Title */
-.bits-site-title {
-    font-family: "Helvetica Neue", helvetica, arial, sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    margin-right: 6px;
+/* Site Brand (Logo + Title together) */
+.bits-site-brand {
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
 }
 
-.bits-site-title a {
+.bits-brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.bits-brand-link:hover {
+    text-decoration: none;
+}
+
+.bits-site-logo {
+    height: 32px;
+    width: auto;
+    margin-right: 8px;
+    object-fit: contain;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-site-logo {
+        height: 24px;
+        margin-right: 6px;
+    }
+}
+
+.bits-site-title {
+    font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
     color: var(--bits-text);
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-site-title {
+        font-size: 16px;
+    }
+}
+
+.bits-brand-link:hover .bits-site-title {
+    color: var(--bits-link-hover);
 }
 
 /* Navigation Menu */

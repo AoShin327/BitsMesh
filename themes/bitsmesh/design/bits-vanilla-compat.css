@@ -557,7 +557,7 @@ textarea.InputBox:focus {
     margin: 0;
 }
 
-/* New Discussion Button - NodeSeek Style */
+/* New Discussion Button - Primary Action */
 .Button.NewDiscussion,
 a.Button.NewDiscussion {
     background-color: var(--bits-primary);

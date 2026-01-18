@@ -2,7 +2,7 @@
 # 运行 Playwright 测试
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-TEST_DIR="$SCRIPT_DIR/../themes/nodeseek/tests"
+TEST_DIR="$SCRIPT_DIR/../themes/bitsmesh/tests"
 
 cd "$TEST_DIR" || exit 1
 

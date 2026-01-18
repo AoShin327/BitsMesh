@@ -64,8 +64,10 @@
 
     <!-- Fast Navigation -->
     <div id="bits-fast-nav">
-        <button id="bits-back-to-top" class="bits-nav-btn" style="display:none" title="Back to Top" aria-label="Back to top">
-            <span aria-hidden="true">↑</span>
+        <button id="bits-back-to-top" class="bits-nav-btn" style="display:none" title="返回顶部" aria-label="返回顶部">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
         </button>
     </div>
 

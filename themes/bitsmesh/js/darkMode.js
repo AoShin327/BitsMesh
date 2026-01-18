@@ -17,8 +17,8 @@ class DarkModeToggle {
         const saved = localStorage.getItem(this.storageKey);
         if (saved === 'dark') {
             document.body.classList.add(this.darkClass);
-            this.updateIcon(true);
         }
+        this.updateTitle(saved === 'dark');
         this.bindToggleButton();
     }
 
@@ -38,18 +38,19 @@ class DarkModeToggle {
     toggle() {
         const isDark = document.body.classList.toggle(this.darkClass);
         localStorage.setItem(this.storageKey, isDark ? 'dark' : 'light');
-        this.updateIcon(isDark);
+        this.updateTitle(isDark);
     }
 
     /**
-     * Update the toggle button icon
+     * Update the toggle button title/tooltip
+     * SVG icon visibility is handled by CSS based on body.dark-layout class
      * @param {boolean} isDark - Current dark mode state
      */
-    updateIcon(isDark) {
+    updateTitle(isDark) {
         const toggleBtn = document.querySelector(this.toggleSelector);
         if (toggleBtn) {
-            toggleBtn.textContent = isDark ? '☀️' : '🌙';
-            toggleBtn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+            toggleBtn.title = isDark ? '切换到亮色模式' : '切换到深色模式';
+            toggleBtn.setAttribute('aria-label', toggleBtn.title);
         }
     }
 
@@ -72,7 +73,7 @@ class DarkModeToggle {
             document.body.classList.remove(this.darkClass);
         }
         localStorage.setItem(this.storageKey, mode);
-        this.updateIcon(mode === 'dark');
+        this.updateTitle(mode === 'dark');
     }
 }
 

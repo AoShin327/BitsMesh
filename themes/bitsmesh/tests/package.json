@@ -1,7 +1,7 @@
 {
-  "name": "nodeseek-theme-tests",
+  "name": "bitsmesh-theme-tests",
   "version": "1.0.0",
-  "description": "Playwright tests for NodeSeek theme",
+  "description": "Playwright tests for BitsMesh theme",
   "private": true,
   "scripts": {
     "test": "playwright test",

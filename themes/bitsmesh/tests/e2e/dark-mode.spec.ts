@@ -36,14 +36,19 @@ test.describe('Dark Mode', () => {
     await expect(page.locator('body')).toHaveClass(/dark-layout/);
   });
 
-  test('should update toggle icon', async ({ page }) => {
+  test('should show correct icon based on mode', async ({ page }) => {
     const toggle = page.locator('.bits-dark-toggle');
+    const moonIcon = toggle.locator('.icon-moon');
+    const sunIcon = toggle.locator('.icon-sun');
 
-    // Light mode should show moon
-    await expect(toggle).toContainText('🌙');
+    // Light mode should show moon icon (visible) and hide sun icon
+    await expect(moonIcon).toBeVisible();
+    await expect(sunIcon).toBeHidden();
 
-    // Dark mode should show sun
+    // Dark mode should show sun icon (visible) and hide moon icon
     await toggle.click();
-    await expect(toggle).toContainText('☀️');
+    await expect(page.locator('body')).toHaveClass(/dark-layout/);
+    await expect(sunIcon).toBeVisible();
+    await expect(moonIcon).toBeHidden();
   });
 });

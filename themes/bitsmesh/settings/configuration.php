@@ -4,7 +4,7 @@ if (!defined('APPLICATION')) {
 }
 
 /**
- * NodeSeek Theme (BitsMesh) Configuration
+ * BitsMesh Theme Configuration
  *
  * This file defines the theme options available in the dashboard.
  */

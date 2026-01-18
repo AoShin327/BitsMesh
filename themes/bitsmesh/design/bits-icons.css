@@ -1,0 +1,249 @@
+/* BitsMesh Theme - SVG Icon System */
+/* Clean, minimal SVG icons */
+
+/* ============================================
+   Dark Mode Toggle Icons
+   ============================================ */
+
+.bits-dark-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bits-text-gray);
+    transition: color 0.2s;
+}
+
+.bits-dark-toggle:hover {
+    color: var(--bits-text);
+}
+
+.bits-dark-toggle svg {
+    display: block;
+}
+
+/* Moon icon (light mode - click to switch to dark) */
+.bits-dark-toggle .icon-moon {
+    display: block;
+}
+
+.bits-dark-toggle .icon-sun {
+    display: none;
+}
+
+/* Sun icon (dark mode - click to switch to light) */
+body.dark-layout .bits-dark-toggle .icon-moon {
+    display: none;
+}
+
+body.dark-layout .bits-dark-toggle .icon-sun {
+    display: block;
+}
+
+/* ============================================
+   Discussion List Meta Icons
+   ============================================ */
+
+/* Comment count icon */
+ul.DataList.Discussions .Meta .MItem:first-child::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* View count icon - target second MItem or ViewCount */
+ul.DataList.Discussions .Meta .MItem:nth-child(2)::before,
+ul.DataList.Discussions .Meta .ViewCount::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Time/Date icon */
+ul.DataList.Discussions .Meta .LastCommentDate::before,
+ul.DataList.Discussions .Meta time::before,
+.DiscussionMeta .MItem.DateCreated::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* User/Author icon */
+ul.DataList.Discussions .Meta .DiscussionAuthor::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* Dark mode adjustments */
+body.dark-layout ul.DataList.Discussions .Meta .MItem:first-child::before,
+body.dark-layout ul.DataList.Discussions .Meta .MItem:nth-child(2)::before,
+body.dark-layout ul.DataList.Discussions .Meta .ViewCount::before,
+body.dark-layout ul.DataList.Discussions .Meta .LastCommentDate::before,
+body.dark-layout ul.DataList.Discussions .Meta time::before,
+body.dark-layout ul.DataList.Discussions .Meta .DiscussionAuthor::before,
+body.dark-layout .DiscussionMeta .MItem.DateCreated::before {
+    filter: brightness(1.3);
+}
+
+/* ============================================
+   Discussion Detail Page Icons
+   ============================================ */
+
+/* Post meta icons */
+.ItemDiscussion .Meta .MItem.Category::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 3px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+/* ============================================
+   Action Buttons Icons
+   ============================================ */
+
+/* Back to top button */
+#bits-back-to-top {
+    background: var(--bits-bg-main);
+    border: 1px solid var(--bits-glass);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: var(--bits-text-gray);
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+#bits-back-to-top:hover {
+    color: var(--bits-text);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#bits-fast-nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* ============================================
+   Bookmark Icons
+   ============================================ */
+
+.Bookmark::before,
+.ReactButton.Bookmark::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+.Bookmarked::before,
+.ReactButton.Bookmarked::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f59e0b' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   Pinned/Announcement Badge
+   ============================================ */
+
+.Tag-Announcement::before {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 3px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+/* ============================================
+   Sign In/Out Icons
+   ============================================ */
+
+.bits-signout::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/%3E%3Cpolyline points='16 17 21 12 16 7'/%3E%3Cline x1='21' y1='12' x2='9' y2='12'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+.bits-btn[href*="signin"]::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4'/%3E%3Cpolyline points='10 17 15 12 10 7'/%3E%3Cline x1='15' y1='12' x2='3' y2='12'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
+
+/* ============================================
+   New Discussion Button Icon
+   ============================================ */
+
+.Button.NewDiscussion::before,
+a.Button.NewDiscussion::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+}
