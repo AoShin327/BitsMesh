@@ -647,3 +647,191 @@ body.dark-layout .Button.NewDiscussion:hover {
         width: auto;
     }
 }
+
+/* ============================================
+   Discussion Sorter
+   ============================================ */
+
+.DiscussionSorter {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+
+.DiscussionSorter .ToggleFlyout {
+    cursor: pointer;
+}
+
+.DiscussionSorter .Selected {
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    border-radius: 4px;
+    color: var(--bits-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    padding: 6px 12px;
+    transition: all 0.2s;
+}
+
+.DiscussionSorter .Selected:hover {
+    background-color: var(--bits-glass);
+}
+
+.DiscussionSorter .Flyout {
+    background-color: var(--bits-bg-main);
+    border: 1px solid var(--bits-glass);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    min-width: 150px;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 100;
+}
+
+.DiscussionSorter .ToggleFlyout.Open .Flyout {
+    display: block;
+}
+
+.DiscussionSorter .Flyout ul {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+}
+
+.DiscussionSorter .Flyout li a {
+    color: var(--bits-text);
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.DiscussionSorter .Flyout li a:hover {
+    background-color: var(--bits-bg-sub);
+    color: var(--bits-primary);
+}
+
+/* Sprite Arrow */
+.DiscussionSorter .SpMenu {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--bits-text-gray);
+    display: inline-block;
+    height: 0;
+    width: 0;
+}
+
+/* ============================================
+   Filter Menu (Quick Links in Sidebar)
+   ============================================ */
+
+.BoxDiscussionFilter {
+    background-color: transparent;
+    padding: 0;
+}
+
+.FilterMenu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.FilterMenu li {
+    margin: 0;
+}
+
+.FilterMenu li a {
+    align-items: center;
+    border-radius: 4px;
+    color: var(--bits-text);
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.FilterMenu li a:hover {
+    background-color: var(--bits-bg-sub);
+    color: var(--bits-link);
+}
+
+.FilterMenu li.Active a {
+    background-color: var(--bits-primary);
+    color: #fff;
+}
+
+.FilterMenu li .Aside {
+    margin-left: auto;
+}
+
+/* Hide sprites in filter menu (use CSS icons instead) */
+.FilterMenu .Sprite {
+    display: none;
+}
+
+/* ============================================
+   View/Comment Count Styling (Enhanced)
+   ============================================ */
+
+ul.DataList .Meta .MCount {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+ul.DataList .Meta .ViewCount .Number {
+    color: var(--bits-text);
+    font-weight: 600;
+}
+
+ul.DataList .Meta .CommentCount .Number {
+    color: var(--bits-primary);
+    font-weight: 700;
+}
+
+/* Icon-style counts */
+ul.DataList .Meta .ViewCount::before {
+    content: '👁';
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+ul.DataList .Meta .CommentCount::before {
+    content: '💬';
+    font-size: 11px;
+}
+
+/* Hide text labels on smaller screens */
+@media screen and (max-width: 800px) {
+    ul.DataList .Meta .MCount {
+        font-size: 0;
+    }
+
+    ul.DataList .Meta .MCount .Number {
+        font-size: 12px;
+    }
+
+    ul.DataList .Meta .MCount::before {
+        font-size: 12px;
+    }
+}
+
+/* Dark Mode */
+body.dark-layout .DiscussionSorter .Selected {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-layout .DiscussionSorter .Flyout {
+    background-color: #2a2a2a;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-layout .FilterMenu li a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
