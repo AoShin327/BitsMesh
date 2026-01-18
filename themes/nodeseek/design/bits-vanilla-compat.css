@@ -524,3 +524,126 @@ textarea.InputBox:focus {
 .Hidden {
     display: none !important;
 }
+
+/* ============================================
+   Page Controls (Toolbar)
+   ============================================ */
+
+.PageControls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding: 0 8px;
+}
+
+.PageControls.Top {
+    margin-bottom: 15px;
+}
+
+.PageControls.Bottom {
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+/* Hide PagerNub decorations */
+.PageControls .PagerNub {
+    display: none;
+}
+
+/* New Discussion Button Container */
+.BoxNewDiscussion {
+    margin: 0;
+}
+
+/* New Discussion Button - NodeSeek Style */
+.Button.NewDiscussion,
+a.Button.NewDiscussion {
+    background-color: var(--bits-primary);
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 20px;
+    transition: all 0.2s;
+}
+
+.Button.NewDiscussion:hover,
+a.Button.NewDiscussion:hover {
+    background-color: var(--bits-secondary);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* Big Button Variant */
+.Button.NewDiscussion.BigButton {
+    font-size: 16px;
+    padding: 12px 28px;
+}
+
+/* Dark Mode */
+body.dark-layout .Button.NewDiscussion {
+    background-color: #158736;
+}
+
+body.dark-layout .Button.NewDiscussion:hover {
+    background-color: #23af4a;
+}
+
+/* Dropdown Menu for New Discussion */
+.BoxNewDiscussion .ButtonGroup {
+    display: inline-flex;
+}
+
+.BoxNewDiscussion .ButtonGroup .Button:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.BoxNewDiscussion .ButtonGroup .Button:last-child {
+    border-radius: 0 6px 6px 0;
+    padding: 8px 10px;
+}
+
+/* Discussion Filters */
+.DiscussionFilters {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.DiscussionFilters .Button {
+    background-color: var(--bits-bg-sub);
+    border: 1px solid var(--bits-glass);
+    color: var(--bits-text);
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
+.DiscussionFilters .Button:hover {
+    background-color: var(--bits-glass);
+}
+
+.DiscussionFilters .Button.Active {
+    background-color: var(--bits-primary);
+    border-color: var(--bits-primary);
+    color: #fff;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 500px) {
+    .PageControls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .Button.NewDiscussion {
+        font-size: 13px;
+        padding: 8px 16px;
+        width: auto;
+    }
+}
