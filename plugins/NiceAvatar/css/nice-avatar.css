@@ -1,0 +1,50 @@
+/**
+ * Nice Avatar Plugin Styles
+ * Handles avatar placeholder styling for client-side rendering
+ */
+
+/* Avatar placeholder container */
+[data-nice-avatar] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e0ddff 0%, #ffedef 100%);
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+/* Loading state */
+[data-nice-avatar]:not([data-rendered]) {
+    animation: nice-avatar-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes nice-avatar-pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Rendered state - ensure SVG fills container */
+[data-nice-avatar][data-rendered] svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Shape variants */
+[data-nice-avatar][data-shape="square"] {
+    border-radius: 0;
+}
+
+[data-nice-avatar][data-shape="rounded"] {
+    border-radius: 12%;
+}
+
+/* Size helpers */
+.nice-avatar-xs { width: 24px; height: 24px; }
+.nice-avatar-sm { width: 32px; height: 32px; }
+.nice-avatar-md { width: 40px; height: 40px; }
+.nice-avatar-lg { width: 64px; height: 64px; }
+.nice-avatar-xl { width: 128px; height: 128px; }

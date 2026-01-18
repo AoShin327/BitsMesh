@@ -1,0 +1,19 @@
+{
+    "key": "NiceAvatar",
+    "name": "Nice Avatar",
+    "description": "Auto-generate beautiful avatars for new users using react-nice-avatar",
+    "version": "1.0.0",
+    "type": "addon",
+    "license": "GPL-2.0-only",
+    "author": [
+        {
+            "name": "BitsMesh",
+            "url": "https://bitsmesh.com"
+        }
+    ],
+    "require": {
+        "vanilla": ">=3.0"
+    },
+    "settingsUrl": "/settings/niceavatar",
+    "settingsPermission": "Garden.Settings.Manage"
+}
