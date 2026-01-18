@@ -25,7 +25,7 @@
 <div class="bits-user-menu">
     {if $User.SignedIn}
         <a href="{$User.ProfileUrl}" class="bits-user-link">
-            <img class="avatar-normal" src="{$User.PhotoUrl}" alt="{$User.Name}" />
+            <img class="avatar-normal" src="{$User.Photo}" alt="{$User.Name}" />
         </a>
         <a href="{link path="/entry/signout"}" class="bits-signout">{t c="退出"}</a>
     {else}

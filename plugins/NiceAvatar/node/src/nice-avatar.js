@@ -3,12 +3,14 @@
  *
  * Generates avatar on registration form, converts to image, uploads as user photo.
  * After registration, avatar is a static file - no runtime rendering needed.
+ *
+ * Uses dom-to-image for PNG export (same as official react-nice-avatar demo)
  */
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Avatar, { genConfig } from 'react-nice-avatar';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
 
 /**
  * Generate deterministic seed from email
@@ -30,11 +32,11 @@ function generateSeed(email) {
 }
 
 /**
- * Render avatar to a container and return the SVG element
+ * Render avatar to a container
  * @param {HTMLElement} container
  * @param {string} seed
  * @param {number} size
- * @returns {Promise<SVGElement>}
+ * @returns {Promise<void>}
  */
 function renderAvatar(container, seed, size = 200) {
     return new Promise((resolve) => {
@@ -44,65 +46,42 @@ function renderAvatar(container, seed, size = 200) {
         root.render(
             React.createElement(Avatar, {
                 ...config,
-                shape: 'circle',
+                shape: 'square',
                 style: { width: size, height: size }
             })
         );
 
-        // Wait for React to render
+        // Wait for React to render completely
+        // React-nice-avatar uses multiple SVGs with position:absolute
+        // Need enough time for all layers to render
         setTimeout(() => {
-            const svg = container.querySelector('svg');
-            resolve(svg);
-        }, 100);
+            resolve();
+        }, 200);
     });
 }
 
 /**
- * Convert container with avatar to PNG Blob using html2canvas
- * This captures the entire rendered avatar including all SVG layers
- * @param {HTMLElement} container - DOM element containing the avatar
- * @param {number} size - Output image size
+ * Convert DOM element to PNG Blob using dom-to-image
+ * This is the same approach used in the official react-nice-avatar demo
+ * @param {HTMLElement} node - DOM element containing the avatar
+ * @param {number} size - Original element size
  * @returns {Promise<Blob>}
  */
-async function containerToPngBlob(container, size = 200) {
-    // Use html2canvas to capture the rendered avatar
-    const canvas = await html2canvas(container, {
-        width: size,
-        height: size,
-        scale: 1,
-        backgroundColor: '#ffffff',
-        logging: false,
-        useCORS: true,
-        allowTaint: true
+async function containerToPngBlob(node, size = 128) {
+    // Use scale=3 for high-resolution output (128 * 3 = 384px)
+    const scale = 3;
+
+    const blob = await domtoimage.toBlob(node, {
+        width: size * scale,
+        height: size * scale,
+        style: {
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            'border-radius': '0'
+        }
     });
 
-    // Apply circular clip
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = size;
-    finalCanvas.height = size;
-    const ctx = finalCanvas.getContext('2d');
-
-    // White background
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, size, size);
-
-    // Circular clip
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-    ctx.clip();
-
-    // Draw the captured image
-    ctx.drawImage(canvas, 0, 0, size, size);
-
-    return new Promise((resolve, reject) => {
-        finalCanvas.toBlob((blob) => {
-            if (blob) {
-                resolve(blob);
-            } else {
-                reject(new Error('Canvas toBlob failed'));
-            }
-        }, 'image/png', 0.95);
-    });
+    return blob;
 }
 
 /**
@@ -130,9 +109,9 @@ function initRegistrationForm() {
             border-radius: 8px;
         ">
             <div class="nice-avatar-preview-image" style="
-                width: 64px;
-                height: 64px;
-                border-radius: 50%;
+                width: 128px;
+                height: 128px;
+                border-radius: 15%;
                 overflow: hidden;
                 background: linear-gradient(135deg, #e0ddff 0%, #ffedef 100%);
             "></div>
@@ -176,29 +155,33 @@ function initRegistrationForm() {
         previewText.textContent = '正在生成头像...';
 
         try {
-            // Render avatar
+            // Render avatar for preview (larger size for better export quality)
+            // Using 128px preview, will export at 3x scale = 384px
             previewImage.innerHTML = '';
-            const svg = await renderAvatar(previewImage, seed, 64);
+            await renderAvatar(previewImage, seed, 128);
 
-            if (!svg) {
-                throw new Error('SVG not rendered');
+            // Wait for all SVG layers to fully render in the visible preview
+            await new Promise(resolve => setTimeout(resolve, 400));
+
+            // Export directly from the visible preview element
+            // This works because the element is already rendered and visible
+            const pngBlob = await containerToPngBlob(previewImage, 128);
+
+            // Validate blob was created
+            if (!pngBlob) {
+                throw new Error('Failed to create PNG blob');
             }
-
-            // Generate PNG for upload (larger size for quality)
-            const tempContainer = document.createElement('div');
-            tempContainer.style.cssText = 'position:absolute;left:-9999px;width:200px;height:200px;';
-            document.body.appendChild(tempContainer);
-
-            await renderAvatar(tempContainer, seed, 200);
-            const pngBlob = await containerToPngBlob(tempContainer, 200);
-
-            document.body.removeChild(tempContainer);
 
             // Convert to base64 for form submission
             const reader = new FileReader();
             reader.onload = () => {
                 avatarDataInput.value = reader.result;
                 previewText.textContent = '✓ 头像已生成，注册后将自动使用';
+            };
+            reader.onerror = () => {
+                console.error('FileReader error');
+                previewText.textContent = '头像生成失败，将使用默认头像';
+                avatarDataInput.value = '';
             };
             reader.readAsDataURL(pngBlob);
 
