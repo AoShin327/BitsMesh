@@ -229,6 +229,21 @@ graph TD
 
 ## 运行与开发
 
+### 本地开发地址
+
+```
+http://localhost:8357/
+```
+
+### 管理员账号
+
+| 项目 | 值 |
+|-----|-----|
+| **用户名** | admin |
+| **密码** | admin123 |
+| **邮箱** | admin@bitsmesh.local |
+| **后台地址** | http://localhost:8357/dashboard/settings |
+
 ### 环境要求
 
 ```yaml
@@ -368,6 +383,32 @@ yarn test
 ---
 
 ## AI 使用指引
+
+### ⚠️ 命名规范（重要）
+
+> **本项目主题命名为 BitsMesh，禁止在代码、路径、注释中出现任何竞品论坛名称。**
+
+#### 禁止使用的词汇
+
+以下词汇**禁止**出现在任何新增或修改的代码、文件路径、注释、文档中：
+- `nodeseek`、`NodeSeek`、`NODESEEK` 及其任何变体
+- `nodeseek style`、`NodeSeek-style` 等引用性描述
+- 其他可能暗示抄袭或模仿特定论坛的表述
+
+#### 正确的表述方式
+
+| ❌ 禁止 | ✅ 推荐 |
+|--------|--------|
+| `NodeSeek-style theme` | `BitsMesh theme` |
+| `themes/nodeseek/` | `themes/bitsmesh/` |
+| `参考 NodeSeek 设计` | `参考现代论坛设计` 或直接描述功能 |
+| `NodeSeek Theme Configuration` | `BitsMesh Theme Configuration` |
+
+#### 历史文档说明
+
+`docs/plans/` 目录下的历史计划文档作为开发记录保留原样，但**新增文档必须遵循本规范**。
+
+---
 
 ### ⚠️ 源代码修改规范（重要）
 

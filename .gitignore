@@ -28,9 +28,9 @@ Thumbs.db
 # /vendor/
 
 # Playwright 测试产物
-themes/nodeseek/tests/test-results/
-themes/nodeseek/tests/playwright-report/
-themes/nodeseek/tests/playwright/.cache/
+themes/bitsmesh/tests/test-results/
+themes/bitsmesh/tests/playwright-report/
+themes/bitsmesh/tests/playwright/.cache/
 
 # Node 依赖
 node_modules/
@@ -44,4 +44,14 @@ node_modules/
 .spec-workflow/
 
 # 临时快照
+web-snap/
 nodeseek-web-snap/
+
+# Playwright MCP 临时目录
+.playwright-mcp/
+
+# 本地路由配置
+router.php
+
+# Apache 本地配置
+.htaccess
