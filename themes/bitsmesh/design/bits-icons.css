@@ -75,75 +75,11 @@ body.dark-layout .bits-dark-toggle svg.icon-sun {
    Discussion List Meta Icons
    ============================================ */
 
-/* Comment count icon */
-ul.DataList.Discussions .Meta .MItem:first-child::before {
-    content: '';
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-/* View count icon - target second MItem or ViewCount */
-ul.DataList.Discussions .Meta .MItem:nth-child(2)::before,
-ul.DataList.Discussions .Meta .ViewCount::before {
-    content: '';
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-/* Time/Date icon */
-ul.DataList.Discussions .Meta .LastCommentDate::before,
-ul.DataList.Discussions .Meta time::before,
-.DiscussionMeta .MItem.DateCreated::before {
-    content: '';
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-/* User/Author icon */
-ul.DataList.Discussions .Meta .DiscussionAuthor::before {
-    content: '';
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    flex-shrink: 0;
-}
-
-/* Dark mode adjustments */
-body.dark-layout ul.DataList.Discussions .Meta .MItem:first-child::before,
-body.dark-layout ul.DataList.Discussions .Meta .MItem:nth-child(2)::before,
-body.dark-layout ul.DataList.Discussions .Meta .ViewCount::before,
-body.dark-layout ul.DataList.Discussions .Meta .LastCommentDate::before,
-body.dark-layout ul.DataList.Discussions .Meta time::before,
-body.dark-layout ul.DataList.Discussions .Meta .DiscussionAuthor::before,
-body.dark-layout .DiscussionMeta .MItem.DateCreated::before {
-    filter: brightness(1.3);
-}
+/* NOTE: Meta Discussion icons are now handled by bits-meta-discussion.css
+ * using CSS mask-image for better performance and consistent 12px icon size.
+ * The old background-image styles below have been removed to avoid conflicts.
+ * See: bits-meta-discussion.css for the new implementation.
+ */
 
 /* ============================================
    Discussion Detail Page Icons

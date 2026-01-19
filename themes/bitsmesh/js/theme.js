@@ -238,104 +238,40 @@
     }
 
     /**
-     * MetaIcons - Insert SVG icons into Meta Discussion elements
-     * Replicates modern forum post-info style with 12x12px SVG icons
+     * MetaIcons - Lightweight Meta Discussion enhancement
+     *
+     * v1.4.6: Performance optimization
+     * - Removed MutationObserver (high overhead watching entire body)
+     * - Removed SVG icon injection (now handled by CSS ::before + mask-image)
+     * - Removed TreeWalker text traversal (CSS handles text hiding)
+     *
+     * Icons are now rendered via CSS in bits-meta-discussion.css using:
+     * - CSS ::before pseudo-elements
+     * - mask-image with inline SVG data URIs
+     * - font-size: 0 technique to hide prefix text
+     *
+     * This class is kept for backward compatibility and future enhancements.
      */
     class MetaIcons {
         constructor() {
-            // Icon mappings: class name -> icon ID
-            this.iconMap = {
-                'DiscussionAuthor': 'icon-user',
-                'ViewCount': 'icon-eyes',
-                'CommentCount': 'icon-comments',
-                'LastCommentBy': 'icon-lightning',
-                'LastCommentDate': 'icon-time'
-            };
+            // No longer needed - CSS handles icons via ::before pseudo-elements
         }
 
         init() {
-            this.insertIcons();
-            // Re-insert icons when content is dynamically loaded
-            this.observeDOM();
+            // Mark all Meta containers as CSS-enhanced for debugging
+            this.markContainers();
         }
 
         /**
-         * Create SVG icon element
+         * Mark containers for debugging purposes
+         * No DOM manipulation - just adds data attribute
          */
-        createIcon(iconId) {
-            const wrapper = document.createElement('span');
-            wrapper.className = 'meta-icon';
-            wrapper.innerHTML = `<svg><use href="#${iconId}"></use></svg>`;
-            return wrapper;
-        }
-
-        /**
-         * Insert icons into all Meta elements
-         */
-        insertIcons() {
+        markContainers() {
             const metaContainers = document.querySelectorAll('.Meta.Meta-Discussion');
-
             metaContainers.forEach(meta => {
-                // Skip if already processed
-                if (meta.dataset.iconsInserted) return;
-
-                Object.entries(this.iconMap).forEach(([className, iconId]) => {
-                    const element = meta.querySelector(`.${className}`);
-                    if (element && !element.querySelector('.meta-icon')) {
-                        const icon = this.createIcon(iconId);
-                        element.insertBefore(icon, element.firstChild);
-                    }
-                });
-
-                // Mark as processed
-                meta.dataset.iconsInserted = 'true';
-
-                // Clean up text: remove "Started by" prefix from LastCommentBy
-                const lastCommentBy = meta.querySelector('.LastCommentBy');
-                if (lastCommentBy) {
-                    // Find and clean all text nodes
-                    const walker = document.createTreeWalker(
-                        lastCommentBy,
-                        NodeFilter.SHOW_TEXT,
-                        null,
-                        false
-                    );
-                    let node;
-                    while ((node = walker.nextNode())) {
-                        // Remove "Started by" text completely
-                        if (node.textContent.match(/Started by\s*/i)) {
-                            node.textContent = '';
-                        }
-                    }
+                if (!meta.dataset.bitsEnhanced) {
+                    meta.dataset.bitsEnhanced = 'css';
                 }
-            });
-        }
-
-        /**
-         * Observe DOM for dynamically loaded content
-         */
-        observeDOM() {
-            const observer = new MutationObserver((mutations) => {
-                let shouldUpdate = false;
-                mutations.forEach(mutation => {
-                    if (mutation.addedNodes.length > 0) {
-                        mutation.addedNodes.forEach(node => {
-                            if (node.nodeType === Node.ELEMENT_NODE &&
-                                (node.classList?.contains('Meta-Discussion') ||
-                                 node.querySelector?.('.Meta-Discussion'))) {
-                                shouldUpdate = true;
-                            }
-                        });
-                    }
-                });
-                if (shouldUpdate) {
-                    this.insertIcons();
-                }
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
             });
         }
     }
