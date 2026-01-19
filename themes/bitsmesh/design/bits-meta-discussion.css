@@ -7,8 +7,8 @@
  * - Item margin: 4px left/right
  * - vertical-align: middle for all inline elements
  *
- * This replaces heavy JavaScript icon injection with pure CSS
- * using ::before pseudo-elements and SVG background images.
+ * v1.4.7: SVG Sprite implementation using <use href="#icon-id">
+ * Icons are now real SVG elements injected via PHP helper_functions.php
  */
 
 /* ============================================
@@ -56,87 +56,22 @@
 }
 
 /* ============================================
-   SVG Icon Base - 12px × 12px using mask-image
+   SVG Icon Style - 12px × 12px using <use href>
    ============================================ */
 
-.Meta.Meta-Discussion .MItem::before {
-    background-color: var(--bits-text-gray, #888);
-    content: '';
+.bits-meta-icon {
+    color: var(--bits-text-gray, #888);
     display: inline-block;
     flex-shrink: 0;
     height: 12px;
     margin-right: 3px;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
     vertical-align: middle;
     width: 12px;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
 }
 
-/* ============================================
-   ViewCount Icon (Eyes)
-   ============================================ */
-
-.Meta.Meta-Discussion .MItem.ViewCount::before {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-width='4' stroke='currentColor' d='M24 36c11.046 0 20-12 20-12s-8.954-12-20-12S4 24 4 24s8.954 12 20 12Z'/%3E%3Ccircle stroke-linejoin='round' stroke-width='4' stroke='currentColor' r='5' cy='24' cx='24'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-width='4' stroke='currentColor' d='M24 36c11.046 0 20-12 20-12s-8.954-12-20-12S4 24 4 24s8.954 12 20 12Z'/%3E%3Ccircle stroke-linejoin='round' stroke-width='4' stroke='currentColor' r='5' cy='24' cx='24'/%3E%3C/svg%3E");
-}
-
-/* ============================================
-   CommentCount Icon (Comments/Chat bubble)
-   ============================================ */
-
-.Meta.Meta-Discussion .MItem.CommentCount::before {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' d='M33 38H22v-8h14a3 3 0 0 0 3-3V12a3 3 0 0 0-3-3H12a3 3 0 0 0-3 3v15a3 3 0 0 0 3 3h3v8l7-8'/%3E%3Cpath stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' d='M18 18h12m-12 6h8'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' d='M33 38H22v-8h14a3 3 0 0 0 3-3V12a3 3 0 0 0-3-3H12a3 3 0 0 0-3 3v15a3 3 0 0 0 3 3h3v8l7-8'/%3E%3Cpath stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' d='M18 18h12m-12 6h8'/%3E%3C/svg%3E");
-}
-
-/* ============================================
-   LastCommentBy Icon (Lightning - Active user)
-   ============================================ */
-
-.Meta.Meta-Discussion .MItem.LastCommentBy::before {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-width='4' stroke='currentColor' d='M15 43V28H6L27 5v15h10L15 43Z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-width='4' stroke='currentColor' d='M15 43V28H6L27 5v15h10L15 43Z'/%3E%3C/svg%3E");
-}
-
-/* ============================================
-   LastCommentDate Icon (Clock/Time)
-   ============================================ */
-
-.Meta.Meta-Discussion .MItem.LastCommentDate::before {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Ccircle stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' r='20' cy='24' cx='24'/%3E%3Cpath stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' d='M24.01 12v12.01l8.5 8.49'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Ccircle stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' r='20' cy='24' cx='24'/%3E%3Cpath stroke-linejoin='round' stroke-linecap='round' stroke-width='4' stroke='currentColor' d='M24.01 12v12.01l8.5 8.49'/%3E%3C/svg%3E");
-}
-
-/* ============================================
-   Category Icon (Grid/Folder)
-   ============================================ */
-
-.Meta.Meta-Discussion .MItem.Category::before {
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-width='4' stroke='currentColor' d='M18 6H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2ZM40 6H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2Z'/%3E%3C/svg%3E");
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'%3E%3Cpath stroke-linejoin='round' stroke-width='4' stroke='currentColor' d='M18 6H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2ZM40 6H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2Z'/%3E%3C/svg%3E");
-}
-
-/* ============================================
-   DiscussionAuthor Icon (User - when no LastCommentBy)
-   Only shown if LastCommentBy has "Started by" prefix
-   ============================================ */
-
-/* Hide "Started by" and "Most recent by" text using CSS */
-.Meta.Meta-Discussion .MItem.LastCommentBy {
-    font-size: 0; /* Hide all text */
-}
-
-.Meta.Meta-Discussion .MItem.LastCommentBy::before {
-    font-size: 11px; /* Restore icon display */
-}
-
-.Meta.Meta-Discussion .MItem.LastCommentBy a {
-    font-size: 11px; /* Restore link text */
+/* Remove old ::before pseudo-element styles */
+.Meta.Meta-Discussion .MItem::before {
+    display: none;
 }
 
 /* ============================================
@@ -151,9 +86,9 @@
    Tags and Badges - No icon needed
    ============================================ */
 
-.Meta.Meta-Discussion .Tag::before,
-.Meta.Meta-Discussion .MItem.DiscussionScore::before,
-.Meta.Meta-Discussion .NewCommentCount::before {
+.Meta.Meta-Discussion .Tag .bits-meta-icon,
+.Meta.Meta-Discussion .MItem.DiscussionScore .bits-meta-icon,
+.Meta.Meta-Discussion .NewCommentCount .bits-meta-icon {
     display: none;
 }
 
@@ -175,8 +110,8 @@ body.dark-layout .Meta.Meta-Discussion {
     color: var(--bits-text-gray, #999);
 }
 
-body.dark-layout .Meta.Meta-Discussion .MItem::before {
-    background-color: var(--bits-text-gray, #999);
+body.dark-layout .bits-meta-icon {
+    color: var(--bits-text-gray, #999);
 }
 
 body.dark-layout .Meta.Meta-Discussion .MItem a {
@@ -196,7 +131,7 @@ body.dark-layout .Meta.Meta-Discussion .MItem a:hover {
         font-size: 10px;
     }
 
-    .Meta.Meta-Discussion .MItem::before {
+    .bits-meta-icon {
         height: 10px;
         width: 10px;
     }
@@ -221,25 +156,11 @@ ul.DataList .ItemContent.Discussion .Meta.Meta-Discussion {
     margin-top: 4px;
 }
 
-/* Override any conflicting styles from bits-icons.css */
-ul.DataList.Discussions .Meta .MItem::before {
-    background-image: none !important;
-    background: none !important;
+/* Ensure SVG icons display correctly in list context */
+ul.DataList .Meta.Meta-Discussion .bits-meta-icon {
+    color: var(--bits-text-gray, #888);
 }
 
-/* Ensure proper icon display with mask-image */
-ul.DataList .Meta.Meta-Discussion .MItem.ViewCount::before,
-ul.DataList .Meta.Meta-Discussion .MItem.CommentCount::before,
-ul.DataList .Meta.Meta-Discussion .MItem.LastCommentBy::before,
-ul.DataList .Meta.Meta-Discussion .MItem.LastCommentDate::before,
-ul.DataList .Meta.Meta-Discussion .MItem.Category::before {
-    background-color: var(--bits-text-gray, #888);
-}
-
-body.dark-layout ul.DataList .Meta.Meta-Discussion .MItem.ViewCount::before,
-body.dark-layout ul.DataList .Meta.Meta-Discussion .MItem.CommentCount::before,
-body.dark-layout ul.DataList .Meta.Meta-Discussion .MItem.LastCommentBy::before,
-body.dark-layout ul.DataList .Meta.Meta-Discussion .MItem.LastCommentDate::before,
-body.dark-layout ul.DataList .Meta.Meta-Discussion .MItem.Category::before {
-    background-color: var(--bits-text-gray, #999);
+body.dark-layout ul.DataList .Meta.Meta-Discussion .bits-meta-icon {
+    color: var(--bits-text-gray, #999);
 }
