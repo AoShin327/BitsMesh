@@ -128,7 +128,8 @@ body.dark-layout .bits-post-list-item {
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 0;
+    position: relative;
 }
 
 /* ============================================
@@ -186,12 +187,12 @@ body.dark-layout .bits-sorter > a.selected {
 
 /* ============================================
    Pager (Right side - page navigation)
-   NodeSeek-style pager with triangle arrows
+   Custom pager with sortBy parameter support
    ============================================ */
 
 .bits-pager {
-    align-items: center;
     display: flex;
+    align-items: center;
     gap: 2px;
 }
 

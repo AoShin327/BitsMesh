@@ -238,6 +238,109 @@
     }
 
     /**
+     * MetaIcons - Insert SVG icons into Meta Discussion elements
+     * Replicates modern forum post-info style with 12x12px SVG icons
+     */
+    class MetaIcons {
+        constructor() {
+            // Icon mappings: class name -> icon ID
+            this.iconMap = {
+                'DiscussionAuthor': 'icon-user',
+                'ViewCount': 'icon-eyes',
+                'CommentCount': 'icon-comments',
+                'LastCommentBy': 'icon-lightning',
+                'LastCommentDate': 'icon-time'
+            };
+        }
+
+        init() {
+            this.insertIcons();
+            // Re-insert icons when content is dynamically loaded
+            this.observeDOM();
+        }
+
+        /**
+         * Create SVG icon element
+         */
+        createIcon(iconId) {
+            const wrapper = document.createElement('span');
+            wrapper.className = 'meta-icon';
+            wrapper.innerHTML = `<svg><use href="#${iconId}"></use></svg>`;
+            return wrapper;
+        }
+
+        /**
+         * Insert icons into all Meta elements
+         */
+        insertIcons() {
+            const metaContainers = document.querySelectorAll('.Meta.Meta-Discussion');
+
+            metaContainers.forEach(meta => {
+                // Skip if already processed
+                if (meta.dataset.iconsInserted) return;
+
+                Object.entries(this.iconMap).forEach(([className, iconId]) => {
+                    const element = meta.querySelector(`.${className}`);
+                    if (element && !element.querySelector('.meta-icon')) {
+                        const icon = this.createIcon(iconId);
+                        element.insertBefore(icon, element.firstChild);
+                    }
+                });
+
+                // Mark as processed
+                meta.dataset.iconsInserted = 'true';
+
+                // Clean up text: remove "Started by" prefix from LastCommentBy
+                const lastCommentBy = meta.querySelector('.LastCommentBy');
+                if (lastCommentBy) {
+                    // Find and clean all text nodes
+                    const walker = document.createTreeWalker(
+                        lastCommentBy,
+                        NodeFilter.SHOW_TEXT,
+                        null,
+                        false
+                    );
+                    let node;
+                    while ((node = walker.nextNode())) {
+                        // Remove "Started by" text completely
+                        if (node.textContent.match(/Started by\s*/i)) {
+                            node.textContent = '';
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * Observe DOM for dynamically loaded content
+         */
+        observeDOM() {
+            const observer = new MutationObserver((mutations) => {
+                let shouldUpdate = false;
+                mutations.forEach(mutation => {
+                    if (mutation.addedNodes.length > 0) {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === Node.ELEMENT_NODE &&
+                                (node.classList?.contains('Meta-Discussion') ||
+                                 node.querySelector?.('.Meta-Discussion'))) {
+                                shouldUpdate = true;
+                            }
+                        });
+                    }
+                });
+                if (shouldUpdate) {
+                    this.insertIcons();
+                }
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }
+
+    /**
      * Initialize all theme components
      */
     function initTheme() {
@@ -252,6 +355,10 @@
         // Initialize MobileNav
         bitsTheme.mobileNav = new MobileNav();
         bitsTheme.mobileNav.init();
+
+        // Initialize MetaIcons (SVG icons for post info)
+        bitsTheme.metaIcons = new MetaIcons();
+        bitsTheme.metaIcons.init();
 
         // Initialize DarkMode if available
         if (typeof DarkModeToggle !== 'undefined') {

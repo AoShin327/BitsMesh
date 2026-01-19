@@ -45,4 +45,26 @@
 
   {* road-sign-both - 版块简介 *}
   <symbol id="road-sign-both" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 4v40"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M8 10h20l5 6-5 6H8V10Z"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M40 26H20l-5 6 5 6h20V26Z"/></symbol>
+
+  {* ============================================
+     Meta-Discussion Icons (Post Info)
+     ============================================ *}
+
+  {* user - 作者图标 *}
+  <symbol id="icon-user" viewBox="0 0 48 48" fill="none"><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="8" cy="12" cx="24"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M42 44c0-9.941-8.059-18-18-18S6 34.059 6 44"/></symbol>
+
+  {* eyes - 浏览量图标 *}
+  <symbol id="icon-eyes" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M24 36c11.046 0 20-12 20-12s-8.954-12-20-12S4 24 4 24s8.954 12 20 12Z"/><circle stroke-linejoin="round" stroke-width="4" stroke="currentColor" r="5" cy="24" cx="24"/></symbol>
+
+  {* comments - 评论数图标 *}
+  <symbol id="icon-comments" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M33 38H22v-8h14a3 3 0 0 0 3-3V12a3 3 0 0 0-3-3H12a3 3 0 0 0-3 3v15a3 3 0 0 0 3 3h3v8l7-8"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18 18h12m-12 6h8"/></symbol>
+
+  {* lightning - 最后回复者图标 *}
+  <symbol id="icon-lightning" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M15 43V28H6L27 5v15h10L15 43Z"/></symbol>
+
+  {* time - 时间图标 *}
+  <symbol id="icon-time" viewBox="0 0 48 48" fill="none"><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="20" cy="24" cx="24"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24.01 12v12.01l8.5 8.49"/></symbol>
+
+  {* category - 分类图标 *}
+  <symbol id="icon-category" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 6h14v14H4V6Zm0 22h14v14H4V28Zm26-22h14v14H30V6Zm0 22h14v14H30V28Z"/></symbol>
 </svg>

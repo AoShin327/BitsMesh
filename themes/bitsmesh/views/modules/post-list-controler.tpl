@@ -23,12 +23,12 @@
         <a href="{$BitsSortCommentsUrl}"
            class="{if $BitsCurrentSort == 'comments'}selected{/if}"
            data-sort="comments">
-            {t c="New Comments" d="New Comments"}
+            新评论
         </a>
         <a href="{$BitsSortPostsUrl}"
            class="{if $BitsCurrentSort == 'posts'}selected{/if}"
            data-sort="posts">
-            {t c="New Posts" d="New Posts"}
+            新帖子
         </a>
     </div>
 

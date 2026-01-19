@@ -684,14 +684,16 @@ body.dark-layout {
             $basePath = 'discussions';
         }
 
-        // Generate sort URLs
-        $sortCommentsUrl = url($basePath . '?Sort=comments');
-        $sortPostsUrl = url($basePath);
+        // Generate sort URLs using sortBy parameter
+        // 新评论 (comments) = sortBy=replyTime (sort by latest reply time)
+        // 新帖子 (posts) = sortBy=postTime (sort by post creation time)
+        $sortCommentsUrl = url($basePath . '?sortBy=replyTime');
+        $sortPostsUrl = url($basePath . '?sortBy=postTime');
 
-        // Determine current sort
-        $currentSort = 'posts';
-        $sortParam = $request->get('Sort', '');
-        if ($sortParam === 'comments') {
+        // Determine current sort from sortBy parameter
+        $currentSort = 'posts'; // default to new posts
+        $sortByParam = $request->get('sortBy', '');
+        if ($sortByParam === 'replyTime') {
             $currentSort = 'comments';
         }
 
@@ -702,20 +704,23 @@ body.dark-layout {
         $sender->setData('BitsSortPostsUrl', $sortPostsUrl);
 
         // Get pager data from PagerModule
-        $this->injectPagerData($sender, $basePath);
+        // Pass sortBy value to ensure it's preserved in pager URLs
+        $sortByValue = ($currentSort === 'comments') ? 'replyTime' : 'postTime';
+        $this->injectPagerData($sender, $basePath, $sortByValue);
     }
 
     /**
      * Inject pager data for Smarty templates.
      *
      * Calculates page numbers to display and generates URLs.
-     * Uses NodeSeek-style pagination: 1 2 3 4 5 .. 100
+     * Uses modern forum style pagination: 1 2 3 4 5 .. 100
      *
      * @param Gdn_Controller $sender The controller instance.
      * @param string $basePath The base URL path for building pager links.
+     * @param string $sortBy The sort parameter value (postTime or replyTime).
      * @return void
      */
-    private function injectPagerData($sender, $basePath) {
+    private function injectPagerData($sender, $basePath, $sortBy = 'postTime') {
         // Try to get pager from controller data first
         $pager = PagerModule::current();
 
@@ -738,8 +743,26 @@ body.dark-layout {
             $totalRecords = (int)$sender->data('CountDiscussions', 0);
         }
 
-        // Calculate page numbers
-        $currentPage = $limit > 0 ? floor($offset / $limit) + 1 : 1;
+        // Last resort: query DiscussionModel for count
+        if ($totalRecords <= 0) {
+            try {
+                $discussionModel = new DiscussionModel();
+                $totalRecords = $discussionModel->getCount();
+            } catch (Exception $e) {
+                // Silently fail
+            }
+        }
+
+        // Get current page from URL
+        $request = Gdn::request();
+        $path = $request->path();
+        if (preg_match('#/p(\d+)/?$#i', $path, $matches)) {
+            $currentPage = (int)$matches[1];
+        } else {
+            $currentPage = 1;
+        }
+
+        // Calculate total pages
         $totalPages = $limit > 0 && $totalRecords > 0 ? (int)ceil($totalRecords / $limit) : 1;
 
         // Ensure valid values
@@ -752,13 +775,11 @@ body.dark-layout {
             return;
         }
 
-        // Build page URLs
-        $request = Gdn::request();
-        $queryParams = $request->get();
-        unset($queryParams['Page'], $queryParams['DeliveryType'], $queryParams['DeliveryMethod']);
-        $queryString = !empty($queryParams) ? '?' . http_build_query($queryParams) : '';
+        // Build page URLs with sortBy parameter
+        // Always include sortBy to maintain sort state across pagination
+        $queryString = '?sortBy=' . urlencode($sortBy);
 
-        // Build array of pages to display (NodeSeek style)
+        // Build array of pages to display (modern forum style)
         $pages = $this->buildPagerPages($currentPage, $totalPages, $basePath, $queryString);
 
         // Build prev/next URLs

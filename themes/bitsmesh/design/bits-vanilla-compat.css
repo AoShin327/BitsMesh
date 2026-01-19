@@ -83,52 +83,95 @@ ul.DataList .ItemContent .Title a:hover {
     color: var(--bits-link);
 }
 
-/* Discussion Meta */
+/* ============================================
+   Discussion Meta (NodeSeek post-info Style)
+   精确复刻: fontSize 11px, lineHeight 19.5px
+   ============================================ */
+
 ul.DataList .Meta {
-    color: var(--bits-text-gray);
-    font-size: 12px;
+    color: #555;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 4px 10px;
-    line-height: 1.5;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 19.5px;
+}
+
+body.dark-layout ul.DataList .Meta {
+    color: #999;
 }
 
 ul.DataList .Meta .MItem {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+ul.DataList .Meta .MItem * {
+    vertical-align: middle;
 }
 
 ul.DataList .Meta .MItem a {
-    color: var(--bits-text-gray);
+    color: inherit;
 }
 
 ul.DataList .Meta .MItem a:hover {
     color: var(--bits-link);
 }
 
+/* Meta Icon (SVG) - 12x12px */
+ul.DataList .Meta .meta-icon {
+    display: inline-block;
+    height: 12px;
+    margin-right: 2px;
+    vertical-align: middle;
+    width: 12px;
+}
+
+ul.DataList .Meta .meta-icon svg {
+    color: currentColor;
+    display: block;
+    height: 12px;
+    width: 12px;
+}
+
 /* Author Name in Meta */
 ul.DataList .Meta .DiscussionAuthor a {
-    color: var(--bits-text);
-    font-weight: 500;
+    color: #555;
+    font-weight: 400;
+}
+
+body.dark-layout ul.DataList .Meta .DiscussionAuthor a {
+    color: #ccc;
 }
 
 /* View & Comment Counts */
 ul.DataList .Meta .MCount .Number {
-    font-weight: 600;
-    color: var(--bits-text);
+    font-weight: 400;
+    color: inherit;
     margin-right: 2px;
 }
 
 /* Last Comment By */
 ul.DataList .Meta .LastCommentBy {
-    color: var(--bits-text-fade);
+    color: inherit;
+    font-size: 0; /* Hide "Started by" text */
+}
+
+ul.DataList .Meta .LastCommentBy a {
+    color: inherit;
+    font-size: 11px; /* Restore font size for link */
+}
+
+ul.DataList .Meta .LastCommentBy .meta-icon {
+    font-size: 11px; /* Restore font size for icon */
 }
 
 /* Timestamp */
 ul.DataList .Meta .LastCommentDate time {
-    color: var(--bits-text-fade);
+    color: inherit;
 }
 
 /* Category Tag in Meta - Positioned to Title Row */
@@ -351,22 +394,11 @@ ul.DataList .Options {
 }
 
 /* ============================================
-   Breadcrumbs
+   Breadcrumbs - Hidden
    ============================================ */
 
 .Breadcrumbs {
-    color: var(--bits-text-gray);
-    font-size: 13px;
-    margin-bottom: 15px;
-    padding: 0;
-}
-
-.Breadcrumbs a {
-    color: var(--bits-text-gray);
-}
-
-.Breadcrumbs a:hover {
-    color: var(--bits-link);
+    display: none;
 }
 
 /* ============================================
@@ -400,38 +432,170 @@ h2.H {
 }
 
 /* ============================================
-   Pager / Pagination
+   Pager / Pagination - Modern Forum Style
    ============================================ */
 
 .Pager {
+    align-items: center;
     display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin: 20px 0;
+    gap: 2px;
+    margin: 0;
 }
 
-.Pager a,
-.Pager span {
-    background-color: var(--bits-bg-sub);
-    border: 1px solid var(--bits-glass);
-    border-radius: 4px;
-    color: var(--bits-text);
-    display: inline-block;
-    font-size: 13px;
-    min-width: 32px;
-    padding: 6px 12px;
+/* Page number buttons and nav arrows */
+.Pager .Pager-p,
+.Pager .Pager-nav {
+    align-items: center;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #888;
+    display: inline-flex;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 16px;
+    height: 18px;
+    justify-content: center;
+    line-height: 18px;
+    min-width: 18px;
     text-align: center;
     text-decoration: none;
+    vertical-align: middle;
 }
 
-.Pager a:hover {
-    background-color: var(--bits-glass);
+/* Page numbers (links) */
+a.Pager-p {
+    cursor: pointer;
+    transition: background-color 0.15s;
 }
 
-.Pager .Highlight {
-    background-color: var(--bits-primary);
-    border-color: var(--bits-primary);
-    color: #fff;
+a.Pager-p:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Current page (highlighted) */
+.Pager .Pager-p.Highlight {
+    background-color: #fbfbfb;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    color: #555;
+    cursor: default;
+    font-weight: 600;
+}
+
+/* Navigation arrows (prev/next) */
+.Pager .Pager-nav {
+    cursor: pointer;
+    font-size: 0; /* Hide the default « » characters */
+    position: relative;
+}
+
+a.Pager-nav:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Disabled navigation */
+span.Pager-nav[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+/* Triangle arrows using CSS border technique */
+.Pager .Pager-nav::before {
+    border-style: solid;
+    content: '';
+    display: block;
+    height: 0;
+    width: 0;
+}
+
+/* Previous arrow (left pointing triangle) */
+.Pager .Pager-nav.Previous::before {
+    border-color: transparent #888 transparent transparent;
+    border-width: 5px 8px 5px 0;
+}
+
+/* Next arrow (right pointing triangle) */
+.Pager .Pager-nav.Next::before {
+    border-color: transparent transparent transparent #888;
+    border-width: 5px 0 5px 8px;
+}
+
+/* Hover states for arrows */
+a.Pager-nav.Previous:hover::before {
+    border-color: transparent #555 transparent transparent;
+}
+
+a.Pager-nav.Next:hover::before {
+    border-color: transparent transparent transparent #555;
+}
+
+/* Disabled arrow colors */
+span.Pager-nav[aria-disabled="true"].Previous::before {
+    border-color: transparent #aaa transparent transparent;
+}
+
+span.Pager-nav[aria-disabled="true"].Next::before {
+    border-color: transparent transparent transparent #aaa;
+}
+
+/* Ellipsis styling */
+.Pager .Pager-p.Ellipsis {
+    cursor: default;
+    min-width: auto;
+    padding: 0 2px;
+}
+
+/* Dark mode pager */
+body.dark-layout .Pager .Pager-p,
+body.dark-layout .Pager .Pager-nav {
+    color: #999;
+}
+
+body.dark-layout a.Pager-p:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-layout .Pager .Pager-p.Highlight {
+    background-color: #333;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+    color: #ddd;
+}
+
+body.dark-layout a.Pager-nav:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-layout .Pager .Pager-nav.Previous::before {
+    border-color: transparent #999 transparent transparent;
+}
+
+body.dark-layout .Pager .Pager-nav.Next::before {
+    border-color: transparent transparent transparent #999;
+}
+
+body.dark-layout a.Pager-nav.Previous:hover::before {
+    border-color: transparent #ccc transparent transparent;
+}
+
+body.dark-layout a.Pager-nav.Next:hover::before {
+    border-color: transparent transparent transparent #ccc;
+}
+
+/* Mobile responsive pager */
+@media screen and (max-width: 500px) {
+    .Pager .Pager-p,
+    .Pager .Pager-nav {
+        font-size: 14px;
+        height: 16px;
+        line-height: 16px;
+        min-width: 16px;
+    }
+
+    .Pager .Pager-nav.Previous::before {
+        border-width: 4px 6px 4px 0;
+    }
+
+    .Pager .Pager-nav.Next::before {
+        border-width: 4px 0 4px 6px;
+    }
 }
 
 /* ============================================
@@ -532,19 +696,26 @@ textarea.InputBox:focus {
 .PageControls {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     padding: 0 8px;
 }
 
+/* Top PageControls - Hide Vanilla pager, using custom bits-pager instead */
 .PageControls.Top {
-    margin-bottom: 15px;
+    display: none;
+}
+
+/* Hide New Discussion button in top controls (it's in sidebar) */
+.PageControls.Top .BoxNewDiscussion {
+    display: none;
 }
 
 .PageControls.Bottom {
     margin-top: 20px;
     margin-bottom: 0;
+    justify-content: flex-end;
 }
 
 /* Hide PagerNub decorations */
@@ -775,53 +946,51 @@ body.dark-layout .Button.NewDiscussion:hover {
 }
 
 /* ============================================
-   View/Comment Count Styling (Enhanced)
+   View/Comment Count Styling (with SVG icons)
    ============================================ */
 
 ul.DataList .Meta .MCount {
     display: inline-flex;
     align-items: center;
-    gap: 3px;
 }
 
 ul.DataList .Meta .ViewCount .Number {
-    color: var(--bits-text);
-    font-weight: 600;
+    color: inherit;
+    font-weight: 400;
 }
 
 ul.DataList .Meta .CommentCount .Number {
-    color: var(--bits-primary);
-    font-weight: 700;
-}
-
-/* Icon-style counts */
-ul.DataList .Meta .ViewCount::before {
-    content: '👁';
-    font-size: 11px;
-    opacity: 0.7;
-}
-
-ul.DataList .Meta .CommentCount::before {
-    content: '💬';
-    font-size: 11px;
+    color: inherit;
+    font-weight: 400;
 }
 
 /* Hide text labels on smaller screens */
 @media screen and (max-width: 800px) {
     ul.DataList .Meta .MCount {
-        font-size: 0;
+        font-size: 11px;
     }
 
     ul.DataList .Meta .MCount .Number {
-        font-size: 12px;
-    }
-
-    ul.DataList .Meta .MCount::before {
-        font-size: 12px;
+        font-size: 11px;
     }
 }
 
-/* Dark Mode */
+/* ============================================
+   Last Replier Styling (with SVG icon)
+   ============================================ */
+
+/* Style for "Most recent by" with icon */
+ul.DataList .Meta .LastCommentBy {
+    display: inline-flex;
+    align-items: center;
+}
+
+ul.DataList .Meta .LastCommentBy a {
+    color: inherit;
+    font-weight: 400;
+}
+
+/* Dark Mode - Discussion Sorter */
 body.dark-layout .DiscussionSorter .Selected {
     background-color: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
@@ -852,11 +1021,7 @@ ul.DataList .Meta .Category a,
     transition: all 0.2s;
 }
 
-/* Category Color Palette - Auto-assign based on nth-child or specific classes */
-/* These colors work well in both light and dark modes */
-
-/* Default Categories with URL-based colors */
-/* Higher specificity to override .Meta .Category a */
+/* Category Color Palette - URL-based colors */
 .Meta .Category a[href*="/categories/general"],
 .Meta .Category a[href*="/categories/default"],
 ul.DataList a[href*="/categories/general"],
@@ -954,29 +1119,6 @@ ul.DataList a[href*="/categories/chat"]:hover {
     min-width: 20px;
     padding: 2px 8px;
     text-align: center;
-}
-
-/* ============================================
-   Last Replier Avatar (Mini)
-   ============================================ */
-
-/* Style for "Most recent by" with mini avatar */
-ul.DataList .Meta .LastCommentBy {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-ul.DataList .Meta .LastCommentBy a {
-    color: var(--bits-text);
-    font-weight: 500;
-}
-
-/* Add visual indicator for last reply */
-ul.DataList .Meta .LastCommentBy::before {
-    content: '↩';
-    color: var(--bits-text-fade);
-    font-size: 10px;
 }
 
 /* ============================================
