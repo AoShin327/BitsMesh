@@ -277,9 +277,147 @@
     }
 
     /**
+     * SorterPreference - Remember user's sort preference in localStorage
+     *
+     * Handles:
+     * - Storing user's sort choice (replyTime/postTime) to localStorage
+     * - Auto-applying saved preference on page load when no URL parameter exists
+     * - Default sort is 'replyTime' (新评论 - new comments)
+     */
+    class SorterPreference {
+        constructor() {
+            this.storageKey = 'bits_sort_preference';
+            this.defaultSort = 'replyTime'; // Default: new comments
+            this.sorterContainer = null;
+        }
+
+        init() {
+            this.sorterContainer = document.querySelector('.bits-sorter');
+            if (!this.sorterContainer) {
+                return; // Not on a page with sorter
+            }
+
+            // Apply preference first (may redirect), then bind events
+            this.applyPreference();
+            this.bindEvents();
+        }
+
+        /**
+         * Get saved sort preference from localStorage
+         * @returns {string} Sort value ('replyTime' or 'postTime')
+         */
+        getPreference() {
+            try {
+                const saved = localStorage.getItem(this.storageKey);
+                // Validate saved value
+                if (saved === 'replyTime' || saved === 'postTime') {
+                    return saved;
+                }
+                return this.defaultSort;
+            } catch (e) {
+                // localStorage unavailable (private browsing, etc.)
+                return this.defaultSort;
+            }
+        }
+
+        /**
+         * Save sort preference to localStorage
+         * @param {string} sort - Sort value ('replyTime' or 'postTime')
+         */
+        setPreference(sort) {
+            // Validate before saving
+            if (sort !== 'replyTime' && sort !== 'postTime') {
+                return;
+            }
+            try {
+                localStorage.setItem(this.storageKey, sort);
+            } catch (e) {
+                // localStorage unavailable - fail silently
+            }
+        }
+
+        /**
+         * Get sortBy parameter from current URL
+         * @returns {string} Sort value or empty string if not set
+         */
+        getCurrentUrlSort() {
+            try {
+                const url = new URL(window.location.href);
+                return url.searchParams.get('sortBy') || '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        /**
+         * Apply saved preference on page load
+         * - If URL has sortBy: save it and use
+         * - If URL has no sortBy: check localStorage and redirect if needed
+         */
+        applyPreference() {
+            const urlSort = this.getCurrentUrlSort();
+
+            if (urlSort) {
+                // URL has explicit sort - save as preference
+                this.setPreference(urlSort);
+                return;
+            }
+
+            // No URL sort - check localStorage
+            const savedSort = this.getPreference();
+
+            // Only redirect if user has non-default preference
+            // This prevents redirect loop and respects default behavior
+            if (savedSort && savedSort !== this.defaultSort) {
+                this.redirectWithSort(savedSort);
+            }
+        }
+
+        /**
+         * Redirect to current page with sort parameter
+         * Uses replace() to avoid polluting browser history
+         * @param {string} sort - Sort value to apply
+         */
+        redirectWithSort(sort) {
+            try {
+                const url = new URL(window.location.href);
+                url.searchParams.set('sortBy', sort);
+                // Use replace to avoid back button issues
+                window.location.replace(url.toString());
+            } catch (e) {
+                // URL parsing failed - skip redirect
+            }
+        }
+
+        /**
+         * Bind click events on sorter buttons
+         * Saves preference when user clicks
+         */
+        bindEvents() {
+            this.sorterContainer.addEventListener('click', (e) => {
+                const link = e.target.closest('a[data-sort]');
+                if (!link) {
+                    return;
+                }
+
+                // Map UI sort value to URL parameter
+                const uiSort = link.dataset.sort;
+                const sortValue = uiSort === 'comments' ? 'replyTime' : 'postTime';
+
+                // Save preference - the link will handle navigation
+                this.setPreference(sortValue);
+            });
+        }
+    }
+
+    /**
      * Initialize all theme components
      */
     function initTheme() {
+        // Initialize SorterPreference first (may redirect page)
+        bitsTheme.sorterPreference = new SorterPreference();
+        bitsTheme.sorterPreference.init();
+
         // Initialize ImageBox
         bitsTheme.imageBox = new ImageBox();
         bitsTheme.imageBox.init();
