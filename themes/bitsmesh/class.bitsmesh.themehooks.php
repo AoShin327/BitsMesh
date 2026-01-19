@@ -657,8 +657,8 @@ body.dark-layout {
         $sender->setData('BitsSortPostsUrl', '');
         $sender->setData('BitsCurrentPage', 1);
         $sender->setData('BitsTotalPages', 1);
-        $sender->setData('BitsPagerBaseUrl', '');
         $sender->setData('BitsShowPager', false);
+        $sender->setData('BitsPagerPages', []);
 
         // Only inject on discussion list pages
         $controllerName = strtolower(get_class($sender));
@@ -700,5 +700,193 @@ body.dark-layout {
         $sender->setData('BitsCurrentSort', $currentSort);
         $sender->setData('BitsSortCommentsUrl', $sortCommentsUrl);
         $sender->setData('BitsSortPostsUrl', $sortPostsUrl);
+
+        // Get pager data from PagerModule
+        $this->injectPagerData($sender, $basePath);
+    }
+
+    /**
+     * Inject pager data for Smarty templates.
+     *
+     * Calculates page numbers to display and generates URLs.
+     * Uses NodeSeek-style pagination: 1 2 3 4 5 .. 100
+     *
+     * @param Gdn_Controller $sender The controller instance.
+     * @param string $basePath The base URL path for building pager links.
+     * @return void
+     */
+    private function injectPagerData($sender, $basePath) {
+        // Try to get pager from controller data first
+        $pager = PagerModule::current();
+
+        // Fallback to controller's pager data
+        $offset = 0;
+        $limit = c('Vanilla.Discussions.PerPage', 30);
+        $totalRecords = 0;
+
+        if ($pager && is_object($pager)) {
+            $offset = isset($pager->Offset) ? (int)$pager->Offset : 0;
+            $limit = isset($pager->Limit) && $pager->Limit > 0 ? (int)$pager->Limit : $limit;
+            $totalRecords = isset($pager->TotalRecords) ? (int)$pager->TotalRecords : 0;
+        }
+
+        // Also check controller data for fallback
+        if ($totalRecords <= 0) {
+            $totalRecords = (int)$sender->data('RecordCount', 0);
+        }
+        if ($totalRecords <= 0) {
+            $totalRecords = (int)$sender->data('CountDiscussions', 0);
+        }
+
+        // Calculate page numbers
+        $currentPage = $limit > 0 ? floor($offset / $limit) + 1 : 1;
+        $totalPages = $limit > 0 && $totalRecords > 0 ? (int)ceil($totalRecords / $limit) : 1;
+
+        // Ensure valid values
+        $currentPage = max(1, min($currentPage, $totalPages));
+        $totalPages = max(1, $totalPages);
+
+        // Only show pager if there are multiple pages
+        if ($totalPages <= 1) {
+            $sender->setData('BitsShowPager', false);
+            return;
+        }
+
+        // Build page URLs
+        $request = Gdn::request();
+        $queryParams = $request->get();
+        unset($queryParams['Page'], $queryParams['DeliveryType'], $queryParams['DeliveryMethod']);
+        $queryString = !empty($queryParams) ? '?' . http_build_query($queryParams) : '';
+
+        // Build array of pages to display (NodeSeek style)
+        $pages = $this->buildPagerPages($currentPage, $totalPages, $basePath, $queryString);
+
+        // Build prev/next URLs
+        $prevUrl = $currentPage > 1 ? $this->buildPageUrl($basePath, $currentPage - 1, $queryString) : '';
+        $nextUrl = $currentPage < $totalPages ? $this->buildPageUrl($basePath, $currentPage + 1, $queryString) : '';
+
+        // Set pager data
+        $sender->setData('BitsShowPager', true);
+        $sender->setData('BitsCurrentPage', $currentPage);
+        $sender->setData('BitsTotalPages', $totalPages);
+        $sender->setData('BitsPagerPages', $pages);
+        $sender->setData('BitsPagerPrevUrl', $prevUrl);
+        $sender->setData('BitsPagerNextUrl', $nextUrl);
+    }
+
+    /**
+     * Build array of page info for the pager template.
+     *
+     * Returns an array like:
+     * [
+     *   ['page' => 1, 'url' => '...', 'current' => true],
+     *   ['page' => 2, 'url' => '...', 'current' => false],
+     *   ['page' => '..', 'url' => '', 'ellipsis' => true],
+     *   ['page' => 100, 'url' => '...', 'current' => false],
+     * ]
+     *
+     * @param int $currentPage Current page number.
+     * @param int $totalPages Total number of pages.
+     * @param string $basePath Base URL path.
+     * @param string $queryString Query string parameters.
+     * @return array Array of page info.
+     */
+    private function buildPagerPages($currentPage, $totalPages, $basePath, $queryString) {
+        $pages = [];
+        $range = 2; // Show 2 pages on each side of current
+
+        // Simple case: show all pages if 7 or fewer
+        if ($totalPages <= 7) {
+            for ($i = 1; $i <= $totalPages; $i++) {
+                $pages[] = [
+                    'page' => $i,
+                    'url' => $this->buildPageUrl($basePath, $i, $queryString),
+                    'current' => ($i === $currentPage),
+                    'ellipsis' => false,
+                ];
+            }
+            return $pages;
+        }
+
+        // Complex case: show pages with ellipsis
+        $showStart = max(1, $currentPage - $range);
+        $showEnd = min($totalPages, $currentPage + $range);
+
+        // Adjust range to always show 5 consecutive pages when possible
+        if ($showEnd - $showStart < 4) {
+            if ($showStart === 1) {
+                $showEnd = min($totalPages, 5);
+            } elseif ($showEnd === $totalPages) {
+                $showStart = max(1, $totalPages - 4);
+            }
+        }
+
+        // Add first page if not in range
+        if ($showStart > 1) {
+            $pages[] = [
+                'page' => 1,
+                'url' => $this->buildPageUrl($basePath, 1, $queryString),
+                'current' => (1 === $currentPage),
+                'ellipsis' => false,
+            ];
+
+            // Add ellipsis if there's a gap
+            if ($showStart > 2) {
+                $pages[] = [
+                    'page' => '..',
+                    'url' => '',
+                    'current' => false,
+                    'ellipsis' => true,
+                ];
+            }
+        }
+
+        // Add pages in range
+        for ($i = $showStart; $i <= $showEnd; $i++) {
+            $pages[] = [
+                'page' => $i,
+                'url' => $this->buildPageUrl($basePath, $i, $queryString),
+                'current' => ($i === $currentPage),
+                'ellipsis' => false,
+            ];
+        }
+
+        // Add last page if not in range
+        if ($showEnd < $totalPages) {
+            // Add ellipsis if there's a gap
+            if ($showEnd < $totalPages - 1) {
+                $pages[] = [
+                    'page' => '..',
+                    'url' => '',
+                    'current' => false,
+                    'ellipsis' => true,
+                ];
+            }
+
+            $pages[] = [
+                'page' => $totalPages,
+                'url' => $this->buildPageUrl($basePath, $totalPages, $queryString),
+                'current' => ($totalPages === $currentPage),
+                'ellipsis' => false,
+            ];
+        }
+
+        return $pages;
+    }
+
+    /**
+     * Build URL for a specific page number.
+     *
+     * @param string $basePath Base URL path.
+     * @param int $page Page number.
+     * @param string $queryString Query string parameters.
+     * @return string Full URL for the page.
+     */
+    private function buildPageUrl($basePath, $page, $queryString) {
+        // Page 1 doesn't need 'p1' in URL
+        if ($page <= 1) {
+            return url($basePath . $queryString);
+        }
+        return url($basePath . '/p' . $page . $queryString);
     }
 }

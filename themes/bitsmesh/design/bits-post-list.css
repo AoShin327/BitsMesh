@@ -186,39 +186,47 @@ body.dark-layout .bits-sorter > a.selected {
 
 /* ============================================
    Pager (Right side - page navigation)
+   NodeSeek-style pager with triangle arrows
    ============================================ */
 
 .bits-pager {
-    display: flex;
     align-items: center;
+    display: flex;
     gap: 2px;
 }
 
-/* Page number buttons */
-.bits-pager > a,
-.bits-pager > span {
-    display: inline-flex;
+/* Page number buttons and arrows container */
+.bits-pager-pos,
+.bits-pager-prev,
+.bits-pager-next {
     align-items: center;
-    justify-content: center;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #888;
+    display: inline-flex;
     font-family: Consolas, Monaco, "Courier New", monospace;
     font-size: 16px;
+    height: 18px;
+    justify-content: center;
     line-height: 18px;
-    color: #888;
+    min-width: 18px;
+    text-align: center;
     text-decoration: none;
-    border-radius: 2px;
-    transition: background-color 0.15s, color 0.15s;
+    vertical-align: middle;
 }
 
-.bits-pager > a:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    color: #555;
+/* Page numbers (links) */
+a.bits-pager-pos {
+    cursor: pointer;
+    transition: background-color 0.15s;
 }
 
-/* Current page (non-clickable) */
-.bits-pager > span.bits-pager-cur {
+a.bits-pager-pos:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Current page (non-clickable span) */
+.bits-pager-pos.bits-pager-cur {
     background-color: #fbfbfb;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
     color: #555;
@@ -227,95 +235,85 @@ body.dark-layout .bits-sorter > a.selected {
 }
 
 /* Ellipsis */
-.bits-pager > span.bits-pager-ellipsis {
+.bits-pager-pos.bits-pager-ellipsis {
+    cursor: default;
     min-width: auto;
     padding: 0 2px;
-    cursor: default;
 }
 
 /* Navigation arrows (prev/next) */
-.bits-pager-arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
+a.bits-pager-prev,
+a.bits-pager-next {
     cursor: pointer;
 }
 
-.bits-pager-arrow::before {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    border-style: solid;
-}
-
-/* Previous arrow (left triangle) */
-.bits-pager-arrow.bits-pager-prev::before {
-    border-width: 5px 6px 5px 0;
-    border-color: transparent #888 transparent transparent;
-}
-
-.bits-pager-arrow.bits-pager-prev:hover::before {
-    border-color: transparent #555 transparent transparent;
-}
-
-/* Next arrow (right triangle) */
-.bits-pager-arrow.bits-pager-next::before {
-    border-width: 5px 0 5px 6px;
-    border-color: transparent transparent transparent #888;
-}
-
-.bits-pager-arrow.bits-pager-next:hover::before {
-    border-color: transparent transparent transparent #555;
+a.bits-pager-prev:hover,
+a.bits-pager-next:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Disabled arrows */
-.bits-pager-arrow.disabled {
+span.bits-pager-prev.disabled,
+span.bits-pager-next.disabled {
     cursor: not-allowed;
     opacity: 0.4;
 }
 
-.bits-pager-arrow.disabled:hover::before {
-    border-color: transparent #888 transparent transparent;
+/* Triangle arrows - NodeSeek style using CSS borders */
+.bits-triangle-left,
+.bits-triangle-right {
+    border-color: transparent transparent #888;
+    border-style: solid;
+    border-width: 0 6px 10px;
+    display: inline-block;
+    height: 0;
+    width: 0;
 }
 
-.bits-pager-arrow.bits-pager-next.disabled:hover::before {
-    border-color: transparent transparent transparent #888;
+.bits-triangle-right {
+    transform: rotate(90deg);
+}
+
+.bits-triangle-left {
+    transform: rotate(270deg);
+}
+
+/* Triangle hover states */
+a.bits-pager-prev:hover .bits-triangle-left,
+a.bits-pager-next:hover .bits-triangle-right {
+    border-color: transparent transparent #555;
 }
 
 /* Dark mode pager */
-body.dark-layout .bits-pager > a,
-body.dark-layout .bits-pager > span {
+body.dark-layout .bits-pager-pos,
+body.dark-layout .bits-pager-prev,
+body.dark-layout .bits-pager-next {
     color: #999;
 }
 
-body.dark-layout .bits-pager > a:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #ccc;
+body.dark-layout a.bits-pager-pos:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-layout .bits-pager > span.bits-pager-cur {
+body.dark-layout .bits-pager-pos.bits-pager-cur {
     background-color: #333;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
     color: #ddd;
 }
 
-body.dark-layout .bits-pager-arrow.bits-pager-prev::before {
-    border-color: transparent #999 transparent transparent;
+body.dark-layout a.bits-pager-prev:hover,
+body.dark-layout a.bits-pager-next:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-body.dark-layout .bits-pager-arrow.bits-pager-prev:hover::before {
-    border-color: transparent #ccc transparent transparent;
+body.dark-layout .bits-triangle-left,
+body.dark-layout .bits-triangle-right {
+    border-color: transparent transparent #999;
 }
 
-body.dark-layout .bits-pager-arrow.bits-pager-next::before {
-    border-color: transparent transparent transparent #999;
-}
-
-body.dark-layout .bits-pager-arrow.bits-pager-next:hover::before {
-    border-color: transparent transparent transparent #ccc;
+body.dark-layout a.bits-pager-prev:hover .bits-triangle-left,
+body.dark-layout a.bits-pager-next:hover .bits-triangle-right {
+    border-color: transparent transparent #ccc;
 }
 
 /* ============================================
@@ -331,11 +329,17 @@ body.dark-layout .bits-pager-arrow.bits-pager-next:hover::before {
         display: none;
     }
 
-    .bits-pager > a,
-    .bits-pager > span {
-        min-width: 16px;
-        height: 16px;
+    .bits-pager-pos,
+    .bits-pager-prev,
+    .bits-pager-next {
         font-size: 14px;
+        height: 16px;
         line-height: 16px;
+        min-width: 16px;
+    }
+
+    .bits-triangle-left,
+    .bits-triangle-right {
+        border-width: 0 5px 8px;
     }
 }
