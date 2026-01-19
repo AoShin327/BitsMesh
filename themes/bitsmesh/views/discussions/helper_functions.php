@@ -184,15 +184,11 @@ if (!function_exists('WriteDiscussion')) :
                     ?>
                     <span class="MItem MCount ViewCount"><?php
                         echo bitsMetaIcon('icon-eyes');
-                        printf(pluralTranslate($discussion->CountViews,
-                            '%s view html', '%s views html', t('%s view'), t('%s views')),
-                            bigPlural($discussion->CountViews, '%s view'));
+                        echo number_format($discussion->CountViews);
                         ?></span>
                     <span class="MItem MCount CommentCount"><?php
                         echo bitsMetaIcon('icon-comments');
-                        printf(pluralTranslate($discussion->CountComments,
-                            '%s comment html', '%s comments html', t('%s comment'), t('%s comments')),
-                            bigPlural($discussion->CountComments, '%s comment'));
+                        echo number_format($discussion->CountComments);
                         ?></span>
                     <span class="MItem MCount DiscussionScore Hidden"><?php
                         $score = $discussion->Score;
