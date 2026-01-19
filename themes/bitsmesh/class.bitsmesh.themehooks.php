@@ -207,7 +207,7 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         $sender->setData('ColorPresets', self::$colorPresets);
         $sender->setData('DefaultColors', self::getDefaultColors());
 
-        $sender->render('settings', '', 'themes/bitsmesh');
+        $sender->render('bitsmesh-settings', '', 'themes/bitsmesh');
     }
 
     /**
@@ -589,6 +589,7 @@ body.dark-layout {
         if (!inSection('Dashboard')) {
             $this->injectThemeStyles($sender);
             $this->injectSidebarData($sender);
+            $this->injectPostListControlerData($sender);
 
             // Load theme JavaScript files
             $sender->addJsFile('darkMode.js', 'themes/bitsmesh');
@@ -640,5 +641,64 @@ body.dark-layout {
      */
     public static function getAvailableIcons() {
         return self::$availableIcons;
+    }
+
+    /**
+     * Inject post list controller data for Smarty templates.
+     *
+     * @param Gdn_Controller $sender The controller instance.
+     * @return void
+     */
+    private function injectPostListControlerData($sender) {
+        // Default values - always set to prevent template errors
+        $sender->setData('BitsShowPostListControler', false);
+        $sender->setData('BitsCurrentSort', 'posts');
+        $sender->setData('BitsSortCommentsUrl', '');
+        $sender->setData('BitsSortPostsUrl', '');
+        $sender->setData('BitsCurrentPage', 1);
+        $sender->setData('BitsTotalPages', 1);
+        $sender->setData('BitsPagerBaseUrl', '');
+        $sender->setData('BitsShowPager', false);
+
+        // Only inject on discussion list pages
+        $controllerName = strtolower(get_class($sender));
+        $isDiscussionsList = (
+            strpos($controllerName, 'discussionscontroller') !== false ||
+            strpos($controllerName, 'categoriescontroller') !== false
+        );
+
+        if (!$isDiscussionsList) {
+            return;
+        }
+
+        // Get current path for building URLs
+        $request = Gdn::request();
+        $currentPath = $request->path();
+        if (empty($currentPath)) {
+            $currentPath = 'discussions';
+        }
+
+        // Clean page numbers from path
+        $basePath = preg_replace('#/p\d+/?$#i', '', $currentPath);
+        if (empty($basePath)) {
+            $basePath = 'discussions';
+        }
+
+        // Generate sort URLs
+        $sortCommentsUrl = url($basePath . '?Sort=comments');
+        $sortPostsUrl = url($basePath);
+
+        // Determine current sort
+        $currentSort = 'posts';
+        $sortParam = $request->get('Sort', '');
+        if ($sortParam === 'comments') {
+            $currentSort = 'comments';
+        }
+
+        // Set template data
+        $sender->setData('BitsShowPostListControler', true);
+        $sender->setData('BitsCurrentSort', $currentSort);
+        $sender->setData('BitsSortCommentsUrl', $sortCommentsUrl);
+        $sender->setData('BitsSortPostsUrl', $sortPostsUrl);
     }
 }

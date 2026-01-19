@@ -38,6 +38,11 @@
                 {/if}
 
                 <div id="bits-content">
+                    {* Post List Controller (Sorter + Pager) - shown on discussion list pages *}
+                    {if $BitsShowPostListControler}
+                        {include file="modules/post-list-controler.tpl"}
+                    {/if}
+
                     {asset name="Content"}
                 </div>
             </main>

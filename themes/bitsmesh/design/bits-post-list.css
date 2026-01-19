@@ -119,7 +119,11 @@ body.dark-layout .bits-post-list-item {
     color: var(--bits-bg-main);
 }
 
-/* List Controller (Sort/Filter) */
+/* ============================================
+   Post List Controller (Sorter + Pager)
+   Modern forum style control bar
+   ============================================ */
+
 .bits-post-list-controler {
     align-items: center;
     display: flex;
@@ -127,25 +131,211 @@ body.dark-layout .bits-post-list-item {
     margin-bottom: 8px;
 }
 
-/* Sorter */
+/* ============================================
+   Sorter (Left side - toggle buttons)
+   ============================================ */
+
 .bits-sorter {
-    background-color: var(--bits-text-gray);
-    border: 1px solid var(--bits-text-gray);
+    background-color: #888;
+    border: 1px solid #737373;
     border-radius: 3px;
     display: inline-flex;
-    margin: 0 8px;
     overflow: hidden;
 }
 
 .bits-sorter > a {
-    background-color: var(--bits-bg-main);
+    background-color: #fff;
+    color: #555;
     cursor: pointer;
     display: block;
+    font-size: 13px;
+    line-height: 20px;
     padding: 0 5px;
-    color: var(--bits-text);
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.bits-sorter > a:hover {
+    background-color: #f5f5f5;
 }
 
 .bits-sorter > a.selected {
-    background-color: var(--bits-text-gray);
-    color: var(--bits-bg-main);
+    background-color: #888;
+    color: #fff;
+}
+
+/* Dark mode sorter */
+body.dark-layout .bits-sorter {
+    background-color: #666;
+    border-color: #555;
+}
+
+body.dark-layout .bits-sorter > a {
+    background-color: #2a2a2a;
+    color: #999;
+}
+
+body.dark-layout .bits-sorter > a:hover {
+    background-color: #333;
+}
+
+body.dark-layout .bits-sorter > a.selected {
+    background-color: #666;
+    color: #fff;
+}
+
+/* ============================================
+   Pager (Right side - page navigation)
+   ============================================ */
+
+.bits-pager {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Page number buttons */
+.bits-pager > a,
+.bits-pager > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-size: 16px;
+    line-height: 18px;
+    color: #888;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.bits-pager > a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #555;
+}
+
+/* Current page (non-clickable) */
+.bits-pager > span.bits-pager-cur {
+    background-color: #fbfbfb;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    color: #555;
+    cursor: default;
+    font-weight: 600;
+}
+
+/* Ellipsis */
+.bits-pager > span.bits-pager-ellipsis {
+    min-width: auto;
+    padding: 0 2px;
+    cursor: default;
+}
+
+/* Navigation arrows (prev/next) */
+.bits-pager-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.bits-pager-arrow::before {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+/* Previous arrow (left triangle) */
+.bits-pager-arrow.bits-pager-prev::before {
+    border-width: 5px 6px 5px 0;
+    border-color: transparent #888 transparent transparent;
+}
+
+.bits-pager-arrow.bits-pager-prev:hover::before {
+    border-color: transparent #555 transparent transparent;
+}
+
+/* Next arrow (right triangle) */
+.bits-pager-arrow.bits-pager-next::before {
+    border-width: 5px 0 5px 6px;
+    border-color: transparent transparent transparent #888;
+}
+
+.bits-pager-arrow.bits-pager-next:hover::before {
+    border-color: transparent transparent transparent #555;
+}
+
+/* Disabled arrows */
+.bits-pager-arrow.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.bits-pager-arrow.disabled:hover::before {
+    border-color: transparent #888 transparent transparent;
+}
+
+.bits-pager-arrow.bits-pager-next.disabled:hover::before {
+    border-color: transparent transparent transparent #888;
+}
+
+/* Dark mode pager */
+body.dark-layout .bits-pager > a,
+body.dark-layout .bits-pager > span {
+    color: #999;
+}
+
+body.dark-layout .bits-pager > a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ccc;
+}
+
+body.dark-layout .bits-pager > span.bits-pager-cur {
+    background-color: #333;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+    color: #ddd;
+}
+
+body.dark-layout .bits-pager-arrow.bits-pager-prev::before {
+    border-color: transparent #999 transparent transparent;
+}
+
+body.dark-layout .bits-pager-arrow.bits-pager-prev:hover::before {
+    border-color: transparent #ccc transparent transparent;
+}
+
+body.dark-layout .bits-pager-arrow.bits-pager-next::before {
+    border-color: transparent transparent transparent #999;
+}
+
+body.dark-layout .bits-pager-arrow.bits-pager-next:hover::before {
+    border-color: transparent transparent transparent #ccc;
+}
+
+/* ============================================
+   Responsive: Hide sorter on small screens
+   ============================================ */
+
+@media screen and (max-width: 500px) {
+    .bits-post-list-controler {
+        justify-content: flex-end;
+    }
+
+    .bits-sorter {
+        display: none;
+    }
+
+    .bits-pager > a,
+    .bits-pager > span {
+        min-width: 16px;
+        height: 16px;
+        font-size: 14px;
+        line-height: 16px;
+    }
 }
