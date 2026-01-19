@@ -684,18 +684,18 @@ body.dark-layout {
             $basePath = 'discussions';
         }
 
-        // Generate sort URLs using Vanilla's native sort parameter
-        // Vanilla DiscussionModel::$allowedSorts defines:
-        //   'hot' => DateLastComment desc (新评论 - sort by latest reply)
-        //   'new' => DateInserted desc (新帖子 - sort by post creation)
-        $sortCommentsUrl = url($basePath . '?sort=hot');
-        $sortPostsUrl = url($basePath . '?sort=new');
+        // Generate sort URLs using custom sortBy parameter
+        // sortBy=replyTime (新评论 - sort by latest reply time)
+        // sortBy=postTime (新帖子 - sort by post creation time)
+        // DiscussionModel::getSortFromArray() maps these to internal sort keys
+        $sortCommentsUrl = url($basePath . '?sortBy=replyTime');
+        $sortPostsUrl = url($basePath . '?sortBy=postTime');
 
-        // Determine current sort from Vanilla's native 'sort' parameter
-        // Default to 'hot' (by latest reply) which is Vanilla's default behavior
-        $currentSort = 'comments'; // default to hot (DateLastComment)
-        $sortParam = $request->get('sort', '');
-        if ($sortParam === 'new') {
+        // Determine current sort from sortBy parameter
+        // Default to 'comments' (replyTime/hot - by latest reply)
+        $currentSort = 'comments';
+        $sortByParam = $request->get('sortBy', '');
+        if ($sortByParam === 'postTime') {
             $currentSort = 'posts';
         }
 
@@ -706,9 +706,9 @@ body.dark-layout {
         $sender->setData('BitsSortPostsUrl', $sortPostsUrl);
 
         // Get pager data from PagerModule
-        // Pass sort value to ensure it's preserved in pager URLs
-        $sortValue = ($currentSort === 'posts') ? 'new' : 'hot';
-        $this->injectPagerData($sender, $basePath, $sortValue);
+        // Pass sortBy value to ensure it's preserved in pager URLs
+        $sortByValue = ($currentSort === 'posts') ? 'postTime' : 'replyTime';
+        $this->injectPagerData($sender, $basePath, $sortByValue);
     }
 
     /**
@@ -719,10 +719,10 @@ body.dark-layout {
      *
      * @param Gdn_Controller $sender The controller instance.
      * @param string $basePath The base URL path for building pager links.
-     * @param string $sort The sort parameter value (hot or new) for Vanilla's native sorting.
+     * @param string $sortBy The sortBy parameter value (postTime or replyTime).
      * @return void
      */
-    private function injectPagerData($sender, $basePath, $sort = 'hot') {
+    private function injectPagerData($sender, $basePath, $sortBy = 'replyTime') {
         // Try to get pager from controller data first
         $pager = PagerModule::current();
 
@@ -777,9 +777,9 @@ body.dark-layout {
             return;
         }
 
-        // Build page URLs with Vanilla's native sort parameter
-        // Always include sort to maintain sort state across pagination
-        $queryString = '?sort=' . urlencode($sort);
+        // Build page URLs with sortBy parameter
+        // Always include sortBy to maintain sort state across pagination
+        $queryString = '?sortBy=' . urlencode($sortBy);
 
         // Build array of pages to display (modern forum style)
         $pages = $this->buildPagerPages($currentPage, $totalPages, $basePath, $queryString);

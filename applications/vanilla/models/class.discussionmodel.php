@@ -3047,10 +3047,28 @@ class DiscussionModel extends Gdn_Model {
      * Works real well with unfiltered request arguments. (i.e., Gdn::request()->get()) Will only return a safe sort key
      * from the sort array or an empty string if not found.
      *
+     * Also supports 'sortBy' parameter for custom sorting:
+     * - sortBy=postTime  → 'new' (DateInserted desc)
+     * - sortBy=replyTime → 'hot' (DateLastComment desc)
+     *
      * @param array $array The array to get the sort from.
      * @return string The valid sort from the passed array or an empty string.
      */
     protected function getSortFromArray($array) {
+        // BitsMesh: Support custom sortBy parameter
+        // sortBy=postTime maps to 'new' (DateInserted desc)
+        // sortBy=replyTime maps to 'hot' (DateLastComment desc)
+        $sortByMapping = [
+            'postTime' => 'new',
+            'replyTime' => 'hot',
+        ];
+
+        $sortByValue = val('sortBy', $array);
+        if ($sortByValue && isset($sortByMapping[$sortByValue])) {
+            return $sortByMapping[$sortByValue];
+        }
+
+        // Original Vanilla sort parameter handling
         $unsafeSortKey = val('sort', $array);
         foreach (self::getAllowedSorts() as $sort) {
             if ($unsafeSortKey == val('key', $sort)) {
