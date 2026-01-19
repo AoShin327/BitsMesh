@@ -5,15 +5,13 @@
     "version": "1.0.0",
     "type": "addon",
     "license": "GPL-2.0-only",
-    "author": [
+    "authors": [
         {
             "name": "BitsMesh",
-            "url": "https://bitsmesh.com"
+            "homepage": "https://bitsmesh.com"
         }
     ],
     "require": {
         "vanilla": ">=3.0"
-    },
-    "settingsUrl": "/settings/niceavatar",
-    "settingsPermission": "Garden.Settings.Manage"
+    }
 }

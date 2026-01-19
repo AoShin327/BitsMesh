@@ -25,16 +25,6 @@ class NiceAvatarPlugin extends Gdn_Plugin {
     }
 
     /**
-     * Add settings link to dashboard menu
-     *
-     * @param Gdn_Controller $sender
-     */
-    public function base_getAppSettingsMenuItems_handler($sender) {
-        $menu = &$sender->EventArguments['SideMenu'];
-        $menu->addLink('Users', t('Nice Avatar'), 'settings/niceavatar', 'Garden.Settings.Manage');
-    }
-
-    /**
      * Load JS on registration page only
      *
      * @param EntryController $sender
@@ -49,51 +39,6 @@ class NiceAvatarPlugin extends Gdn_Plugin {
             $sender->addJsFile('nice-avatar.min.js', 'plugins/NiceAvatar');
             $sender->addCssFile('nice-avatar.css', 'plugins/NiceAvatar');
         }
-    }
-
-    /**
-     * Also load on settings page for preview
-     *
-     * @param SettingsController $sender
-     */
-    public function settingsController_render_before($sender) {
-        if (strtolower($sender->RequestMethod) === 'niceavatar') {
-            $sender->addJsFile('nice-avatar.min.js', 'plugins/NiceAvatar');
-            $sender->addCssFile('nice-avatar.css', 'plugins/NiceAvatar');
-        }
-    }
-
-    /**
-     * Settings page controller
-     *
-     * @param SettingsController $sender
-     */
-    public function settingsController_niceAvatar_create($sender) {
-        $sender->permission('Garden.Settings.Manage');
-        $sender->setHighlightRoute('settings/niceavatar');
-        $sender->title(t('Nice Avatar Settings'));
-
-        // Handle form submission
-        $configModel = new Gdn_ConfigurationModel($sender->Form);
-        $configModel->setField([
-            'Plugins.NiceAvatar.Enabled'
-        ]);
-
-        if ($sender->Form->authenticatedPostBack()) {
-            $sender->Form->setFormValue('Plugins.NiceAvatar.Enabled', $sender->Form->getValue('Plugins_NiceAvatar_Enabled', true));
-
-            if ($sender->Form->save() !== false) {
-                $sender->informMessage(t('Your settings have been saved.'));
-            }
-        } else {
-            $sender->Form->setData($configModel->Data);
-        }
-
-        // Check if JS bundle exists
-        $jsPath = PATH_PLUGINS . '/NiceAvatar/js/nice-avatar.min.js';
-        $sender->setData('JsBundleExists', file_exists($jsPath));
-
-        $sender->render('settings', '', 'plugins/NiceAvatar');
     }
 
     /**
