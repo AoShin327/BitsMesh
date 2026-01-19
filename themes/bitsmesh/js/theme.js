@@ -280,14 +280,14 @@
      * SorterPreference - Remember user's sort preference in localStorage
      *
      * Handles:
-     * - Storing user's sort choice (replyTime/postTime) to localStorage
+     * - Storing user's sort choice (postTime) to localStorage
      * - Auto-applying saved preference on page load when no URL parameter exists
-     * - Default sort is 'replyTime' (新评论 - new comments)
+     * - Default sort is 'replyTime' (新评论), which uses clean URLs without sortBy param
+     * - Only 'postTime' preference is stored; 'replyTime' means use default (no storage)
      */
     class SorterPreference {
         constructor() {
             this.storageKey = 'bits_sort_preference';
-            this.defaultSort = 'replyTime'; // Default: new comments
             this.sorterContainer = null;
         }
 
@@ -304,33 +304,34 @@
 
         /**
          * Get saved sort preference from localStorage
-         * @returns {string} Sort value ('replyTime' or 'postTime')
+         * @returns {string} 'postTime' if saved, empty string for default
          */
         getPreference() {
             try {
                 const saved = localStorage.getItem(this.storageKey);
-                // Validate saved value
-                if (saved === 'replyTime' || saved === 'postTime') {
+                // Only 'postTime' is a valid non-default preference
+                if (saved === 'postTime') {
                     return saved;
                 }
-                return this.defaultSort;
+                return '';
             } catch (e) {
                 // localStorage unavailable (private browsing, etc.)
-                return this.defaultSort;
+                return '';
             }
         }
 
         /**
-         * Save sort preference to localStorage
-         * @param {string} sort - Sort value ('replyTime' or 'postTime')
+         * Save or clear sort preference in localStorage
+         * @param {string} sort - 'postTime' to save, anything else clears
          */
         setPreference(sort) {
-            // Validate before saving
-            if (sort !== 'replyTime' && sort !== 'postTime') {
-                return;
-            }
             try {
-                localStorage.setItem(this.storageKey, sort);
+                if (sort === 'postTime') {
+                    localStorage.setItem(this.storageKey, sort);
+                } else {
+                    // Clear preference for default sort (replyTime)
+                    localStorage.removeItem(this.storageKey);
+                }
             } catch (e) {
                 // localStorage unavailable - fail silently
             }
@@ -351,24 +352,21 @@
 
         /**
          * Apply saved preference on page load
-         * - If URL has sortBy: save it and use
-         * - If URL has no sortBy: check localStorage and redirect if needed
+         * - If URL has sortBy: save it (or clear if replyTime)
+         * - If URL has no sortBy: check localStorage and redirect if postTime saved
          */
         applyPreference() {
             const urlSort = this.getCurrentUrlSort();
 
             if (urlSort) {
-                // URL has explicit sort - save as preference
+                // URL has explicit sort - update preference
                 this.setPreference(urlSort);
                 return;
             }
 
-            // No URL sort - check localStorage
+            // No URL sort - check localStorage for postTime preference
             const savedSort = this.getPreference();
-
-            // Only redirect if user has non-default preference
-            // This prevents redirect loop and respects default behavior
-            if (savedSort && savedSort !== this.defaultSort) {
+            if (savedSort === 'postTime') {
                 this.redirectWithSort(savedSort);
             }
         }
@@ -400,11 +398,10 @@
                     return;
                 }
 
-                // Map UI sort value to URL parameter
+                // Map UI sort value to storage value
                 const uiSort = link.dataset.sort;
-                const sortValue = uiSort === 'comments' ? 'replyTime' : 'postTime';
-
-                // Save preference - the link will handle navigation
+                // Only save 'postTime'; 'comments' (replyTime) clears preference
+                const sortValue = uiSort === 'posts' ? 'postTime' : '';
                 this.setPreference(sortValue);
             });
         }

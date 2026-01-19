@@ -3071,6 +3071,13 @@ class DiscussionModel extends Gdn_Model {
             return $sortByMapping[$sortByValue];
         }
 
+        // BitsMesh: Default to 'new' (replyTime) when no sortBy parameter
+        // This makes the homepage default to showing posts sorted by latest comment
+        // without changing the URL (no redirect needed)
+        if (!$sortByValue && !val('sort', $array)) {
+            return 'new';
+        }
+
         // Original Vanilla sort parameter handling
         $unsafeSortKey = val('sort', $array);
         foreach (self::getAllowedSorts() as $sort) {

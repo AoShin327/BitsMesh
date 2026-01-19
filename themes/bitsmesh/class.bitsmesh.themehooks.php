@@ -674,22 +674,25 @@ body.dark-layout {
         // Get current path for building URLs
         $request = Gdn::request();
         $currentPath = $request->path();
-        if (empty($currentPath)) {
-            $currentPath = 'discussions';
-        }
 
         // Clean page numbers from path
         $basePath = preg_replace('#/p\d+/?$#i', '', $currentPath);
-        if (empty($basePath)) {
-            $basePath = 'discussions';
+
+        // BitsMesh: Simplify homepage URL
+        // Use root path (/) instead of /discussions for cleaner URLs
+        // This makes URLs like /?sortBy=replyTime instead of /discussions?sortBy=replyTime
+        $isHomepage = empty($basePath) || $basePath === 'discussions';
+        if ($isHomepage) {
+            $basePath = '';
         }
 
         // Generate sort URLs using custom sortBy parameter
         // sortBy=replyTime (新评论 - sort by latest reply time)
         // sortBy=postTime (新帖子 - sort by post creation time)
         // DiscussionModel::getSortFromArray() maps these to internal sort keys
-        $sortCommentsUrl = url($basePath . '?sortBy=replyTime');
-        $sortPostsUrl = url($basePath . '?sortBy=postTime');
+        // For homepage, default view (replyTime) uses clean URL without sortBy
+        $sortCommentsUrl = $isHomepage ? url('/') : url($basePath . '?sortBy=replyTime');
+        $sortPostsUrl = url(($basePath ?: '/') . '?sortBy=postTime');
 
         // Determine current sort from sortBy parameter
         // Default to 'comments' (replyTime/hot - by latest reply)
@@ -707,7 +710,8 @@ body.dark-layout {
 
         // Get pager data from PagerModule
         // Pass sortBy value to ensure it's preserved in pager URLs
-        $sortByValue = ($currentSort === 'posts') ? 'postTime' : 'replyTime';
+        // For homepage with default sort (replyTime), no sortBy param needed
+        $sortByValue = ($currentSort === 'posts') ? 'postTime' : '';
         $this->injectPagerData($sender, $basePath, $sortByValue);
     }
 
@@ -777,9 +781,9 @@ body.dark-layout {
             return;
         }
 
-        // Build page URLs with sortBy parameter
-        // Always include sortBy to maintain sort state across pagination
-        $queryString = '?sortBy=' . urlencode($sortBy);
+        // Build page URLs with sortBy parameter (only if not default sort)
+        // Default sort (replyTime) uses clean URLs without sortBy param
+        $queryString = !empty($sortBy) ? '?sortBy=' . urlencode($sortBy) : '';
 
         // Build array of pages to display (modern forum style)
         $pages = $this->buildPagerPages($currentPage, $totalPages, $basePath, $queryString);
@@ -906,10 +910,21 @@ body.dark-layout {
      * @return string Full URL for the page.
      */
     private function buildPageUrl($basePath, $page, $queryString) {
+        // Handle empty basePath (homepage)
+        $urlPath = $basePath ?: '/';
+
         // Page 1 doesn't need 'p1' in URL
         if ($page <= 1) {
-            return url($basePath . $queryString);
+            return url($urlPath . $queryString);
         }
+
+        // Append page number
+        if ($basePath === '' || $basePath === '/') {
+            // Homepage: /p2?sortBy=xxx
+            return url('/p' . $page . $queryString);
+        }
+
+        // Other pages: /categories/xxx/p2?sortBy=xxx
         return url($basePath . '/p' . $page . $queryString);
     }
 }
