@@ -563,3 +563,48 @@ body.dark-layout .bits-community-stats {
         height: 32px;
     }
 }
+
+/* ============================================
+   Category Intro Panel (Category pages)
+   NodeSeek style category description panel
+   ============================================ */
+.bits-category-intro {
+    background-color: var(--bits-bg-main);
+    border-radius: 1px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+}
+
+.bits-category-intro .bits-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bits-text);
+    margin: 0 0 8px 0;
+}
+
+.bits-category-intro .bits-panel-title .iconpark-icon {
+    color: var(--bits-text-gray);
+}
+
+.bits-category-description {
+    color: var(--bits-text-gray);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 4px 0;
+}
+
+body.dark-layout .bits-category-intro {
+    background-color: var(--bits-bg-main);
+}
+
+body.dark-layout .bits-category-intro .bits-panel-title {
+    color: var(--bits-text);
+}
+
+body.dark-layout .bits-category-description {
+    color: var(--bits-text-gray);
+}

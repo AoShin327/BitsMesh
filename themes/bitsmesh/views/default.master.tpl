@@ -31,7 +31,7 @@
         <div id="bits-body" class="bits-container">
             <!-- Main Content -->
             <main id="bits-body-left" role="main">
-                {if !$isHomepage}
+                {if !$isHomepage && !$isCategoryPage}
                     <nav class="bits-breadcrumbs" aria-label="Breadcrumb">
                         {breadcrumbs}
                     </nav>

@@ -335,6 +335,9 @@ body.dark-layout {
      * - SidebarSignInUrl: string
      * - SidebarRegisterUrl: string
      * - SidebarNewMembers: array
+     * - SidebarCategoryName: string (category pages only)
+     * - SidebarCategoryDescription: string (category pages only)
+     * - isCategoryPage: boolean
      *
      * @param Gdn_Controller $sender The controller instance.
      * @return void
@@ -433,6 +436,31 @@ body.dark-layout {
         $sender->setData('SidebarMyDiscussionsUrl', url('/discussions/mine'));
         $sender->setData('SidebarBookmarksUrl', url('/discussions/bookmarked'));
         $sender->setData('SidebarSettingsUrl', url('/profile/preferences'));
+
+        // Category page detection and data injection
+        // Check if we're on a category page (CategoriesController with a specific category)
+        $isCategoryPage = false;
+        $categoryName = '';
+        $categoryDescription = '';
+
+        $controllerName = strtolower(get_class($sender));
+        if (strpos($controllerName, 'categoriescontroller') !== false) {
+            // Get category data from the controller
+            $category = $sender->data('Category');
+            if ($category && is_object($category)) {
+                $isCategoryPage = true;
+                $categoryName = val('Name', $category, '');
+                $categoryDescription = val('Description', $category, '');
+            } elseif ($category && is_array($category)) {
+                $isCategoryPage = true;
+                $categoryName = isset($category['Name']) ? $category['Name'] : '';
+                $categoryDescription = isset($category['Description']) ? $category['Description'] : '';
+            }
+        }
+
+        $sender->setData('isCategoryPage', $isCategoryPage);
+        $sender->setData('SidebarCategoryName', $categoryName);
+        $sender->setData('SidebarCategoryDescription', $categoryDescription);
     }
 
     /**

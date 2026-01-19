@@ -42,4 +42,7 @@
 
   {* all-application - 默认/所有版块 *}
   <symbol id="all-application" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M18 6H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2ZM40 6H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2Z"/></symbol>
+
+  {* road-sign-both - 版块简介 *}
+  <symbol id="road-sign-both" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 4v40"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M8 10h20l5 6-5 6H8V10Z"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M40 26H20l-5 6 5 6h20V26Z"/></symbol>
 </svg>

@@ -403,6 +403,15 @@ body.dark-layout .bits-category-list li.current-category a {
     display: none; /* Hide Go button in sidebar search */
 }
 
+/* ============================================
+   Hide Homepage Title and Page Description
+   (BitsMesh style - content area focused)
+   ============================================ */
+#bits-content .H.HomepageTitle,
+#bits-content .P.PageDescription {
+    display: none !important;
+}
+
 /* Footer */
 footer.bits-footer {
     background-color: var(--bits-text);

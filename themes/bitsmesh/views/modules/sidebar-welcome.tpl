@@ -88,6 +88,20 @@
 {/if}
 
 {* ============================================
+   Category Description Panel (Category pages only)
+   NodeSeek style category intro panel
+   ============================================ *}
+{if $isCategoryPage && $SidebarCategoryDescription}
+<div class="bits-panel bits-category-intro">
+    <h4 class="bits-panel-title">
+        <svg class="iconpark-icon" width="14" height="14"><use href="#road-sign-both"></use></svg>
+        {t c="Category Intro" d="版块简介"}
+    </h4>
+    <p class="bits-category-description">{$SidebarCategoryDescription|escape:'html'}</p>
+</div>
+{/if}
+
+{* ============================================
    Quick Access Panel (Both States)
    ============================================ *}
 <div class="bits-panel bits-quick-access">
