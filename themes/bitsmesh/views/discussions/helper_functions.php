@@ -206,11 +206,15 @@ if (!function_exists('WriteDiscussion')) :
 
                     $sender->fireEvent('AfterCountMeta');
 
+                    // DiscussionAuthor - 楼主 (icon-user)
+                    echo ' <span class="MItem DiscussionAuthor">'.bitsMetaIcon('icon-user').userAnchor($first).'</span> ';
+
                     if ($discussion->LastCommentID != '') {
+                        // LastCommentBy - 最后回复者 (icon-lightning)
                         echo ' <span class="MItem LastCommentBy">'.bitsMetaIcon('icon-lightning').userAnchor($last).'</span> ';
                         echo ' <span class="MItem LastCommentDate">'.bitsMetaIcon('icon-time').Gdn_Format::date($discussion->LastDate, 'html').'</span>';
                     } else {
-                        echo ' <span class="MItem LastCommentBy">'.bitsMetaIcon('icon-lightning').userAnchor($first).'</span> ';
+                        // 无回复时只显示发帖时间
                         echo ' <span class="MItem LastCommentDate">'.bitsMetaIcon('icon-time').Gdn_Format::date($discussion->FirstDate, 'html');
                         if ($source = val('Source', $discussion)) {
                             echo ' '.sprintf(t('via %s'), t($source.' Source', $source));
