@@ -73,7 +73,8 @@ class Gdn_Theme {
                 $homeUrl = url('/', true);
             }
 
-            $row = ['Name' => $homeLink, 'Url' => $homeUrl, 'CssClass' => 'CrumbLabel HomeCrumb'];
+            // Note: CrumbLabel is added in line 110 for all items, so we only need HomeCrumb here
+            $row = ['Name' => $homeLink, 'Url' => $homeUrl, 'CssClass' => 'HomeCrumb'];
             if (!is_string($homeLink)) {
                 $row['Name'] = t('Home');
             }
