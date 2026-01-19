@@ -1,12 +1,12 @@
 /* BitsMesh Theme - CSS Variables */
-/* NodeSeek pixel-perfect color replica */
+/* Modern forum color scheme */
 
 :root {
     /* Primary Colors (Blue scheme - default) */
     --bits-primary: #3B82F6;
     --bits-secondary: #60A5FA;
 
-    /* Text Colors - NodeSeek exact values */
+    /* Text Colors */
     --bits-text: #333333;
     --bits-text-fade: #555555;
     --bits-text-gray: #555555;
@@ -32,7 +32,7 @@
     --bits-shadow-light: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark Mode Variables - NodeSeek exact values */
+/* Dark Mode Variables */
 body.dark-layout {
     --bits-text: #aaaaaa;
     --bits-text-fade: #999999;

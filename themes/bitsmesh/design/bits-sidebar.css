@@ -1,8 +1,8 @@
 /* BitsMesh Theme - Sidebar Styles */
-/* Pixel-perfect clone of NodeSeek nsk-panel design */
+/* Modern forum panel design */
 
 /* ============================================
-   Panel Base Styles (NodeSeek nsk-panel clone)
+   Panel Base Styles (BitsMesh panel)
    ============================================ */
 
 .bits-panel {
@@ -65,7 +65,7 @@ body.dark-layout .bits-panel {
 }
 
 /* ============================================
-   Welcome Panel (Guest users) - NodeSeek clone
+   Welcome Panel (Guest users)
    ============================================ */
 
 .bits-welcome-panel {
@@ -91,7 +91,7 @@ body.dark-layout .bits-panel {
 }
 
 /* ============================================
-   Quick Access Panel - NodeSeek clone
+   Quick Access Panel
    ============================================ */
 
 .bits-quick-access {
@@ -203,7 +203,7 @@ body.dark-layout .bits-quick-links li:nth-last-child(n+2) {
 }
 
 /* ============================================
-   Button Styles - NodeSeek .btn clone
+   Button Styles - BitsMesh button
    ============================================ */
 
 .bits-btn {
@@ -566,7 +566,7 @@ body.dark-layout .bits-community-stats {
 
 /* ============================================
    Category Intro Panel (Category pages)
-   NodeSeek style category description panel
+   Modern forum category description panel
    ============================================ */
 .bits-category-intro {
     background-color: var(--bits-bg-main);

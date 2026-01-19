@@ -73,7 +73,7 @@
 
 {else}
 {* ============================================
-   GUEST STATE - Welcome Panel (NodeSeek clone)
+   GUEST STATE - Welcome Panel
    ============================================ *}
 <div class="bits-panel bits-welcome-panel">
     <h4>{t c="Hello, stranger!" d="你好啊，陌生人!"}</h4>
@@ -89,7 +89,7 @@
 
 {* ============================================
    Category Description Panel (Category pages only)
-   NodeSeek style category intro panel
+   Modern forum category intro panel
    ============================================ *}
 {if $isCategoryPage && $SidebarCategoryDescription}
 <div class="bits-panel bits-category-intro">

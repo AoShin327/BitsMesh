@@ -20,7 +20,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /* Position at screen far right edge - 10px margin like NodeSeek */
+    /* Position at screen far right edge - 10px margin */
     position: absolute;
     right: 10px;
     top: 50%;
@@ -247,7 +247,7 @@ body.dark-layout .DiscussionMeta .MItem.DateCreated::before {
     vertical-align: middle;
 }
 
-/* Hide signin icon in welcome panel (NodeSeek style - text only) */
+/* Hide signin icon in welcome panel (text only button) */
 .bits-welcome-panel .bits-btn[href*="signin"]::before {
     display: none !important;
 }

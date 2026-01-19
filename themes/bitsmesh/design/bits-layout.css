@@ -46,7 +46,7 @@ header.bits-header {
 }
 
 /* Body Container - Three Column Layout */
-/* NodeSeek style: 1080px container, 16px radius, prominent shadow */
+/* BitsMesh style: 1080px container, 16px radius, prominent shadow */
 #bits-body {
     background-color: var(--bits-bg-main);
     border-radius: 16px;
@@ -98,7 +98,7 @@ header.bits-header {
     }
 }
 
-/* Left Panel Category List - Pixel-perfect .nsk-panel.category-list replica */
+/* Left Panel Category List - Modern forum panel style */
 #bits-left-panel .bits-category-list,
 #bits-left-panel .BoxCategories {
     background-color: var(--bits-bg-main);
@@ -143,7 +143,7 @@ body.dark-layout #bits-left-panel .BoxCategories {
     margin: 0;
 }
 
-/* Category links - Pixel-perfect NodeSeek replica */
+/* Category links - Modern forum style */
 #bits-left-panel .bits-category-list li a,
 #bits-left-panel .PanelCategories li a,
 #bits-left-panel .BoxCategories a {
@@ -180,7 +180,7 @@ body.dark-layout #bits-left-panel .BoxCategories a {
     padding-bottom: 8px;
 }
 
-/* Hover and active states - NodeSeek green accent */
+/* Hover and active states - Green accent */
 #bits-left-panel .bits-category-list li a:hover,
 #bits-left-panel .bits-category-list li.current-category a,
 #bits-left-panel .PanelCategories li a:hover,
@@ -219,7 +219,7 @@ body.dark-layout #bits-left-panel .BoxCategories a:hover {
     opacity: 1;
 }
 
-/* SVG Icon styles - NodeSeek exact match */
+/* SVG Icon styles */
 #bits-left-panel .bits-category-list .iconpark-icon,
 #bits-left-panel .PanelCategories .iconpark-icon,
 #bits-left-panel .BoxCategories .iconpark-icon {
@@ -238,7 +238,7 @@ body.dark-layout #bits-left-panel .BoxCategories a:hover {
     display: none;
 }
 
-/* Override category border colors - no borders in NodeSeek style */
+/* Override category border colors - clean style */
 #bits-left-panel .bits-category-list li a,
 #bits-left-panel .PanelCategories li a,
 #bits-left-panel .BoxCategories a {

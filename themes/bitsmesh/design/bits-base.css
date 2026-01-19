@@ -14,7 +14,7 @@ tr, tt, ul, var {
     vertical-align: baseline;
 }
 
-/* Base Body - NodeSeek pixel-perfect replica */
+/* Base Body - Modern forum style */
 body {
     background-color: var(--bits-bg-sub);
     color: var(--bits-text);
