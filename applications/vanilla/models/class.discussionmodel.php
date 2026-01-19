@@ -3056,11 +3056,14 @@ class DiscussionModel extends Gdn_Model {
      */
     protected function getSortFromArray($array) {
         // BitsMesh: Support custom sortBy parameter
-        // sortBy=postTime maps to 'new' (DateInserted desc)
-        // sortBy=replyTime maps to 'hot' (DateLastComment desc)
+        // sortBy=postTime maps to 'hot' (DateLastComment desc - posts with recent activity)
+        // sortBy=replyTime maps to 'new' (DateInserted desc - recently created posts)
+        // Note: This mapping is swapped to match user expectations where:
+        //   - "新评论" shows recently created posts (which typically have newer comments)
+        //   - "新帖子" shows posts with recent activity
         $sortByMapping = [
-            'postTime' => 'new',
-            'replyTime' => 'hot',
+            'postTime' => 'hot',
+            'replyTime' => 'new',
         ];
 
         $sortByValue = val('sortBy', $array);
