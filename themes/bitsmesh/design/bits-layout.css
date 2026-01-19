@@ -339,15 +339,96 @@ body.dark-layout .bits-category-list li.current-category a {
 }
 
 /* Right Panel - Category List (shown on medium screens) */
+/* Uses list-style like .bits-panel (matching NodeSeek's .nsk-panel) */
 #bits-right-panel .bits-category-list {
     display: none;
 }
 
 @media (max-width: 1359px) and (min-width: 801px) {
+    /* Override card-style with list-style for right panel */
     #bits-right-panel .bits-category-list {
+        background-color: var(--bits-bg-main);
+        border-radius: 1px;
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
+        color: #888888;
         display: block;
-        width: 100%;
-        margin-bottom: 10px;
+        font-size: 13px;
+        margin: 0 0 10px;
+        overflow: visible;
+        padding: 6px 10px;
+        width: auto;
+    }
+
+    /* Ensure BoxCategories is visible in right panel on medium screens */
+    #bits-right-panel .bits-category-list .Box.BoxCategories,
+    #bits-right-panel .bits-category-list .BoxCategories {
+        display: block !important;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Show heading in right panel list-style */
+    #bits-right-panel .bits-category-list h4 {
+        color: var(--bits-text);
+        display: block;
+        margin: 0;
+    }
+
+    /* List container - left-aligned with padding */
+    #bits-right-panel .bits-category-list ul {
+        padding-left: 10px;
+        text-align: left;
+    }
+
+    /* List items - fixed height with separator */
+    #bits-right-panel .bits-category-list li {
+        height: 24px;
+        line-height: 24px;
+        margin: 0;
+        opacity: 1;
+        padding-left: 10px;
+    }
+
+    /* Border between items (except last) */
+    #bits-right-panel .bits-category-list li:not(:last-child) {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Reset link styles for list-style */
+    #bits-right-panel .bits-category-list li a {
+        background: transparent;
+        border-radius: 0;
+        color: #666666;
+        display: inline;
+        height: auto;
+        justify-content: flex-start;
+        padding: 0;
+        width: auto;
+    }
+
+    #bits-right-panel .bits-category-list li a:hover {
+        background: transparent;
+        color: #0dbc79;
+    }
+
+    /* Dark mode adjustments for right panel list-style */
+    body.dark-layout #bits-right-panel .bits-category-list {
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    }
+
+    body.dark-layout #bits-right-panel .bits-category-list li:not(:last-child) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    body.dark-layout #bits-right-panel .bits-category-list li a {
+        color: #999999;
+    }
+
+    body.dark-layout #bits-right-panel .bits-category-list li a:hover {
+        color: #0dbc79;
     }
 }
 
