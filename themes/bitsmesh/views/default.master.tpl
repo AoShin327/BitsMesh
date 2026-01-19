@@ -11,6 +11,9 @@
 
 <body id="{$BodyID}" class="{$BodyClass}">
 
+    {* IconPark SVG Sprite *}
+    {include file="iconpark-sprite.tpl"}
+
     <header class="bits-header" role="banner">
         <div id="bits-head" class="bits-container">
             {include file="partials/header.tpl"}
@@ -46,12 +49,8 @@
                     {module name="CategoriesModule"}
                 </nav>
 
-                {if !$SectionGroups}
-                    <div class="bits-panel bits-search-panel">
-                        <h4>Search</h4>
-                        {searchbox}
-                    </div>
-                {/if}
+                <!-- Custom sidebar panels (Site info, Welcome, Quick Access, Stats) -->
+                {include file="modules/sidebar-welcome.tpl"}
 
                 {asset name="Panel"}
             </aside>

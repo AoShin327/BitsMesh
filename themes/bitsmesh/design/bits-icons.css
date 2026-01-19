@@ -1,46 +1,74 @@
 /* BitsMesh Theme - SVG Icon System */
-/* Clean, minimal SVG icons */
+/* Clean, minimal SVG icons - No button wrapper style */
 
 /* ============================================
    Dark Mode Toggle Icons
    ============================================ */
 
+/* Dark Mode Toggle - Clean minimal style, positioned at screen far right */
 .bits-dark-toggle {
-    background: transparent;
+    background: none;
     border: none;
     cursor: pointer;
-    padding: 6px;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--bits-text-gray);
-    transition: color 0.2s;
+    transition: color 0.2s ease;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Position at screen far right edge - 10px margin like NodeSeek */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .bits-dark-toggle:hover {
     color: var(--bits-text);
 }
 
+.bits-dark-toggle:focus {
+    outline: none;
+}
+
+/* SVG icon sizing */
 .bits-dark-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Light mode: show moon icon only */
+.bits-dark-toggle svg.icon-moon {
     display: block;
 }
 
-/* Moon icon (light mode - click to switch to dark) */
-.bits-dark-toggle .icon-moon {
-    display: block;
-}
-
-.bits-dark-toggle .icon-sun {
+.bits-dark-toggle svg.icon-sun {
     display: none;
 }
 
-/* Sun icon (dark mode - click to switch to light) */
-body.dark-layout .bits-dark-toggle .icon-moon {
+/* Dark mode: show sun icon only */
+body.dark-layout .bits-dark-toggle svg.icon-moon {
     display: none;
 }
 
-body.dark-layout .bits-dark-toggle .icon-sun {
+body.dark-layout .bits-dark-toggle svg.icon-sun {
     display: block;
+}
+
+/* Mobile: adjust position */
+@media screen and (max-width: 500px) {
+    .bits-dark-toggle {
+        right: 50px; /* Leave space for hamburger menu */
+    }
+
+    .bits-dark-toggle svg {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 /* ============================================
@@ -217,6 +245,11 @@ body.dark-layout .DiscussionMeta .MItem.DateCreated::before {
     background-size: contain;
     background-repeat: no-repeat;
     vertical-align: middle;
+}
+
+/* Hide signin icon in welcome panel (NodeSeek style - text only) */
+.bits-welcome-panel .bits-btn[href*="signin"]::before {
+    display: none !important;
 }
 
 .bits-btn[href*="signin"]::before {

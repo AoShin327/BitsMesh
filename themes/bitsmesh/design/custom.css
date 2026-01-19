@@ -1,55 +1,19 @@
 /* BitsMesh Theme - Main Stylesheet */
-/* Version: 1.0.1 - Updated 2026-01-18 */
+/* Version: 1.4.1 - Updated 2026-01-19 */
 
-/* Import all component stylesheets */
-@import url('variables.css');
-@import url('bits-base.css');
-@import url('bits-layout.css');
-@import url('bits-header.css');
-@import url('bits-post-list.css');
-@import url('bits-post-content.css');
-@import url('bits-comments.css');
-@import url('bits-vanilla-compat.css');
+/* Import all component stylesheets - v1.4.1 cache bust */
+@import url('variables.css?v=1.4.1');
+@import url('bits-base.css?v=1.4.1');
+@import url('bits-layout.css?v=1.4.1');
+@import url('bits-header.css?v=1.4.1');
+@import url('bits-icons.css?v=1.4.1');
+@import url('bits-sidebar.css?v=1.4.1');
+@import url('bits-post-list.css?v=1.4.1');
+@import url('bits-post-content.css?v=1.4.1');
+@import url('bits-comments.css?v=1.4.1');
+@import url('bits-vanilla-compat.css?v=1.4.1');
 
 /* Additional utilities and overrides */
-
-/* Button Styles */
-.bits-btn {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: var(--bits-primary);
-    border: 1px solid rgba(27, 31, 35, 0.15);
-    border-radius: 6px;
-    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.1);
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 600;
-    height: 27px;
-    line-height: 25px;
-    padding: 0 1rem;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.2s;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
-.bits-btn:hover {
-    background-color: var(--bits-secondary);
-    color: #fff;
-}
-
-body.dark-layout .bits-btn {
-    background-color: #158736;
-}
-
-body.dark-layout .bits-btn:hover {
-    background-color: #23af4a;
-}
 
 /* Pager Styles */
 .bits-pager {
@@ -95,28 +59,66 @@ body.dark-layout .bits-pager .pager-pos:hover {
 .bits-image-box {
     background-color: rgba(0, 0, 0, 0.8);
     box-sizing: border-box;
+    display: none; /* Hidden by default */
     height: 100%;
-    left: 50%;
-    line-height: 100vh;
+    left: 0;
+    top: 0;
     overflow: auto;
-    padding: 0 10%;
+    padding: 0;
     position: fixed;
-    top: 50%;
-    transform: translateY(-50%) translateX(-50%);
     width: 100%;
     z-index: 9999;
+    align-items: center;
+    justify-content: center;
 }
 
-@media screen and (max-width: 500px) {
-    .bits-image-box {
-        padding: 0;
-    }
+/* Show lightbox when active */
+.bits-image-box.active {
+    display: flex;
+}
+
+.bits-image-box-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
 }
 
 .bits-image-box img {
-    margin: auto;
     max-width: 100%;
-    vertical-align: middle;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.bits-image-box-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    padding: 5px 10px;
+    line-height: 1;
+}
+
+.bits-image-box-close:hover {
+    color: #ccc;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-image-box-content {
+        max-width: 100%;
+    }
+
+    .bits-image-box-close {
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+    }
 }
 
 /* Fast Navigation Buttons */

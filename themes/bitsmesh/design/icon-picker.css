@@ -1,0 +1,100 @@
+/**
+ * BitsMesh Icon Picker Styles
+ *
+ * Styles for the category icon picker in the dashboard.
+ *
+ * @copyright 2026 BitsMesh
+ * @license GPL-2.0-only
+ */
+
+/* Icon Picker Container */
+.bits-icon-picker {
+    position: relative;
+}
+
+/* Preview Row */
+.bits-icon-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border: 1px solid #dce0e4;
+    border-radius: 4px;
+}
+
+.bits-icon-preview .iconpark-icon {
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 3;
+    color: #555;
+}
+
+.bits-icon-name {
+    flex: 1;
+    color: #555;
+    font-size: 14px;
+}
+
+.bits-icon-toggle {
+    padding: 4px 12px;
+    font-size: 13px;
+}
+
+/* Icon Grid */
+.bits-icon-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid #dce0e4;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon Option Button */
+.bits-icon-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bits-icon-option:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.bits-icon-option.selected {
+    background: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.bits-icon-option .iconpark-icon {
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 3;
+    color: #555;
+}
+
+.bits-icon-option:hover .iconpark-icon {
+    color: #333;
+}
+
+.bits-icon-option.selected .iconpark-icon {
+    color: #2e7d32;
+}
+
+/* SVG Sprite Container (hidden in dashboard) */
+#IconParkSprite svg {
+    display: none;
+}

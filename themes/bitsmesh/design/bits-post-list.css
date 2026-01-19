@@ -40,11 +40,12 @@ body.dark-layout .bits-post-list-item {
     min-width: 0;
 }
 
-/* Post Title */
+/* Post Title - NodeSeek exact match */
 .bits-post-title {
     color: var(--bits-text);
     font-size: 14px;
     font-weight: 700;
+    line-height: 19.5px;
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -55,10 +56,12 @@ body.dark-layout .bits-post-list-item {
     color: var(--bits-link);
 }
 
-/* Post Info */
+/* Post Info - NodeSeek exact match */
 .bits-post-info {
     color: var(--bits-text-gray);
     font-size: 11px;
+    font-weight: 400;
+    line-height: 19.5px;
     margin-top: 2px;
 }
 

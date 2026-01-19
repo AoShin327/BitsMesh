@@ -18,19 +18,13 @@
 
 <!-- Search Box -->
 <div class="bits-search-box">
-    {searchbox placeholder="{t c='搜索...'}"}
-</div>
-
-<!-- User Menu -->
-<div class="bits-user-menu">
-    {if $User.SignedIn}
-        <a href="{$User.ProfileUrl}" class="bits-user-link">
-            <img class="avatar-normal" src="{$User.Photo}" alt="{$User.Name}" />
-        </a>
-        <a href="{link path="/entry/signout"}" class="bits-signout">{t c="退出"}</a>
-    {else}
-        <a href="{link path="/entry/signin"}" class="bits-btn">{t c="登录"}</a>
-    {/if}
+    <form action="{link path="/search"}" method="get" class="bits-search-form">
+        <svg class="bits-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" name="Search" placeholder="Search" class="bits-search-input" autocomplete="off" />
+    </form>
 </div>
 
 <!-- Dark Mode Toggle -->

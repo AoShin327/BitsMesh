@@ -1,0 +1,565 @@
+/* BitsMesh Theme - Sidebar Styles */
+/* Pixel-perfect clone of NodeSeek nsk-panel design */
+
+/* ============================================
+   Panel Base Styles (NodeSeek nsk-panel clone)
+   ============================================ */
+
+.bits-panel {
+    background-color: var(--bits-bg-main);
+    border-radius: 1px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1), 0 0 1px 0 rgba(0, 0, 0, 0.1);
+    color: #888;
+    margin: 0 0 10px;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+body.dark-layout .bits-panel {
+    background-color: var(--bits-bg-main);
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3), 0 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.bits-panel-title {
+    color: var(--bits-text);
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bits-panel-title > * {
+    vertical-align: middle;
+}
+
+.bits-panel-title .iconpark-icon {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    vertical-align: middle;
+}
+
+/* ============================================
+   Site Info Panel (Title + Description)
+   ============================================ */
+
+.bits-site-info {
+    text-align: center;
+    padding: 16px;
+}
+
+.bits-site-info .bits-panel-title {
+    font-size: 18px;
+    font-weight: 700;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.bits-site-description {
+    color: var(--bits-text-gray);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ============================================
+   Welcome Panel (Guest users) - NodeSeek clone
+   ============================================ */
+
+.bits-welcome-panel {
+    /* Inherits base .bits-panel styles: padding 6px 10px, etc. */
+}
+
+.bits-welcome-panel h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bits-text);
+    margin: 0;
+}
+
+.bits-welcome-text {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 5px 0;
+}
+
+.bits-welcome-buttons {
+    margin: 5px 0;
+}
+
+/* ============================================
+   Quick Access Panel - NodeSeek clone
+   ============================================ */
+
+.bits-quick-access {
+    /* Inherits base .bits-panel styles */
+}
+
+.bits-quick-access .bits-panel-title {
+    margin: 0;
+}
+
+.bits-quick-links {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 10px;
+}
+
+.bits-quick-links li {
+    margin: 0;
+    height: 24px;
+    line-height: 24px;
+    padding-left: 10px;
+}
+
+.bits-quick-links li:nth-last-child(n+2) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.dark-layout .bits-quick-links li:nth-last-child(n+2) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.bits-quick-links li a {
+    display: inline;
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.bits-quick-links li a:hover {
+    color: var(--bits-primary);
+}
+
+.bits-quick-links .iconpark-icon {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.bits-badge-count {
+    margin-left: auto;
+    background-color: var(--bits-primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ============================================
+   Stats Panel
+   ============================================ */
+
+.bits-stats-panel {
+    text-align: center;
+}
+
+.bits-stats-content {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.bits-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bits-stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--bits-primary);
+}
+
+.bits-stat-label {
+    font-size: 12px;
+    color: var(--bits-text-gray);
+    margin-top: 4px;
+}
+
+/* ============================================
+   New Discussion Button Panel
+   ============================================ */
+
+.bits-new-discussion {
+    padding: 12px 16px;
+}
+
+.bits-btn-block {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============================================
+   Button Styles - NodeSeek .btn clone
+   ============================================ */
+
+.bits-btn {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #2ea44f;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.1);
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, Segoe UI, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    height: 27px;
+    line-height: 25px;
+    padding: 0 1rem;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.bits-btn:hover {
+    background-color: #45ca6b;
+    color: #fff;
+}
+
+.bits-btn:active {
+    transform: scale(0.98);
+}
+
+.bits-btn-primary {
+    background-color: #2ea44f;
+    color: #fff;
+}
+
+.bits-btn-primary:hover {
+    background-color: #45ca6b;
+    color: #fff;
+}
+
+.bits-btn-secondary {
+    background-color: #2ea44f;
+    color: #fff;
+}
+
+.bits-btn-secondary:hover {
+    background-color: #45ca6b;
+    color: #fff;
+}
+
+body.dark-layout .bits-btn {
+    background-color: #158736 !important;
+    border-color: rgba(27, 31, 35, 0.3);
+}
+
+body.dark-layout .bits-btn:hover {
+    background-color: #23af4a !important;
+}
+
+.bits-btn .iconpark-icon {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+/* ============================================
+   Hide Default Vanilla Panels on Homepage
+   We're replacing them with custom panels
+   ============================================ */
+
+/* Hide the old search panel */
+#bits-right-panel > .bits-panel.bits-search-panel {
+    display: none;
+}
+
+/* Hide Quick Links box when we have custom quick access */
+#bits-right-panel > .Box.BoxQuickLinks {
+    display: none;
+}
+
+/* Hide original Vanilla GuestBox (we have bits-welcome-panel) */
+.Panel .Box.GuestBox,
+#bits-right-panel .Box.GuestBox {
+    display: none !important;
+}
+
+/* Hide duplicate BoxCategories in sidebar (already shown in left nav) */
+.Panel .Box.BoxCategories,
+#bits-right-panel .Box.BoxCategories {
+    display: none !important;
+}
+
+/* Hide BoxFilter/DiscussionFilter (we have custom bits-quick-access) */
+.Panel .BoxFilter.BoxDiscussionFilter,
+#bits-right-panel .BoxFilter.BoxDiscussionFilter {
+    display: none !important;
+}
+
+/* ============================================
+   User Card Panel (Logged-in users)
+   ============================================ */
+
+.bits-user-card {
+    padding: 16px;
+}
+
+.bits-user-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.bits-user-avatar {
+    flex-shrink: 0;
+}
+
+.bits-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--bits-bg-sub);
+}
+
+.bits-user-menu {
+    flex: 1;
+    min-width: 0;
+}
+
+.bits-username {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--bits-text);
+    text-decoration: none;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bits-username:hover {
+    color: var(--bits-primary);
+}
+
+.bits-user-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.bits-user-actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--bits-text-gray);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.bits-user-actions a:hover {
+    color: var(--bits-primary);
+}
+
+.bits-user-actions .iconpark-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.bits-user-stats {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 12px;
+    border-top: 1px solid var(--bits-glass);
+}
+
+body.dark-layout .bits-user-stats {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.bits-stat-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.bits-stat-block:hover {
+    background-color: var(--bits-bg-sub);
+}
+
+body.dark-layout .bits-stat-block:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bits-stat-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--bits-primary);
+    line-height: 1.2;
+}
+
+.bits-stat-label {
+    font-size: 11px;
+    color: var(--bits-text-gray);
+    margin-top: 2px;
+}
+
+/* ============================================
+   Community Panel with New Members
+   ============================================ */
+
+.bits-community-panel .bits-panel-title {
+    margin-bottom: 12px;
+}
+
+.bits-community-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--bits-glass);
+}
+
+body.dark-layout .bits-community-stats {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.bits-community-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bits-community-count {
+    font-size: 14px;
+    font-weight: 400;
+    color: #888;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.bits-community-count strong {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bits-primary);
+}
+
+.bits-panel-title-sub {
+    font-size: 12px;
+    color: var(--bits-text-gray);
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bits-panel-title-sub .iconpark-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.bits-new-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bits-new-member-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    width: calc(25% - 6px);
+    min-width: 50px;
+    transition: transform 0.2s;
+}
+
+.bits-new-member-item:hover {
+    transform: translateY(-2px);
+}
+
+.bits-avatar-small {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--bits-bg-sub);
+    margin-bottom: 4px;
+}
+
+.bits-member-name {
+    font-size: 11px;
+    color: var(--bits-text-gray);
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.bits-new-member-item:hover .bits-member-name {
+    color: var(--bits-primary);
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+@media screen and (max-width: 800px) {
+    .bits-panel {
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .bits-welcome-buttons {
+        flex-direction: column;
+    }
+
+    .bits-welcome-buttons .bits-btn {
+        max-width: none;
+    }
+
+    .bits-user-card {
+        padding: 12px;
+    }
+
+    .bits-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .bits-new-member-item {
+        width: calc(25% - 6px);
+    }
+
+    .bits-avatar-small {
+        width: 32px;
+        height: 32px;
+    }
+}

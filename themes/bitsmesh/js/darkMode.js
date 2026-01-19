@@ -8,6 +8,7 @@ class DarkModeToggle {
         this.storageKey = 'bits-theme-mode';
         this.darkClass = 'dark-layout';
         this.toggleSelector = '.bits-dark-toggle';
+        this._boundHandler = null;
     }
 
     /**
@@ -23,13 +24,18 @@ class DarkModeToggle {
     }
 
     /**
-     * Bind click event to toggle button
+     * Bind click event using event delegation for robustness
      */
     bindToggleButton() {
-        const toggleBtn = document.querySelector(this.toggleSelector);
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => this.toggle());
-        }
+        // Use event delegation on document to handle dynamically added elements
+        this._boundHandler = (e) => {
+            const toggleBtn = e.target.closest(this.toggleSelector);
+            if (toggleBtn) {
+                e.preventDefault();
+                this.toggle();
+            }
+        };
+        document.addEventListener('click', this._boundHandler);
     }
 
     /**
@@ -77,9 +83,4 @@ class DarkModeToggle {
     }
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.bitsTheme = window.bitsTheme || {};
-    window.bitsTheme.darkMode = new DarkModeToggle();
-    window.bitsTheme.darkMode.init();
-});
+// Note: Initialization is handled by theme.js to avoid duplicate event bindings
