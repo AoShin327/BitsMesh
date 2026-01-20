@@ -243,9 +243,9 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             'darkPrimary' => c('Themes.BitsMesh.DarkPrimaryColor', '#2563EB'),
             'darkSecondary' => c('Themes.BitsMesh.DarkSecondaryColor', '#3B82F6'),
             'grid' => c('Themes.BitsMesh.GridColor', '#d4d4d4'),
-            'darkGrid' => c('Themes.BitsMesh.DarkGridColor', '#404040'),
+            'darkGrid' => c('Themes.BitsMesh.DarkGridColor', '#555'),
             'gridBg' => c('Themes.BitsMesh.GridBgColor', '#fffcf8'),
-            'darkGridBg' => c('Themes.BitsMesh.DarkGridBgColor', '#1a1a1a'),
+            'darkGridBg' => c('Themes.BitsMesh.DarkGridBgColor', '#272727'),
         ];
     }
 
@@ -262,9 +262,9 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             'darkSecondaryColor' => '#3B82F6',
             'gridEnabled' => true,
             'gridColor' => '#d4d4d4',
-            'darkGridColor' => '#404040',
+            'darkGridColor' => '#555',
             'gridBgColor' => '#fffcf8',
-            'darkGridBgColor' => '#1a1a1a',
+            'darkGridBgColor' => '#272727',
         ];
     }
 
