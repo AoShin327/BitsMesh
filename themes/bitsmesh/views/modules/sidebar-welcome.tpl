@@ -43,52 +43,65 @@
 
 {if $SidebarIsLoggedIn}
 {* ============================================
-   LOGGED IN STATE - User Card (NodeSeek-style)
+   LOGGED IN STATE - User Card (Modern forum style pixel-perfect replica)
    ============================================ *}
 <div class="bits-panel bits-user-card">
+    {* User Head: Avatar + Menu (flex layout) *}
     <div class="bits-user-head">
-        <a href="{$SidebarUserProfileUrl}" class="bits-user-avatar" title="{$SidebarUserName|escape:'html'}">
-            <img src="{$SidebarUserPhoto}" alt="{$SidebarUserName|escape:'html'}" class="bits-avatar">
+        <a href="{$SidebarUserProfileUrl}" title="{$SidebarUserName|escape:'html'}">
+            <img src="{$SidebarUserPhoto}" alt="{$SidebarUserName|escape:'html'}" class="bits-avatar-normal">
         </a>
         <div class="bits-user-menu">
             <a href="{$SidebarUserProfileUrl}" class="bits-username">{$SidebarUserName|escape:'html'}</a>
             <div class="bits-user-actions">
                 <a href="{$SidebarSettingsUrl}" title="{t c='Settings' d='设置'}">
-                    <svg class="iconpark-icon" width="16" height="16"><use href="#setting-two"></use></svg>
+                    <svg class="iconpark-icon"><use href="#setting-two"></use></svg>
                 </a>
                 <a href="{$SidebarSignOutUrl}" title="{t c='Sign Out' d='退出'}">
-                    <svg class="iconpark-icon" width="16" height="16"><use href="#logout"></use></svg>
+                    <svg class="iconpark-icon"><use href="#logout"></use></svg>
                 </a>
             </div>
         </div>
     </div>
-    {* User Stats Card (NodeSeek-style yellow card with two columns) *}
+    {* User Stats Card (Yellow card with two columns - modern forum style) *}
     <div class="bits-user-stat">
         <div class="bits-stat-block">
             <div>
                 <a href="{$SidebarMyDiscussionsUrl}">
                     <svg class="iconpark-icon"><use href="#write"></use></svg>
-                    <span>{t c='Topics' d='主题'} {$SidebarUserDiscussionCount}</span>
+                    <span>{t c='Topics' d='主题帖'} {$SidebarUserDiscussionCount}</span>
                 </a>
             </div>
             <div>
-                <a href="{$SidebarUserProfileUrl}">
+                <a href="{$SidebarUserProfileUrl}#comments">
                     <svg class="iconpark-icon"><use href="#comments"></use></svg>
-                    <span>{t c='Comments' d='评论'} {$SidebarUserCommentCount}</span>
+                    <span>{t c='Comments' d='评论数'} {$SidebarUserCommentCount}</span>
+                </a>
+            </div>
+            <div>
+                <a href="{$SidebarBookmarksUrl}">
+                    <svg class="iconpark-icon"><use href="#folder-focus"></use></svg>
+                    <span>{t c='Bookmarks' d='收藏'}</span>
                 </a>
             </div>
         </div>
         <div class="bits-stat-block">
             <div>
-                <a href="{$SidebarBookmarksUrl}">
-                    <svg class="iconpark-icon"><use href="#like"></use></svg>
-                    <span>{t c='Bookmarks' d='收藏'}</span>
+                <a href="{$SidebarActivityUrl}">
+                    <svg class="iconpark-icon"><use href="#remind"></use></svg>
+                    <span>{t c='Notifications' d='通知'}</span>
                 </a>
             </div>
             <div>
-                <a href="{$SidebarActivityUrl}">
+                <a href="{$SidebarDiscussionsUrl}">
                     <svg class="iconpark-icon"><use href="#broadcast"></use></svg>
                     <span>{t c='Activity' d='动态'}</span>
+                </a>
+            </div>
+            <div>
+                <a href="{$SidebarUserProfileUrl}">
+                    <svg class="iconpark-icon"><use href="#concern"></use></svg>
+                    <span>{t c='Profile' d='个人中心'}</span>
                 </a>
             </div>
         </div>
@@ -96,10 +109,10 @@
 </div>
 
 {* New Discussion Button *}
-<div class="bits-panel bits-new-discussion">
-    <a href="{$SidebarNewDiscussionUrl}" class="bits-btn bits-btn-primary bits-btn-block">
-        <svg class="iconpark-icon" width="16" height="16"><use href="#plus-cross"></use></svg>
-        {t c="New Discussion" d="发帖"}
+<div class="bits-new-discussion-btn">
+    <a href="{$SidebarNewDiscussionUrl}" class="bits-btn-new-discussion">
+        <svg class="iconpark-icon"><use href="#plus-cross"></use></svg>
+        <span>{t c="New Discussion" d="发帖"}</span>
     </a>
 </div>
 

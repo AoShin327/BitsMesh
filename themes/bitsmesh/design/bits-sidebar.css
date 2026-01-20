@@ -308,42 +308,43 @@ body.dark-layout .bits-btn:hover {
 }
 
 /* ============================================
-   User Card Panel (Logged-in users)
+   User Card Panel (Modern forum style - pixel-perfect replica)
    ============================================ */
 
 .bits-user-card {
-    padding: 16px;
+    background-color: var(--bits-bg-main);
+    padding: 0;
 }
 
+/* User Head: Avatar + Menu (flex layout) */
 .bits-user-head {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+    padding: 10px;
 }
 
-.bits-user-avatar {
-    flex-shrink: 0;
-}
-
-.bits-avatar {
+/* Avatar - 48x48 circle */
+.bits-avatar-normal {
     width: 48px;
     height: 48px;
     border-radius: 50%;
     object-fit: cover;
     background-color: var(--bits-bg-sub);
+    flex-shrink: 0;
 }
 
+/* User Menu container */
 .bits-user-menu {
+    padding: 0 1rem;
     flex: 1;
     min-width: 0;
 }
 
-.bits-username {
+/* Username link - 16px */
+.bits-user-card .bits-username {
     display: block;
     font-size: 16px;
-    font-weight: 600;
-    color: var(--bits-text);
+    font-weight: 500;
+    color: var(--bits-link-color, #3B82F6);
     text-decoration: none;
     margin-bottom: 6px;
     overflow: hidden;
@@ -351,80 +352,37 @@ body.dark-layout .bits-btn:hover {
     white-space: nowrap;
 }
 
-.bits-username:hover {
-    color: var(--bits-primary);
+.bits-user-card .bits-username:hover {
+    color: var(--bits-link-hover-color, #2563EB);
 }
 
+/* User action icons row */
 .bits-user-actions {
     display: flex;
-    gap: 12px;
+    gap: 6px;
 }
 
 .bits-user-actions a {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--bits-text-gray);
+    color: var(--bits-link-color, #3B82F6);
     text-decoration: none;
-    transition: color 0.2s;
+    cursor: pointer;
 }
 
 .bits-user-actions a:hover {
-    color: var(--bits-primary);
+    color: var(--bits-link-hover-color, #2563EB);
 }
 
 .bits-user-actions .iconpark-icon {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     fill: currentColor;
 }
 
-.bits-user-stats {
-    display: flex;
-    justify-content: space-around;
-    padding-top: 12px;
-    border-top: 1px solid var(--bits-glass);
-}
-
-body.dark-layout .bits-user-stats {
-    border-top-color: rgba(255, 255, 255, 0.1);
-}
-
-.bits-stat-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    padding: 4px 8px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.bits-stat-block:hover {
-    background-color: var(--bits-bg-sub);
-}
-
-body.dark-layout .bits-stat-block:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-.bits-stat-num {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--bits-primary);
-    line-height: 1.2;
-}
-
-.bits-stat-label {
-    font-size: 11px;
-    color: var(--bits-text-gray);
-    margin-top: 2px;
-}
-
 /* ============================================
-   User Stat Card (NodeSeek-style yellow card)
-   Two-column layout with stats
+   User Stat Card (Modern forum style yellow card)
+   Two-column layout with stats - pixel-perfect
    ============================================ */
 
 .bits-user-stat {
@@ -434,16 +392,22 @@ body.dark-layout .bits-stat-block:hover {
     padding: 10px;
     display: flex;
     color: #333;
-    margin: 12px 0 0;
+    margin: 0 10px 10px;
 }
 
 .bits-user-stat .bits-stat-block {
     flex: 1;
     font-size: 14px;
+    display: flex;
+    flex-direction: column;
 }
 
 .bits-user-stat .bits-stat-block > div {
-    padding: 4px 0;
+    margin-bottom: 6px;
+}
+
+.bits-user-stat .bits-stat-block > div:last-child {
+    margin-bottom: 0;
 }
 
 .bits-user-stat .bits-stat-block a {
@@ -451,12 +415,11 @@ body.dark-layout .bits-stat-block:hover {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
     transition: color 0.2s;
 }
 
 .bits-user-stat .bits-stat-block a:hover {
-    color: var(--bits-primary);
+    color: #888;
 }
 
 .bits-user-stat .bits-stat-block .iconpark-icon {
@@ -464,6 +427,19 @@ body.dark-layout .bits-stat-block:hover {
     height: 14px;
     fill: currentColor;
     flex-shrink: 0;
+    margin-right: 6px;
+}
+
+/* Notification badge count */
+.bits-notify-count {
+    background-color: #f01212;
+    display: inline;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 12.6px;
+    vertical-align: middle;
+    color: white;
+    margin-left: 4px;
 }
 
 /* Dark mode for user stat card */
@@ -479,6 +455,69 @@ body.dark-layout .bits-user-stat .bits-stat-block a {
 
 body.dark-layout .bits-user-stat .bits-stat-block a:hover {
     color: var(--bits-primary);
+}
+
+/* ============================================
+   New Discussion Button (Modern forum style)
+   ============================================ */
+
+.bits-new-discussion-btn {
+    padding: 0 10px 10px;
+}
+
+.bits-btn-new-discussion {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    background-color: #2ea44f;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.1);
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    height: 32px;
+    line-height: 30px;
+    padding: 0 1rem;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.bits-btn-new-discussion:hover {
+    background-color: #45ca6b;
+    color: #fff;
+}
+
+.bits-btn-new-discussion:active {
+    transform: scale(0.98);
+}
+
+.bits-btn-new-discussion .iconpark-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+body.dark-layout .bits-btn-new-discussion {
+    background-color: #158736;
+    border-color: rgba(27, 31, 35, 0.3);
+}
+
+body.dark-layout .bits-btn-new-discussion:hover {
+    background-color: #23af4a;
+}
+
+/* Legacy support - hide old styles */
+.bits-user-stats,
+.bits-stat-num,
+.bits-user-avatar {
+    display: none;
 }
 
 /* ============================================
