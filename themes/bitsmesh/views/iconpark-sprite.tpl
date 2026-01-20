@@ -72,6 +72,9 @@
      Quick Access Panel Icons (Modern Forum Style)
      ============================================ *}
 
+  {* rocket-one - 快捷功能区标题图标 *}
+  <symbol id="rocket-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m20.906 6.063 1.43-.954a3 3 0 0 1 3.328 0l1.43.954A20 20 0 0 1 36 22.703V33H12V22.704a20 20 0 0 1 8.906-16.641Z" data-follow-stroke="currentColor"/><circle stroke-width="4" stroke="currentColor" r="6" cy="20" cx="24" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m12 22-6 6.217V33h36v-4.783L36 22M24 38v6m-8-4v2m16-2v2" data-follow-stroke="currentColor"/></symbol>
+
   {* diamonds - 推荐阅读 *}
   <symbol id="diamonds" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M12 8h24l8 10-20 24L4 18l8-10ZM4 18h40M24 42l-8-24m8 24 8-24"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m8 13-4 5 20 24 20-24-4-5"/></symbol>
 
