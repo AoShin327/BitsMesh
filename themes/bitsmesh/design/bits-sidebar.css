@@ -322,13 +322,15 @@ body.dark-layout .bits-btn:hover {
     padding: 10px;
 }
 
-/* Avatar - 48x48 circle */
+/* Avatar - 40x40 rounded square (NodeSeek style: 15% border-radius) */
 .bits-avatar-normal {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 15%;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     object-fit: cover;
-    background-color: var(--bits-bg-sub);
+    color: transparent;
+    display: inline-block;
     flex-shrink: 0;
 }
 
@@ -381,8 +383,8 @@ body.dark-layout .bits-btn:hover {
 }
 
 /* ============================================
-   User Stat Card (Modern forum style yellow card)
-   Two-column layout with stats - pixel-perfect
+   User Stat Card (NodeSeek style yellow card)
+   Two-column 4-row layout - pixel-perfect replica
    ============================================ */
 
 .bits-user-stat {
@@ -393,17 +395,18 @@ body.dark-layout .bits-btn:hover {
     display: flex;
     color: #333;
     margin: 0 10px 10px;
+    font-size: 14px;
 }
 
 .bits-user-stat .bits-stat-block {
     flex: 1;
-    font-size: 14px;
     display: flex;
     flex-direction: column;
 }
 
 .bits-user-stat .bits-stat-block > div {
     margin-bottom: 6px;
+    line-height: 1.4;
 }
 
 .bits-user-stat .bits-stat-block > div:last-child {
@@ -423,11 +426,12 @@ body.dark-layout .bits-btn:hover {
 }
 
 .bits-user-stat .bits-stat-block .iconpark-icon {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     fill: currentColor;
     flex-shrink: 0;
-    margin-right: 6px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 
 /* Notification badge count */
@@ -579,7 +583,7 @@ body.dark-layout .bits-community-stats {
 .bits-new-members {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    padding: 5px 0;
 }
 
 .bits-new-member-item {
@@ -587,9 +591,17 @@ body.dark-layout .bits-community-stats {
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    width: calc(25% - 6px);
-    min-width: 50px;
+    width: 60px;
+    font-size: 12px;
+    overflow: hidden;
+    text-align: center;
     transition: transform 0.2s;
+}
+
+@media screen and (max-width: 1200px) {
+    .bits-new-member-item {
+        width: 44px;
+    }
 }
 
 .bits-new-member-item:hover {
@@ -597,11 +609,13 @@ body.dark-layout .bits-community-stats {
 }
 
 .bits-avatar-small {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 15%;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
     object-fit: cover;
-    background-color: var(--bits-bg-sub);
+    color: transparent;
+    display: inline-block;
     margin-bottom: 4px;
 }
 
