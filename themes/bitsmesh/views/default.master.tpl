@@ -42,12 +42,7 @@
 
             <!-- Right Panel -->
             <aside id="bits-right-panel" aria-label="Sidebar">
-                <!-- Category list for medium screens -->
-                <nav class="bits-category-list">
-                    {module name="CategoriesModule"}
-                </nav>
-
-                <!-- Custom sidebar panels (Site info, Welcome, Quick Access, Stats) -->
+                <!-- Custom sidebar panels (Site info, Welcome, Quick Access, Stats, Category List) -->
                 {include file="modules/sidebar-welcome.tpl"}
 
                 {asset name="Panel"}

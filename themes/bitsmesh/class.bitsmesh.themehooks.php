@@ -320,6 +320,64 @@ body.dark-layout {
     }
 
     /**
+     * Inject category list data for Smarty templates.
+     *
+     * Fetches all visible categories with their icons for sidebar display.
+     * Follows modern forum style with icons for each category.
+     *
+     * @param Gdn_Controller $sender The controller instance.
+     * @return void
+     */
+    private function injectCategoryListData($sender) {
+        $categories = [];
+
+        try {
+            // Get all categories
+            $allCategories = CategoryModel::categories();
+
+            if ($allCategories && is_array($allCategories)) {
+                $session = Gdn::session();
+
+                foreach ($allCategories as $category) {
+                    // Skip root category and archived categories
+                    $categoryID = val('CategoryID', $category, 0);
+                    $parentID = val('ParentCategoryID', $category, -1);
+                    $archived = val('Archived', $category, 0);
+
+                    // Only show top-level categories (ParentCategoryID = -1) that are not archived
+                    if ($parentID != -1 || $archived) {
+                        continue;
+                    }
+
+                    // Check view permission
+                    if (!CategoryModel::checkPermission($category, 'Vanilla.Discussions.View')) {
+                        continue;
+                    }
+
+                    // Get category icon (use default if not set)
+                    $iconId = val('IconID', $category, '');
+                    if (empty($iconId) || !array_key_exists($iconId, self::$availableIcons)) {
+                        $iconId = 'all-application'; // Default icon
+                    }
+
+                    $categories[] = [
+                        'CategoryID' => $categoryID,
+                        'Name' => val('Name', $category, ''),
+                        'Url' => categoryUrl($category),
+                        'IconID' => $iconId,
+                        'CountDiscussions' => val('CountDiscussions', $category, 0),
+                    ];
+                }
+            }
+        } catch (Exception $e) {
+            // Silently fail - category list will be empty
+        }
+
+        $sender->setData('SidebarCategories', $categories);
+        $sender->setData('SidebarCategoriesUrl', url('/categories'));
+    }
+
+    /**
      * Inject sidebar data for Smarty templates.
      *
      * Sets data that will be available in sidebar-welcome.tpl:
@@ -589,6 +647,7 @@ body.dark-layout {
         if (!inSection('Dashboard')) {
             $this->injectThemeStyles($sender);
             $this->injectSidebarData($sender);
+            $this->injectCategoryListData($sender);
             $this->injectPostListControlerData($sender);
 
             // Load theme JavaScript files

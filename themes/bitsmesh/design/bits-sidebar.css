@@ -307,6 +307,12 @@ body.dark-layout .bits-btn:hover {
     display: none !important;
 }
 
+/* Hide original Vanilla BoxCategories (we have custom bits-category-panel) */
+.Panel .Box.BoxCategories,
+#bits-right-panel .Box.BoxCategories {
+    display: none !important;
+}
+
 /* ============================================
    User Card Panel (Logged-in users)
    ============================================ */
@@ -420,6 +426,65 @@ body.dark-layout .bits-stat-block:hover {
     font-size: 11px;
     color: var(--bits-text-gray);
     margin-top: 2px;
+}
+
+/* ============================================
+   User Stat Card (NodeSeek-style yellow card)
+   Two-column layout with stats
+   ============================================ */
+
+.bits-user-stat {
+    background-color: #ffffda;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    color: #333;
+    margin: 12px 0 0;
+}
+
+.bits-user-stat .bits-stat-block {
+    flex: 1;
+    font-size: 14px;
+}
+
+.bits-user-stat .bits-stat-block > div {
+    padding: 4px 0;
+}
+
+.bits-user-stat .bits-stat-block a {
+    color: #333;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+}
+
+.bits-user-stat .bits-stat-block a:hover {
+    color: var(--bits-primary);
+}
+
+.bits-user-stat .bits-stat-block .iconpark-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+/* Dark mode for user stat card */
+body.dark-layout .bits-user-stat {
+    background-color: var(--bits-bg-sub);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    color: #ccc;
+}
+
+body.dark-layout .bits-user-stat .bits-stat-block a {
+    color: #ccc;
+}
+
+body.dark-layout .bits-user-stat .bits-stat-block a:hover {
+    color: var(--bits-primary);
 }
 
 /* ============================================
@@ -601,4 +666,74 @@ body.dark-layout .bits-category-intro .bits-panel-title {
 
 body.dark-layout .bits-category-description {
     color: var(--bits-text-gray);
+}
+
+/* ============================================
+   Category List Panel (Modern forum style)
+   ============================================ */
+.bits-category-panel {
+    /* Inherits base .bits-panel styles */
+}
+
+.bits-category-panel .bits-panel-title {
+    margin-bottom: 0;
+}
+
+.bits-category-panel .bits-panel-title a {
+    color: var(--bits-text);
+    text-decoration: none;
+}
+
+.bits-category-panel .bits-panel-title a:hover {
+    color: var(--bits-primary);
+}
+
+.bits-category-links {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 10px;
+}
+
+.bits-category-links li {
+    height: 24px;
+    line-height: 24px;
+    margin: 0;
+    padding-left: 10px;
+}
+
+.bits-category-links li:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.dark-layout .bits-category-links li:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.bits-category-links li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.bits-category-links li a:hover {
+    color: var(--bits-primary);
+}
+
+.bits-category-links li a .iconpark-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+body.dark-layout .bits-category-links li a {
+    color: #999;
+}
+
+body.dark-layout .bits-category-links li a:hover {
+    color: var(--bits-primary);
 }

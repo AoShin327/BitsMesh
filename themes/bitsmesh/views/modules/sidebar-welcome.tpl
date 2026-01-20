@@ -4,7 +4,7 @@
  * Modern forum sidebar inspired by contemporary forum designs.
  * Displays different content based on login status.
  *
- * Required data (set by BitsmeshThemeHooks::injectSidebarData):
+ * Required data (set by BitsmeshThemeHooks::injectSidebarData)
  * - SidebarIsLoggedIn: boolean
  * - SidebarSiteTitle: string
  * - SidebarSiteDescription: string
@@ -16,11 +16,34 @@
  * - SidebarUserProfileUrl: string
  * - SidebarSignInUrl, SidebarRegisterUrl, SidebarSignOutUrl, etc.
  * - SidebarNewMembers: array
+ * - SidebarCategories: array (from injectCategoryListData)
  *}
+
+{* ============================================
+   Category List Panel (Modern forum style)
+   ============================================ *}
+{if $SidebarCategories}
+<div class="bits-panel bits-category-panel">
+    <h4 class="bits-panel-title">
+        <svg class="iconpark-icon" width="14" height="14"><use href="#all-application"></use></svg>
+        <a href="{$SidebarCategoriesUrl}">{t c="All Categories" d="所有版块"}</a>
+    </h4>
+    <ul class="bits-category-links">
+        {foreach $SidebarCategories as $category}
+        <li>
+            <a href="{$category.Url}">
+                <svg class="iconpark-icon" width="14" height="14"><use href="#{$category.IconID}"></use></svg>
+                <span>{$category.Name|escape:'html'}</span>
+            </a>
+        </li>
+        {/foreach}
+    </ul>
+</div>
+{/if}
 
 {if $SidebarIsLoggedIn}
 {* ============================================
-   LOGGED IN STATE - User Card
+   LOGGED IN STATE - User Card (NodeSeek-style)
    ============================================ *}
 <div class="bits-panel bits-user-card">
     <div class="bits-user-head">
@@ -39,26 +62,35 @@
             </div>
         </div>
     </div>
-    <div class="bits-user-stats">
+    {* User Stats Card (NodeSeek-style yellow card with two columns) *}
+    <div class="bits-user-stat">
         <div class="bits-stat-block">
-            <a href="{$SidebarMyDiscussionsUrl}">
-                <svg class="iconpark-icon" width="14" height="14"><use href="#write"></use></svg>
-                <span>{t c='Topics' d='主题'} {$SidebarUserDiscussionCount}</span>
-            </a>
-            <a href="{$SidebarUserProfileUrl}">
-                <svg class="iconpark-icon" width="14" height="14"><use href="#comments"></use></svg>
-                <span>{t c='Comments' d='评论'} {$SidebarUserCommentCount}</span>
-            </a>
+            <div>
+                <a href="{$SidebarMyDiscussionsUrl}">
+                    <svg class="iconpark-icon"><use href="#write"></use></svg>
+                    <span>{t c='Topics' d='主题'} {$SidebarUserDiscussionCount}</span>
+                </a>
+            </div>
+            <div>
+                <a href="{$SidebarUserProfileUrl}">
+                    <svg class="iconpark-icon"><use href="#comments"></use></svg>
+                    <span>{t c='Comments' d='评论'} {$SidebarUserCommentCount}</span>
+                </a>
+            </div>
         </div>
         <div class="bits-stat-block">
-            <a href="{$SidebarBookmarksUrl}">
-                <svg class="iconpark-icon" width="14" height="14"><use href="#like"></use></svg>
-                <span>{t c='Bookmarks' d='收藏'}</span>
-            </a>
-            <a href="{$SidebarActivityUrl}">
-                <svg class="iconpark-icon" width="14" height="14"><use href="#broadcast"></use></svg>
-                <span>{t c='Activity' d='动态'}</span>
-            </a>
+            <div>
+                <a href="{$SidebarBookmarksUrl}">
+                    <svg class="iconpark-icon"><use href="#like"></use></svg>
+                    <span>{t c='Bookmarks' d='收藏'}</span>
+                </a>
+            </div>
+            <div>
+                <a href="{$SidebarActivityUrl}">
+                    <svg class="iconpark-icon"><use href="#broadcast"></use></svg>
+                    <span>{t c='Activity' d='动态'}</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
