@@ -650,6 +650,12 @@ body.dark-layout {
             $this->injectCategoryListData($sender);
             $this->injectPostListControlerData($sender);
 
+            // Remove Vanilla's default CategoriesModule from Panel assets
+            // (we use custom bits-category-panel instead)
+            if (isset($sender->Assets['Panel']['CategoriesModule'])) {
+                unset($sender->Assets['Panel']['CategoriesModule']);
+            }
+
             // Load theme JavaScript files
             $sender->addJsFile('darkMode.js', 'themes/bitsmesh');
             $sender->addJsFile('theme.js', 'themes/bitsmesh');

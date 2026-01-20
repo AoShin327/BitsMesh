@@ -307,12 +307,6 @@ body.dark-layout .bits-btn:hover {
     display: none !important;
 }
 
-/* Hide original Vanilla BoxCategories (we have custom bits-category-panel) */
-.Panel .Box.BoxCategories,
-#bits-right-panel .Box.BoxCategories {
-    display: none !important;
-}
-
 /* ============================================
    User Card Panel (Logged-in users)
    ============================================ */
