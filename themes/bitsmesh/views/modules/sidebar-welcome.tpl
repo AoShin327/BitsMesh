@@ -149,45 +149,46 @@
    ============================================ *}
 <div class="bits-panel bits-quick-access">
     <h4 class="bits-panel-title">
-        <svg class="iconpark-icon" width="16" height="16"><use href="#rocket-one"></use></svg>
-        {t c="Quick Access" d="快捷功能区"}
+        <svg class="iconpark-icon"><use href="#rocket-one"></use></svg>
+        <span>{t c="Quick Access" d="快捷功能区"}</span>
     </h4>
-    <ul class="bits-quick-links">
+    <ul class="bits-quick-links" role="nav">
         <li>
-            <a href="{$SidebarCategoriesUrl}">
-                <svg class="iconpark-icon" width="16" height="16"><use href="#all-application"></use></svg>
-                <span>{t c="All Categories" d="所有版块"}</span>
+            <a href="#">
+                <svg class="iconpark-icon"><use href="#diamonds"></use></svg>
+                <span>{t c="Featured" d="推荐阅读"}</span>
             </a>
         </li>
         <li>
-            <a href="{$SidebarDiscussionsUrl}">
-                <svg class="iconpark-icon" width="16" height="16"><use href="#rss"></use></svg>
-                <span>{t c="Recent Discussions" d="最新讨论"}</span>
+            <a href="#">
+                <svg class="iconpark-icon"><use href="#balance-two"></use></svg>
+                <span>{t c="Moderation Log" d="管理记录"}</span>
             </a>
         </li>
         <li>
-            <a href="{$SidebarActivityUrl}">
-                <svg class="iconpark-icon" width="16" height="16"><use href="#broadcast"></use></svg>
-                <span>{t c="Activity" d="动态"}</span>
-            </a>
-        </li>
-        {if $SidebarIsLoggedIn}
-        <li>
-            <a href="{$SidebarMyDiscussionsUrl}">
-                <svg class="iconpark-icon" width="16" height="16"><use href="#folder-focus"></use></svg>
-                <span>{t c="My Discussions" d="我的讨论"}</span>
-                {if $SidebarUserDiscussionCount > 0}
-                <span class="bits-badge-count">{$SidebarUserDiscussionCount}</span>
-                {/if}
+            <a href="#">
+                <svg class="iconpark-icon"><use href="#optimize"></use></svg>
+                <span>{t c="Lucky Draw" d="幸运抽奖"}</span>
             </a>
         </li>
         <li>
-            <a href="{$SidebarBookmarksUrl}">
-                <svg class="iconpark-icon" width="16" height="16"><use href="#like"></use></svg>
-                <span>{t c="Bookmarks" d="收藏"}</span>
+            <a href="#">
+                <svg class="iconpark-icon"><use href="#key"></use></svg>
+                <span>{t c="Invite Friends" d="邀请好友"}</span>
             </a>
         </li>
-        {/if}
+        <li>
+            <a href="#">
+                <svg class="iconpark-icon"><use href="#cooperative-handshake"></use></svg>
+                <span>{t c="Partners" d="合作商家"}</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <svg class="iconpark-icon"><use href="#link"></use></svg>
+                <span>{t c="Friend Links" d="友站链接"}</span>
+            </a>
+        </li>
     </ul>
 </div>
 

@@ -67,4 +67,26 @@
 
   {* category - 分类图标 *}
   <symbol id="icon-category" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 6h14v14H4V6Zm0 22h14v14H4V28Zm26-22h14v14H30V6Zm0 22h14v14H30V28Z"/></symbol>
+
+  {* ============================================
+     Quick Access Panel Icons (Modern Forum Style)
+     ============================================ *}
+
+  {* diamonds - 推荐阅读 *}
+  <symbol id="diamonds" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M12 8h24l8 10-20 24L4 18l8-10ZM4 18h40M24 42l-8-24m8 24 8-24"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m8 13-4 5 20 24 20-24-4-5"/></symbol>
+
+  {* balance-two - 管理记录 *}
+  <symbol id="balance-two" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m16 22-6-10-6 10"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M10 28a6 6 0 0 0 6-6H4a6 6 0 0 0 6 6Z" clip-rule="evenodd"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m44 22-6-10-6 10"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M38 28a6 6 0 0 0 6-6H32a6 6 0 0 0 6 6Z" clip-rule="evenodd"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 6v36M10 12h28m-28 0h28m0 30H10"/></symbol>
+
+  {* optimize - 幸运抽奖 *}
+  <symbol id="optimize" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m19 8 9 8 10.032-5.89L33 21l9 8-12-1-4.5 10L23 27l-12-1 10.508-6.35L19 8Z"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M8 42.02 23 27"/></symbol>
+
+  {* key - 邀请好友 *}
+  <symbol id="key" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M22.868 24.298a9.865 9.865 0 0 1 2.63 9.588 9.926 9.926 0 0 1-7.066 7.028 9.988 9.988 0 0 1-9.638-2.615 9.863 9.863 0 0 1 .121-13.878c3.839-3.82 10.046-3.873 13.951-.121l.002-.002Z"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M23 24 40 7"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="m30.305 16.9 5.429 5.4 6.333-6.3-5.428-5.4-6.334 6.3Z"/></symbol>
+
+  {* cooperative-handshake - 合作商家 *}
+  <symbol id="cooperative-handshake" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m24 40 12-12-4 4-4 4-4 4Zm0 0L4 20 16 8l8 8"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M17 23 32 8l12 12-8 8-8-8-6 6-5-3Zm0 0 7-7m4 20-3-3m7-1-3-3"/></symbol>
+
+  {* link - 友站链接 *}
+  <symbol id="link" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24.707 9.565 9.858 24.415a9 9 0 0 0 0 12.727v0a9 9 0 0 0 12.728 0l17.678-17.677a6 6 0 0 0 0-8.486v0a6 6 0 0 0-8.486 0L14.101 28.657a3 3 0 0 0 0 4.243v0a3 3 0 0 0 4.242 0l14.85-14.85"/></symbol>
 </svg>
