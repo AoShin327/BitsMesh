@@ -339,11 +339,13 @@ body.dark-layout .bits-btn:hover {
     flex-shrink: 0;
 }
 
-/* User Menu container */
+/* User Menu container - vertical stack (username on top, actions below) */
 .bits-user-menu {
     padding: 0 1rem;
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Username link - 16px (pixel-perfect replica) */

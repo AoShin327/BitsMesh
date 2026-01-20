@@ -81,6 +81,12 @@
   {* vr-glasses - Block显示 *}
   <symbol id="vr-glasses" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M2 12h44v24H30l-6-6-6 6H2V12Z" clip-rule="evenodd" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M13 28a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm22 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" clip-rule="evenodd" data-follow-stroke="currentColor"/></symbol>
 
+  {* setting-two - 设置 *}
+  <symbol id="setting-two" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M36.686 15.171a15.37 15.37 0 0 1 2.529 6.102H44v5.454h-4.785a15.37 15.37 0 0 1-2.529 6.102l3.385 3.385-3.857 3.857-3.385-3.385a15.37 15.37 0 0 1-6.102 2.529V44h-5.454v-4.785a15.37 15.37 0 0 1-6.102-2.529l-3.385 3.385-3.857-3.857 3.385-3.385a15.37 15.37 0 0 1-2.529-6.102H4v-5.454h4.785a15.37 15.37 0 0 1 2.529-6.102l-3.385-3.385 3.857-3.857 3.385 3.385a15.37 15.37 0 0 1 6.102-2.529V4h5.454v4.785a15.37 15.37 0 0 1 6.102 2.529l3.385-3.385 3.857 3.857-3.385 3.385Z" data-follow-stroke="currentColor"/><path stroke-width="4" stroke="currentColor" d="M24 31a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* logout - 登出 *}
+  <symbol id="logout" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M23.992 6H6v36h18m9-9 9-9-9-9m9 9H18" data-follow-stroke="currentColor"/></symbol>
+
   {* level - 等级 *}
   <symbol id="level" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 42 4 18.5 9.695 6h28.61L44 18.5 24 42Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m32 18-8 9-8-9" data-follow-stroke="currentColor"/></symbol>
 
