@@ -20,6 +20,11 @@ body.dark-layout .bits-panel {
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3), 0 0 1px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* User card panel - no shadow (modern forum style) */
+.bits-panel.bits-user-card {
+    box-shadow: none;
+}
+
 .bits-panel-title {
     color: var(--bits-text);
     font-size: 14px;
@@ -313,13 +318,13 @@ body.dark-layout .bits-btn:hover {
 
 .bits-user-card {
     background-color: var(--bits-bg-main);
-    padding: 0;
+    /* padding 复刻 NodeSeek .user-card-container: 12px 5px 5px */
+    padding: 12px 5px 5px;
 }
 
-/* User Head: Avatar + Menu (flex layout) */
+/* User Head: Avatar + Menu (flex layout, pixel-perfect replica of NodeSeek) */
 .bits-user-head {
     display: flex;
-    padding: 10px;
 }
 
 /* Avatar - 40x40 rounded square (NodeSeek style: 15% border-radius) */
@@ -341,14 +346,12 @@ body.dark-layout .bits-btn:hover {
     min-width: 0;
 }
 
-/* Username link - 16px */
+/* Username link - 16px (pixel-perfect replica) */
 .bits-user-card .bits-username {
     display: block;
     font-size: 16px;
-    font-weight: 500;
     color: var(--bits-link-color, #3B82F6);
     text-decoration: none;
-    margin-bottom: 6px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -358,13 +361,13 @@ body.dark-layout .bits-btn:hover {
     color: var(--bits-link-hover-color, #2563EB);
 }
 
-/* User action icons row */
+/* User action icons row (pixel-perfect replica) */
 .bits-user-actions {
     display: flex;
-    gap: 6px;
 }
 
-.bits-user-actions a {
+.bits-user-actions a,
+.bits-user-actions span {
     display: inline-flex;
     align-items: center;
     color: var(--bits-link-color, #3B82F6);
@@ -372,14 +375,21 @@ body.dark-layout .bits-btn:hover {
     cursor: pointer;
 }
 
-.bits-user-actions a:hover {
+.bits-user-actions a:hover,
+.bits-user-actions span:hover {
     color: var(--bits-link-hover-color, #2563EB);
 }
 
 .bits-user-actions .iconpark-icon {
+    margin-right: 6px;
+    color: var(--bits-link-color, #3B82F6);
     width: 16px;
     height: 16px;
-    fill: currentColor;
+    cursor: pointer;
+}
+
+.bits-user-actions .iconpark-icon:hover {
+    color: var(--bits-link-hover-color, #2563EB);
 }
 
 /* ============================================
@@ -394,7 +404,7 @@ body.dark-layout .bits-btn:hover {
     padding: 10px;
     display: flex;
     color: #333;
-    margin: 0 10px 10px;
+    margin: 1rem 0;
     font-size: 14px;
 }
 
@@ -426,8 +436,8 @@ body.dark-layout .bits-btn:hover {
 }
 
 .bits-user-stat .bits-stat-block .iconpark-icon {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     fill: currentColor;
     flex-shrink: 0;
     margin-right: 5px;

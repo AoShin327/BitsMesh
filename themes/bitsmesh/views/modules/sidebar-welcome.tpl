@@ -36,17 +36,52 @@
         <div class="bits-user-menu">
             <a href="{$SidebarUserProfileUrl}" class="bits-username">{$SidebarUserName|escape:'html'}</a>
             <div class="bits-user-actions">
+                <span title="{t c='Check In' d='签到'}">
+                    <svg class="iconpark-icon"><use href="#plan"></use></svg>
+                </span>
+                <a href="#" title="{t c='Transfer' d='转账'}">
+                    <svg class="iconpark-icon"><use href="#exchange-four"></use></svg>
+                </a>
                 <a href="{$SidebarSettingsUrl}" title="{t c='Settings' d='设置'}">
                     <svg class="iconpark-icon"><use href="#setting-two"></use></svg>
                 </a>
-                <a href="{$SidebarSignOutUrl}" title="{t c='Sign Out' d='退出'}">
+                <a href="#" title="{t c='Show Block' d='显示Block'}">
+                    <svg class="iconpark-icon"><use href="#vr-glasses"></use></svg>
+                </a>
+                <a href="{$SidebarSignOutUrl}" title="{t c='Sign Out' d='登出'}">
                     <svg class="iconpark-icon"><use href="#logout"></use></svg>
                 </a>
             </div>
         </div>
     </div>
-    {* User Stats Card (Yellow card with two columns - modern forum style) *}
+    {* User Stats Card (Two columns - modern forum style) *}
     <div class="bits-user-stat">
+        <div class="bits-stat-block">
+            <div>
+                <a href="{$SidebarUserProfileUrl}">
+                    <svg class="iconpark-icon"><use href="#level"></use></svg>
+                    <span>{t c='Level' d='等级'} Lv 1</span>
+                </a>
+            </div>
+            <div>
+                <a href="#">
+                    <svg class="iconpark-icon"><use href="#chicken-leg"></use></svg>
+                    <span>{t c='Credits' d='鸡腿'} 0</span>
+                </a>
+            </div>
+            <div>
+                <a href="#">
+                    <svg class="iconpark-icon"><use href="#wallet"></use></svg>
+                    <span>{t c='Stardust' d='星辰'} 0</span>
+                </a>
+            </div>
+            <div>
+                <a href="{$SidebarActivityUrl}">
+                    <svg class="iconpark-icon"><use href="#remind"></use></svg>
+                    <span>{t c='Notifications' d='通知'} 0</span>
+                </a>
+            </div>
+        </div>
         <div class="bits-stat-block">
             <div>
                 <a href="{$SidebarMyDiscussionsUrl}">
@@ -61,29 +96,15 @@
                 </a>
             </div>
             <div>
-                <a href="{$SidebarBookmarksUrl}">
-                    <svg class="iconpark-icon"><use href="#folder-focus"></use></svg>
-                    <span>{t c='Bookmarks' d='收藏'}</span>
-                </a>
-            </div>
-        </div>
-        <div class="bits-stat-block">
-            <div>
-                <a href="{$SidebarActivityUrl}">
-                    <svg class="iconpark-icon"><use href="#remind"></use></svg>
-                    <span>{t c='Notifications' d='通知'}</span>
-                </a>
-            </div>
-            <div>
-                <a href="{$SidebarDiscussionsUrl}">
-                    <svg class="iconpark-icon"><use href="#broadcast"></use></svg>
-                    <span>{t c='Activity' d='动态'}</span>
-                </a>
-            </div>
-            <div>
                 <a href="{$SidebarUserProfileUrl}">
                     <svg class="iconpark-icon"><use href="#concern"></use></svg>
-                    <span>{t c='Profile' d='个人中心'}</span>
+                    <span>{t c='Followers' d='粉丝'} 0</span>
+                </a>
+            </div>
+            <div>
+                <a href="{$SidebarBookmarksUrl}">
+                    <svg class="iconpark-icon"><use href="#folder-focus"></use></svg>
+                    <span>{t c='Bookmarks' d='收藏'} 0</span>
                 </a>
             </div>
         </div>

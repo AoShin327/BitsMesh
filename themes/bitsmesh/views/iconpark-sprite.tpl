@@ -69,6 +69,43 @@
   <symbol id="icon-category" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 6h14v14H4V6Zm0 22h14v14H4V28Zm26-22h14v14H30V6Zm0 22h14v14H30V28Z"/></symbol>
 
   {* ============================================
+     User Card Icons (Modern Forum Style)
+     ============================================ *}
+
+  {* plan - 签到 *}
+  <symbol id="plan" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M5 19h38v22a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V19Zm0-9a2 2 0 0 1 2-2h34a2 2 0 0 1 2 2v9H5v-9Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m16 31 6 6 12-12" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M16 5v8m16-8v8" data-follow-stroke="currentColor"/></symbol>
+
+  {* exchange-four - 转账 *}
+  <symbol id="exchange-four" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M39 6H9a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h30a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3ZM15 21h18m-18 6h18m0-6-7-7m-4 20-7-7" data-follow-stroke="currentColor"/></symbol>
+
+  {* vr-glasses - Block显示 *}
+  <symbol id="vr-glasses" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M2 12h44v24H30l-6-6-6 6H2V12Z" clip-rule="evenodd" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M13 28a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm22 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" clip-rule="evenodd" data-follow-stroke="currentColor"/></symbol>
+
+  {* level - 等级 *}
+  <symbol id="level" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 42 4 18.5 9.695 6h28.61L44 18.5 24 42Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m32 18-8 9-8-9" data-follow-stroke="currentColor"/></symbol>
+
+  {* chicken-leg - 鸡腿 *}
+  <symbol id="chicken-leg" viewBox="0 0 48 48" fill="none"><g clip-path="url(#8f523__a)"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M33.375 33.874c4.242-4.242 1.414-18.384-4.95-24.748-2.828-2.829-10.96-8.84-19.799 0-8.839 8.838-2.828 16.97 0 19.799 6.364 6.364 20.506 9.192 24.749 4.95Z" data-follow-stroke="currentColor"/><path stroke-width="4" stroke="currentColor" d="m41 41-7-7" data-follow-stroke="currentColor"/><circle fill="currentColor" transform="rotate(135 42.193 40.071)" r="2.5" cy="40.071" cx="42.193" data-follow-fill="currentColor"/><circle fill="currentColor" transform="rotate(135 40.072 42.192)" r="2.5" cy="42.192" cx="40.072" data-follow-fill="currentColor"/><circle fill="currentColor" r="2" cy="18" cx="17" data-follow-fill="currentColor"/><circle fill="currentColor" r="2" cy="21" cx="12" data-follow-fill="currentColor"/><circle fill="currentColor" r="2" cy="24" cx="17" data-follow-fill="currentColor"/></g><defs><clipPath id="8f523__a"><path fill="currentColor" d="M0 0h48v48H0z" data-follow-fill="currentColor"/></clipPath></defs></symbol>
+
+  {* wallet - 星辰/钱包 *}
+  <symbol id="wallet" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M17.982 11.969 31.785 4l4.612 7.989-18.415-.02Z" clip-rule="evenodd" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 14a2 2 0 0 1 2-2h36a2 2 0 0 1 2 2v28a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V14Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M35.25 33H44V23h-8.75c-2.9 0-5.25 2.239-5.25 5s2.35 5 5.25 5Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 16.5v24" data-follow-stroke="currentColor"/></symbol>
+
+  {* remind - 通知 *}
+  <symbol id="remind" viewBox="0 0 48 48" fill="none"><path d="M24 4c-7.732 0-14 6.268-14 14v20h28V18c0-7.732-6.268-14-14-14Z"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M10 38V18c0-7.732 6.268-14 14-14s14 6.268 14 14v20M4 38h40m-20 6a5 5 0 0 0 5-5v-1H19v1a5 5 0 0 0 5 5Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* write - 主题帖 *}
+  <symbol id="write" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M5.325 43.5h8.485l31.113-31.113-8.486-8.485L5.325 35.015V43.5Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m27.952 12.387 8.485 8.485" data-follow-stroke="currentColor"/></symbol>
+
+  {* comments - 评论数 *}
+  <symbol id="comments" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M33 38H22v-8h14v-8h8v16h-5l-3 3-3-3Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M4 6h32v24H17l-4 4-4-4H4V6Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M12 22h6m-6-8h12" data-follow-stroke="currentColor"/></symbol>
+
+  {* concern - 粉丝 *}
+  <symbol id="concern" viewBox="0 0 48 48" fill="none"><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M10.858 9.858A19.937 19.937 0 0 0 5 24a19.937 19.937 0 0 0 5.858 14.142m28.284 0A19.937 19.937 0 0 0 45 24a19.937 19.937 0 0 0-5.858-14.142M34.9 33.9A13.956 13.956 0 0 0 39 24a13.96 13.96 0 0 0-4.1-9.9m-19.8 0A13.956 13.956 0 0 0 11 24a13.96 13.96 0 0 0 4.1 9.9" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M28.182 20C30.29 20 32 21.612 32 23.6c0 2.588-2.546 4.8-3.818 6-.849.8-1.91 1.6-3.182 2.4-1.273-.8-2.333-1.6-3.182-2.4-1.273-1.2-3.818-3.412-3.818-6 0-1.988 1.71-3.6 3.818-3.6 1.328 0 2.498.64 3.182 1.61.684-.97 1.854-1.61 3.182-1.61Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* folder-focus - 收藏 *}
+  <symbol id="folder-focus" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M5 8a2 2 0 0 1 2-2h12l5 6h17a2 2 0 0 1 2 2v26a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m24 20 2.243 4.913 5.366.615-3.98 3.651 1.073 5.293L24 31.816l-4.702 2.656 1.073-5.293-3.98-3.651 5.366-.615L24 20Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* ============================================
      Quick Access Panel Icons (Modern Forum Style)
      ============================================ *}
 
