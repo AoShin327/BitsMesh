@@ -20,13 +20,6 @@
         </div>
     </header>
 
-    <!-- Left Panel - Categories (Large screens only) -->
-    <aside id="bits-left-panel" aria-label="Category navigation">
-        <nav class="bits-category-list">
-            {module name="CategoriesModule"}
-        </nav>
-    </aside>
-
     <section id="bits-frame">
         <div id="bits-body" class="bits-container">
             <!-- Main Content -->

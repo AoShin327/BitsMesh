@@ -301,17 +301,6 @@ body.dark-layout .bits-btn:hover {
     display: none !important;
 }
 
-/* Hide duplicate BoxCategories in sidebar when left nav is visible (large screens) */
-@media (min-width: 1360px) {
-    .Panel .Box.BoxCategories,
-    #bits-right-panel .Box.BoxCategories {
-        display: none !important;
-    }
-}
-
-/* Show BoxCategories in right panel on medium screens (801-1359px) */
-/* Styles defined in bits-layout.css */
-
 /* Hide BoxFilter/DiscussionFilter (we have custom bits-quick-access) */
 .Panel .BoxFilter.BoxDiscussionFilter,
 #bits-right-panel .BoxFilter.BoxDiscussionFilter {
