@@ -17,29 +17,11 @@
  * - SidebarSignInUrl, SidebarRegisterUrl, SidebarSignOutUrl, etc.
  * - SidebarNewMembers: array
  * - SidebarCategories: array (from injectCategoryListData)
+ *
+ * Panel Order:
+ * - Guest: Welcome → Site Info → Quick Access → Categories → Community Stats
+ * - Logged In: User Card → New Discussion → Site Info → Quick Access → Categories → Community Stats
  *}
-
-{* ============================================
-   Category List Panel (Modern forum style)
-   ============================================ *}
-{if $SidebarCategories}
-<div class="bits-panel bits-category-panel">
-    <h4 class="bits-panel-title">
-        <svg class="iconpark-icon" width="14" height="14"><use href="#all-application"></use></svg>
-        <a href="{$SidebarCategoriesUrl}">{t c="All Categories" d="所有版块"}</a>
-    </h4>
-    <ul class="bits-category-links">
-        {foreach $SidebarCategories as $category}
-        <li>
-            <a href="{$category.Url}">
-                <svg class="iconpark-icon" width="14" height="14"><use href="#{$category.IconID}"></use></svg>
-                <span>{$category.Name|escape:'html'}</span>
-            </a>
-        </li>
-        {/foreach}
-    </ul>
-</div>
-{/if}
 
 {if $SidebarIsLoggedIn}
 {* ============================================
@@ -116,9 +98,17 @@
     </a>
 </div>
 
+{* Site Info Panel - Third for logged-in users *}
+{if $SidebarSiteDescription}
+<div class="bits-panel bits-site-info">
+    <h4 class="bits-panel-title">{$SidebarSiteTitle|escape:'html'}</h4>
+    <p class="bits-site-description">{$SidebarSiteDescription|escape:'html'}</p>
+</div>
+{/if}
+
 {else}
 {* ============================================
-   GUEST STATE - Welcome Panel
+   GUEST STATE - Welcome Panel (Top of sidebar for guests)
    ============================================ *}
 <div class="bits-panel bits-welcome-panel">
     <h4>{t c="Hello, stranger!" d="你好啊，陌生人!"}</h4>
@@ -130,6 +120,14 @@
         <a href="{$SidebarRegisterUrl}" class="bits-btn" style="color:white">{t c="Register" d="注册"}</a>
     </div>
 </div>
+
+{* Site Info Panel - Second for guests *}
+{if $SidebarSiteDescription}
+<div class="bits-panel bits-site-info">
+    <h4 class="bits-panel-title">{$SidebarSiteTitle|escape:'html'}</h4>
+    <p class="bits-site-description">{$SidebarSiteDescription|escape:'html'}</p>
+</div>
+{/if}
 {/if}
 
 {* ============================================
@@ -194,6 +192,28 @@
 </div>
 
 {* ============================================
+   Category List Panel (Modern forum style)
+   ============================================ *}
+{if $SidebarCategories}
+<div class="bits-panel bits-category-panel">
+    <h4 class="bits-panel-title">
+        <svg class="iconpark-icon" width="14" height="14"><use href="#all-application"></use></svg>
+        <a href="{$SidebarCategoriesUrl}">{t c="All Categories" d="所有版块"}</a>
+    </h4>
+    <ul class="bits-category-links">
+        {foreach $SidebarCategories as $category}
+        <li>
+            <a href="{$category.Url}">
+                <svg class="iconpark-icon" width="14" height="14"><use href="#{$category.IconID}"></use></svg>
+                <span>{$category.Name|escape:'html'}</span>
+            </a>
+        </li>
+        {/foreach}
+    </ul>
+</div>
+{/if}
+
+{* ============================================
    Community Stats Panel
    ============================================ *}
 <div class="bits-panel bits-community-panel">
@@ -224,12 +244,3 @@
     {/if}
 </div>
 
-{* ============================================
-   Site Info Panel (Title + Description) - Moved to bottom
-   ============================================ *}
-{if $SidebarSiteDescription}
-<div class="bits-panel bits-site-info">
-    <h4 class="bits-panel-title">{$SidebarSiteTitle|escape:'html'}</h4>
-    <p class="bits-site-description">{$SidebarSiteDescription|escape:'html'}</p>
-</div>
-{/if}

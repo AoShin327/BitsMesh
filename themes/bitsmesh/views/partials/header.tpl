@@ -2,8 +2,10 @@
 <div class="bits-site-brand">
     <a href="{link path="/"}" class="bits-brand-link">
         {assign var="logoUrl" value="{site_logo_url}"}
+        {assign var="logoDarkUrl" value="{logo_dark_url fallback=true}"}
         {if $logoUrl}
-            <img src="{$logoUrl}" alt="{site_title}" class="bits-site-logo" />
+            <img src="{$logoUrl}" alt="{site_title}" class="bits-site-logo bits-logo-light" />
+            <img src="{$logoDarkUrl}" alt="{site_title}" class="bits-site-logo bits-logo-dark" />
         {/if}
         <span class="bits-site-title">{site_title}</span>
     </a>

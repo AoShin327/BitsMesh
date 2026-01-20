@@ -504,12 +504,12 @@ class SettingsController extends DashboardController {
                     'RemoveConfirmText' => sprintf(t('Are you sure you want to delete your %s?'), t('banner logo'))
                 ]
             ],
-            'Garden.MobileLogo' => [
-                'LabelCode' => t('Mobile Banner Logo'),
+            'Garden.LogoDark' => [
+                'LabelCode' => t('Banner Logo (Dark Mode)'),
                 'Control' => 'imageupload',
-                'Description' => t('MobileLogoDescription', 'The mobile banner logo appears at the top of your site. Some themes may not display this logo.'),
+                'Description' => t('LogoDarkDescription', 'Logo displayed when dark mode is active. If not set, the default banner logo will be used.'),
                 'Options' => [
-                    'RemoveConfirmText' => sprintf(t('Are you sure you want to delete your %s?'), t('mobile banner logo'))
+                    'RemoveConfirmText' => sprintf(t('Are you sure you want to delete your %s?'), t('dark mode banner logo'))
                 ]
             ],
             'Garden.FavIcon' => [

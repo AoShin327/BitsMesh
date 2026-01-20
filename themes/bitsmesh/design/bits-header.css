@@ -24,6 +24,20 @@
     object-fit: contain;
 }
 
+/* Light/Dark mode logo switching */
+.bits-logo-light {
+    display: block;
+}
+.bits-logo-dark {
+    display: none;
+}
+body.dark-layout .bits-logo-light {
+    display: none;
+}
+body.dark-layout .bits-logo-dark {
+    display: block;
+}
+
 @media screen and (max-width: 500px) {
     .bits-site-logo {
         height: 24px;
