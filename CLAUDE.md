@@ -4,6 +4,7 @@
 
 | 日期 | 变更内容 | 负责人 |
 |------|---------|-------|
+| 2026-01-20 16:45:00 | 新增 Vanilla 原生方法速查表，总结常用 API 与设计模式 | Claude AI |
 | 2026-01-18 00:10:00 | 添加源代码修改规范（健壮性、性能、安全） | Claude AI |
 | 2026-01-17 20:57:17 | 增量补扫：完成 22 个插件和 5 个主题的文档生成 | Claude AI |
 | 2026-01-17 20:48:21 | 初始化项目架构文档，完成模块扫描 | Claude AI |
@@ -29,7 +30,7 @@
 
 | 层级 | 技术 |
 |------|------|
-| **后端语言** | PHP 7.0+ |
+| **后端语言** | PHP 7.0+ (当前运行 PHP 8.2) |
 | **数据库** | MySQL (utf8mb4) |
 | **模板引擎** | Smarty, Twig |
 | **前端框架** | React, TypeScript |
@@ -58,6 +59,586 @@ vanilla/
 ├── cache/             # 缓存目录
 ├── uploads/           # 上传文件存储
 └── vendor/            # Composer 依赖
+```
+
+---
+
+## Vanilla 原生方法速查表
+
+### 📌 核心静态类 (Gdn::*)
+
+Vanilla 提供全局静态容器 `Gdn`，用于访问框架核心服务：
+
+```php
+// 配置获取
+c('Config.Key', 'Default');              // 简写
+Gdn::config('Config.Key', 'Default');    // 完整
+
+// 数据库访问
+Gdn::database();                         // 数据库对象
+Gdn::sql();                              // SQL 查询构建器
+Gdn::structure();                        // Schema 管理
+
+// 缓存
+Gdn::cache()->get('key');
+Gdn::cache()->store('key', $value, [Gdn_Cache::FEATURE_EXPIRY => 3600]);
+
+// 会话与权限
+Gdn::session();                          // 当前会话
+Gdn::session()->UserID;                  // 当前用户 ID
+Gdn::session()->checkPermission('Garden.Settings.Manage');
+
+// 插件管理器
+Gdn::pluginManager()->fireEvent('EventName');
+
+// 容器（现代化）
+Gdn::getContainer()->get(ServiceClass::class);
+
+// 控制器（仅在请求周期内可用）
+Gdn::controller();
+```
+
+---
+
+### 📌 Model 基类常用方法
+
+所有模型继承自 `Gdn_Model`，提供标准 CRUD 操作：
+
+```php
+// 实例化
+$model = new YourModel();
+
+// 查询方法
+$model->getID($ID);                      // 按主键查询单条
+$model->getWhere($Where, $OrderBy, $Direction, $Limit, $Offset);
+$model->get($OrderFields, $OrderDirection, $Limit, $PageNumber);
+
+// 保存（自动判断 insert/update）
+$ID = $model->save($FormPostValues, $Settings);
+
+// 删除
+$model->delete($Where);
+$model->deleteID($ID);
+
+// SQL 访问
+$model->SQL->select('*')->from('Table')->where('Field', 'Value')->get();
+
+// 验证
+$model->Validation->applyRule('FieldName', 'Required');
+$model->Validation->validate($PostData);
+
+// Schema 定义
+$model->defineSchema();                  // 自动从数据库表读取
+
+// 字段过滤（阻止某些字段被保存）
+$model->addFilterField(['InsertUserID', 'DateInserted']);
+```
+
+#### 特定模型常用方法
+
+**CategoryModel**
+```php
+CategoryModel::categories();             // 获取所有分类（缓存）
+CategoryModel::categories($CategoryID);  // 按 ID 获取分类
+CategoryModel::checkPermission($Category, 'Vanilla.Discussions.View');
+CategoryModel::setField($CategoryID, $Property, $Value); // 更新字段
+```
+
+**DiscussionModel**
+```php
+$discussionModel->get($Offset, $Limit, $Wheres);
+$discussionModel->getID($DiscussionID);
+$discussionModel->save($FormPostValues);
+$discussionModel->setField($DiscussionID, $Property, $Value);
+```
+
+**CommentModel**
+```php
+$commentModel->get($DiscussionID, $Limit, $Offset);
+$commentModel->save($FormPostValues);
+$commentModel->delete($CommentID);
+```
+
+**UserModel**
+```php
+$userModel->getID($UserID);
+$userModel->getByUsername($Username);
+$userModel->getByEmail($Email);
+$userModel->save($FormPostValues, ['SaveRoles' => true]);
+UserModel::getDefaultAvatarUrl($User);   // 获取默认头像
+```
+
+---
+
+### 📌 Controller 基类常用方法
+
+所有控制器继承自 `Gdn_Controller`：
+
+```php
+// 数据传递到视图
+$this->setData('Key', $Value);
+$this->Data['Key'] = $Value;              // 等效写法
+
+// 权限检查（抛出异常）
+$this->permission('Garden.Settings.Manage');
+$this->permission('Vanilla.Discussions.Edit', false, 'Category', $PermissionCategoryID);
+
+// 渲染视图
+$this->render();                          // 默认视图
+$this->render('CustomView', 'CustomController', 'Application');
+
+// JSON 响应
+$this->jsonTarget('#Target', '<div>HTML</div>', 'Append');
+$this->informMessage('Success!');
+$this->errorMessage('Error!');
+$this->render('blank', 'utility', 'dashboard'); // AJAX 常用
+
+// 资源加载
+$this->addJsFile('file.js', 'ApplicationOrPlugin');
+$this->addCssFile('file.css', 'ApplicationOrPlugin');
+$this->addDefinition('TranslationKey', t('Translation'));
+
+// 事件触发（供插件钩子）
+$this->fireEvent('EventName');
+$this->EventArguments['Key'] = $Value;   // 传递事件参数
+
+// 表单处理
+$this->Form->isPostBack();               // 是否 POST 请求
+$this->Form->getFormValue('FieldName');  // 获取表单值
+$this->Form->setData($Data);             // 预填表单
+```
+
+---
+
+### 📌 数据库查询 (Gdn_SQLDriver)
+
+Vanilla 提供流式 SQL 构建器：
+
+```php
+$sql = Gdn::sql();
+
+// SELECT 查询
+$result = $sql->select('FieldName')
+    ->from('TableName')
+    ->where('CategoryID', 5)
+    ->where('DateInserted >', '2026-01-01')
+    ->orderBy('DateInserted', 'desc')
+    ->limit(20)
+    ->get();
+
+// JOIN
+$sql->select('d.*, u.Name')
+    ->from('Discussion d')
+    ->join('User u', 'd.InsertUserID = u.UserID')
+    ->get();
+
+// INSERT
+$sql->insert('TableName', [
+    'FieldName' => 'Value',
+    'DateInserted' => Gdn_Format::toDateTime()
+]);
+
+// UPDATE
+$sql->update('TableName')
+    ->set('FieldName', 'NewValue')
+    ->where('ID', 123)
+    ->put();
+
+// DELETE
+$sql->delete('TableName', ['ID' => 123]);
+
+// 批量操作
+$sql->replace('TableName', $Data, ['PrimaryKey'], true); // Upsert
+
+// 原生查询（仅当必要时使用）
+$sql->query("SELECT * FROM GDN_Table WHERE ...");
+```
+
+---
+
+### 📌 常用全局辅助函数
+
+#### 配置与路径
+```php
+c('Key', 'Default');                     // 获取配置
+saveToConfig('Key', 'Value');            // 保存配置（单个）
+saveToConfig(['Key1' => 'Val1', 'Key2' => 'Val2']); // 批量
+
+url('/path');                            // 生成 URL
+url('/path', true);                      // 生成完整 URL（含域名）
+asset('/path/to/file.css');              // 生成静态资源 URL
+
+PATH_ROOT;                               // 网站根目录
+PATH_APPLICATIONS;                       // applications/ 目录
+PATH_PLUGINS;                            // plugins/ 目录
+PATH_THEMES;                             // themes/ 目录
+```
+
+#### 用户相关
+```php
+userUrl($User);                          // 用户资料 URL
+userPhoto($User);                        // 用户头像 HTML
+userAnchor($User);                       // 用户链接 HTML
+formatUsername($User, 'Text', 'UserLink'); // 格式化用户名
+```
+
+#### 分类与讨论
+```php
+categoryUrl($Category);                  // 分类 URL
+discussionUrl($Discussion);              // 讨论 URL
+commentUrl($Comment);                    // 评论 URL（含锚点）
+```
+
+#### 数据操作
+```php
+val('Key', $Array, 'Default');           // 安全获取数组值
+valr('Nested.Key.Path', $Array, 'Default'); // 嵌套路径获取
+setvalr('Nested.Key', $Array, 'Value');  // 嵌套路径设置
+touchValue('Key', $Array, 'Default');    // 设置默认值（如不存在）
+```
+
+#### HTML 生成
+```php
+wrap($Content, 'div', ['class' => 'my-class']); // 包裹 HTML 标签
+anchor($Text, $Destination, $CssClass, $Attributes); // 生成链接
+img($Image, $Attributes);                // 生成图片标签
+attribute($Attributes);                  // 生成 HTML 属性字符串
+```
+
+#### 翻译与本地化
+```php
+t('Translation Key', 'Default');         // 翻译文本
+plural($Number, 'Singular', 'Plural');   // 复数处理
+Gdn_Format::date($Timestamp, 'html');    // 格式化日期
+```
+
+#### 权限检查
+```php
+checkPermission('Garden.Settings.Manage'); // 检查权限（抛异常）
+Gdn::session()->checkPermission('Permission'); // 返回 bool
+```
+
+#### 格式化
+```php
+Gdn_Format::to($Content, 'Html');        // 格式化内容
+Gdn_Format::html($Content);              // 输出为 HTML
+Gdn_Format::text($Content);              // 输出为纯文本
+htmlspecialchars($Content, ENT_QUOTES, 'UTF-8'); // XSS 防护
+```
+
+---
+
+### 📌 插件开发常用钩子
+
+插件通过事件钩子扩展功能，命名规则：`{对象类名}_{事件名}_{handler|before|after}`
+
+```php
+class MyPlugin extends Gdn_Plugin {
+
+    // 页面渲染前
+    public function base_render_before($sender) {
+        // 所有页面渲染前执行
+        $sender->addJsFile('myscript.js', 'plugins/MyPlugin');
+    }
+
+    // 特定控制器事件
+    public function discussionController_render_before($sender) {
+        // 仅讨论页面渲染前执行
+    }
+
+    // 模型保存前
+    public function discussionModel_beforeSaveDiscussion_handler($sender, $args) {
+        $formPostValues = &$args['FormPostValues']; // 引用传递，可修改
+        // 验证或修改数据
+    }
+
+    // 模型保存后
+    public function discussionModel_afterSaveDiscussion_handler($sender, $args) {
+        $discussionID = $args['DiscussionID'];
+        // 执行后续操作
+    }
+
+    // 添加设置菜单项
+    public function base_getAppSettingsMenuItems_handler($sender) {
+        $menu = &$sender->EventArguments['SideMenu'];
+        $menu->addLink('Settings', t('My Plugin'), 'settings/myplugin', 'Garden.Settings.Manage');
+    }
+
+    // 自定义设置页面
+    public function settingsController_myPlugin_create($sender) {
+        $sender->permission('Garden.Settings.Manage');
+        $sender->title(t('My Plugin Settings'));
+        $sender->render('settings', '', 'plugins/MyPlugin');
+    }
+
+    // 插件启用时执行（仅一次）
+    public function setup() {
+        // 添加数据库表或字段
+        $construct = Gdn::structure();
+        $construct->table('MyTable')
+            ->primaryKey('MyID')
+            ->column('Name', 'varchar(100)', false)
+            ->set();
+    }
+}
+```
+
+#### ThemeHooks 专用事件
+
+主题钩子类 (`class.themename.themehooks.php`) 继承 `Gdn_Plugin`：
+
+```php
+class MyThemeHooks extends Gdn_Plugin {
+
+    // 主题启用时执行
+    public function setup() {
+        $this->structure();
+    }
+
+    // 数据库 Schema 修改
+    public function structure() {
+        Gdn::structure()
+            ->table('Category')
+            ->column('IconID', 'varchar(50)', true)
+            ->set();
+    }
+
+    // 注入动态 CSS 变量
+    public function base_render_before($sender) {
+        $primaryColor = c('Themes.MyTheme.PrimaryColor', '#3B82F6');
+        $css = "<style>:root { --primary: {$primaryColor}; }</style>";
+        $sender->Head->addString($css);
+    }
+
+    // 设置页面注册
+    public function settingsController_myTheme_create($sender) {
+        // 同插件
+    }
+
+    // 分类表单扩展
+    public function settingsController_addEditCategory_handler($sender, $args) {
+        // 添加自定义字段到分类表单
+    }
+
+    // Twig 事件（无 fireAs，使用原控制器名）
+    public function vanillaSettingsController_afterCategorySettings_handler($sender, $args) {
+        // 在分类设置表单后插入 HTML
+        echo '<li class="form-group">...</li>';
+    }
+}
+```
+
+---
+
+### 📌 数据库 Schema 管理
+
+```php
+// 获取 Structure 对象
+$construct = Gdn::structure();
+
+// 定义表
+$construct->table('MyTable')
+    ->primaryKey('MyID')                 // 主键（自增）
+    ->column('Name', 'varchar(100)', false) // 字段名、类型、是否可空
+    ->column('Description', 'text', true)
+    ->column('CategoryID', 'int', false)
+    ->column('DateInserted', 'datetime', false)
+    ->column('InsertUserID', 'int', false)
+    ->set();                             // 执行（创建或更新）
+
+// 检查字段是否存在
+if (!$construct->columnExists('IconID')) {
+    $construct->column('IconID', 'varchar(50)', true);
+    $construct->set(false, false);       // 仅添加字段，不重建表
+}
+
+// 添加索引
+$construct->table('Discussion')
+    ->column('CategoryID', 'int')
+    ->column('DateInserted', 'datetime')
+    ->set();
+
+// 删除字段（谨慎使用）
+$construct->table('MyTable')
+    ->dropColumn('OldFieldName')
+    ->set();
+```
+
+---
+
+### 📌 缓存策略
+
+```php
+// 基本使用
+$cache = Gdn::cache();
+$key = 'mydata.cache';
+
+// 读取
+$data = $cache->get($key);
+if ($data === Gdn_Cache::CACHEOP_FAILURE) {
+    // 缓存未命中，查询数据库
+    $data = $model->getExpensiveData();
+    // 存储（3600 秒）
+    $cache->store($key, $data, [
+        Gdn_Cache::FEATURE_EXPIRY => 3600
+    ]);
+}
+
+// 删除
+$cache->remove($key);
+
+// 批量删除（模式匹配）
+$cache->flush(); // 清空所有缓存（慎用）
+
+// SQL 查询缓存
+$result = Gdn::sql()
+    ->select('*')
+    ->from('Discussion')
+    ->where('CategoryID', 5)
+    ->cache('discussions.category.5', [
+        Gdn_Cache::FEATURE_EXPIRY => 600
+    ])
+    ->get();
+```
+
+---
+
+### 📌 常见设计模式
+
+#### 1. 单例模式（Model）
+```php
+class MyModel extends Gdn_Model {
+    private static $instance;
+
+    public static function instance() {
+        if (self::$instance === null) {
+            self::$instance = new MyModel();
+        }
+        return self::$instance;
+    }
+}
+
+// 使用
+MyModel::instance()->someMethod();
+```
+
+#### 2. 事件驱动（插件钩子）
+```php
+// 控制器中触发事件
+$this->EventArguments['Discussion'] = $discussion;
+$this->fireEvent('BeforeDiscussionRender');
+
+// 插件监听
+public function discussionController_beforeDiscussionRender_handler($sender) {
+    $discussion = $sender->EventArguments['Discussion'];
+    // 处理逻辑
+}
+```
+
+#### 3. 表单处理流程
+```php
+// 控制器中
+public function myMethod() {
+    $this->permission('Garden.Settings.Manage');
+
+    if ($this->Form->authenticatedPostBack()) {
+        // 验证
+        $this->Form->validateRule('FieldName', 'Required');
+
+        if ($this->Form->errorCount() === 0) {
+            // 保存
+            $formValues = $this->Form->formValues();
+            $model->save($formValues);
+
+            $this->informMessage(t('Saved.'));
+            redirectTo('/success');
+        }
+    }
+
+    // 预填数据
+    $this->Form->setData($model->getID($ID));
+    $this->render();
+}
+```
+
+#### 4. 权限检查模式
+```php
+// 分类权限（考虑继承）
+$category = CategoryModel::categories($CategoryID);
+if (!CategoryModel::checkPermission($category, 'Vanilla.Discussions.View')) {
+    throw permissionException('Vanilla.Discussions.View');
+}
+
+// 简单权限
+if (!Gdn::session()->checkPermission('Garden.Settings.Manage')) {
+    throw permissionException();
+}
+```
+
+#### 5. 数据库事务（较少使用）
+```php
+$sql = Gdn::sql();
+$sql->beginTransaction();
+
+try {
+    $sql->insert('Table1', $Data1);
+    $sql->insert('Table2', $Data2);
+    $sql->commitTransaction();
+} catch (Exception $e) {
+    $sql->rollbackTransaction();
+    throw $e;
+}
+```
+
+---
+
+### 📌 安全最佳实践
+
+```php
+// 1. 输入验证
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$this->Form->validateRule('Email', 'ValidateEmail');
+
+// 2. SQL 注入防护（使用查询构建器）
+$sql->where('UserID', $userID);          // ✅ 自动转义
+$sql->where("UserID = $userID");         // ❌ 危险
+
+// 3. XSS 防护
+echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8'); // ✅
+echo Gdn_Format::html($content);         // ✅ 已净化
+echo $userInput;                         // ❌ 危险
+
+// 4. CSRF 防护（自动）
+$this->Form->authenticatedPostBack();    // 验证 TransientKey
+
+// 5. 权限检查（必须）
+$this->permission('Garden.Settings.Manage');
+CategoryModel::checkPermission($Category, 'Vanilla.Discussions.View');
+
+// 6. 文件上传验证
+$upload = new Gdn_Upload();
+$upload->allowFileExtension('jpg', 'jpeg', 'png', 'gif');
+$tmpName = $upload->validateUpload('PhotoUpload');
+```
+
+---
+
+### 📌 调试与日志
+
+```php
+// 调试模式（conf/config.php）
+$Configuration['Garden']['Debug'] = true;
+
+// 日志记录
+Logger::error('Error message', ['context' => $data]);
+Logger::warning('Warning message');
+Logger::notice('Notice message');
+
+// 调试输出（仅 Debug 模式可见）
+decho($variable, 'Label');               // 带标签的 var_dump
+
+// SQL 调试
+Gdn::sql()->debug(true);                 // 输出 SQL 到页面
 ```
 
 ---
@@ -104,6 +685,7 @@ graph TD
     THEMES --> COMPAT_2011["2011Compatibility"];
     THEMES --> EMBED["EmbedFriendly"];
     THEMES --> DEFAULT["default"];
+    THEMES --> BITSMESH["bitsmesh"];
 
     ROOT --> LIBRARY["library"];
     LIBRARY --> CORE["core"];
@@ -140,6 +722,7 @@ graph TD
     click COMPAT_2011 "./themes/2011Compatibility/CLAUDE.md" "查看 2011 Compatibility 主题文档"
     click EMBED "./themes/EmbedFriendly/CLAUDE.md" "查看 Embed-Friendly 主题文档"
     click DEFAULT "./themes/default/CLAUDE.md" "查看 +Baseline 主题文档"
+    click BITSMESH "./themes/bitsmesh/CLAUDE.md" "查看 BitsMesh 主题文档"
     click LIBRARY "./library/CLAUDE.md" "查看核心库文档"
 ```
 
@@ -208,6 +791,7 @@ graph TD
 
 | 模块路径 | 职责 | 状态 |
 |---------|------|------|
+| [themes/bitsmesh](./themes/bitsmesh/CLAUDE.md) | BitsMesh 深度定制主题（现代化） | **定制中** 🚀 |
 | [themes/keystone](./themes/keystone/CLAUDE.md) | 默认现代主题（支持多种颜色） | 默认 |
 | [themes/mobile](./themes/mobile/CLAUDE.md) | 移动端优化主题 | 默认 |
 | [themes/theme-boilerplate](./themes/theme-boilerplate/CLAUDE.md) | SCSS 响应式主题开发模板 | 开发用 🛠️ |
@@ -247,7 +831,7 @@ http://localhost:8357/
 ### 环境要求
 
 ```yaml
-PHP: >= 7.0 (推荐 7.2+)
+PHP: >= 7.0 (推荐 7.2+，当前运行 8.2)
 MySQL: >= 5.7 / MariaDB >= 10.2
 Node.js: >= 10.x (推荐 12.x+)
 Yarn: >= 1.x
@@ -707,28 +1291,24 @@ $result = $sql->select('*')
 |---------|-----|-------|--------|
 | **应用** | 3 | 3 | 100% ✅ |
 | **插件** | 28 | 28 | 100% ✅ |
-| **主题** | 7 | 7 | 100% ✅ |
+| **主题** | 8 | 8 | 100% ✅ |
 | **核心库** | 1 | 1 | 100% ✅ |
 
-### 插件详细覆盖
+### 本次更新内容
 
-✅ **已生成文档**（28 个）：
-- 编辑器类：rich-editor, editor, Quotes, emojiextender
-- 社交登录类：Twitter, Facebook, GooglePlus, googlesignin, oauth2
-- 安全类：Akismet, recaptcha, Flagging
-- 用户体验类：Gravatar, vanillicon, ProfileExtender, AllViewed, IndexPhotos
-- 管理类：VanillaStats, swagger-ui, GettingStarted
-- 高级功能类：pockets, heroimage, stubcontent
-
-### 主题详细覆盖
-
-✅ **已生成文档**（7 个）：
-- 现代主题：keystone, mobile, theme-boilerplate
-- 经典主题：bittersweet, 2011Compatibility, EmbedFriendly, default
-
-### 缺口分析
-
-无重大缺口。所有主要模块已完成文档生成。
+**新增速查表**：
+- Gdn 静态类方法速查
+- Model 基类常用方法（含 CategoryModel, DiscussionModel, CommentModel, UserModel）
+- Controller 基类常用方法
+- 数据库查询（Gdn_SQLDriver）流式 API
+- 常用全局辅助函数（200+ 函数）
+- 插件开发常用钩子与事件
+- ThemeHooks 专用事件
+- 数据库 Schema 管理
+- 缓存策略
+- 常见设计模式
+- 安全最佳实践
+- 调试与日志
 
 ---
 
@@ -749,6 +1329,6 @@ $result = $sql->select('*')
 
 ---
 
-**最后更新**：2026-01-17 20:57:17
-**文档版本**：2.0.0
-**覆盖率**：100% - 已完成所有核心模块、插件和主题的文档扫描。
+**最后更新**：2026-01-20 16:45:00
+**文档版本**：3.0.0
+**覆盖率**：100% - 已完成所有核心模块、插件和主题的文档扫描，并新增 Vanilla 原生方法速查表。
