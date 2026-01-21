@@ -116,7 +116,7 @@
 
 /* New comment badge styling */
 .Meta.Meta-Discussion .NewCommentCount {
-    background-color: var(--bits-accent, #4a90d9);
+    background-color: #888;
     border-radius: 2px;
     color: #fff;
     font-size: 10px;
