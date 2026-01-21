@@ -637,6 +637,18 @@ body.dark-layout {
     }
 
     /**
+     * Categories controller render before hook.
+     * Force show category link on category pages for style consistency with homepage.
+     *
+     * @param CategoriesController $sender The controller instance.
+     * @return void
+     */
+    public function categoriesController_render_before($sender) {
+        // Force display category tag on category pages (consistent with homepage style)
+        $sender->setData('_ShowCategoryLink', true);
+    }
+
+    /**
      * Render before hook - inject dynamic styles and resources.
      *
      * @param Gdn_Controller $sender The controller instance.
@@ -976,17 +988,23 @@ body.dark-layout {
      */
     private function buildPageUrl($basePath, $page, $queryString) {
         // Handle empty basePath (homepage)
-        $urlPath = $basePath ?: '/';
+        // Homepage must use /discussions/pN format for Vanilla routing to work
+        $isHomepage = ($basePath === '' || $basePath === '/');
 
         // Page 1 doesn't need 'p1' in URL
         if ($page <= 1) {
-            return url($urlPath . $queryString);
+            if ($isHomepage) {
+                // Homepage page 1: / or /?sortBy=xxx
+                return url('/' . $queryString);
+            }
+            return url($basePath . $queryString);
         }
 
         // Append page number
-        if ($basePath === '' || $basePath === '/') {
-            // Homepage: /p2?sortBy=xxx
-            return url('/p' . $page . $queryString);
+        if ($isHomepage) {
+            // Homepage pagination: /discussions/p2?sortBy=xxx
+            // Vanilla routing requires /discussions prefix for pagination
+            return url('/discussions/p' . $page . $queryString);
         }
 
         // Other pages: /categories/xxx/p2?sortBy=xxx
