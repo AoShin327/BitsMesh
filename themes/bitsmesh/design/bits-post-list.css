@@ -137,32 +137,44 @@ body.dark-layout .bits-post-list-item {
    ============================================ */
 
 .bits-sorter {
-    background-color: #888;
-    border: 1px solid #737373;
+    /* NodeSeek .sorter: pixel-perfect replica */
+    display: flex;
+    flex-direction: row;
+    border: 1px solid rgb(115, 115, 115);
     border-radius: 3px;
-    display: inline-flex;
+    background-color: rgb(136, 136, 136);
+    padding: 0px;
+    margin: 0px 8px;
+    height: 19.5px;
     overflow: hidden;
+    box-sizing: content-box;
 }
 
 .bits-sorter > a {
-    background-color: #fff;
-    color: #555;
-    cursor: pointer;
+    /* NodeSeek .sorter a: pixel-perfect replica */
     display: block;
+    padding: 0px 5px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(85, 85, 85);
     font-size: 13px;
-    line-height: 20px;
-    padding: 0 5px;
+    font-weight: 400;
+    line-height: 19.5px;
+    height: 19.5px;
     text-decoration: none;
+    border: none;
+    border-radius: 0px;
+    cursor: pointer;
     transition: background-color 0.15s, color 0.15s;
 }
 
 .bits-sorter > a:hover {
-    background-color: #f5f5f5;
+    background-color: rgb(230, 230, 230);
+    color: rgb(51, 51, 51);
 }
 
 .bits-sorter > a.selected {
-    background-color: #888;
-    color: #fff;
+    background-color: rgb(136, 136, 136);
+    color: rgb(255, 255, 255);
 }
 
 /* Dark mode sorter */
@@ -342,5 +354,29 @@ body.dark-layout a.bits-pager-next:hover .bits-triangle-right {
     .bits-triangle-left,
     .bits-triangle-right {
         border-width: 0 5px 8px;
+    }
+}
+
+/* ============================================
+   Bottom Pager Wrapper
+   Replicates top pager at bottom of lists
+   ============================================ */
+
+.bits-bottom-pager-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 8px;
+    margin-top: 0;
+}
+
+/* Ensure bottom pager inherits all styles from .bits-pager */
+.bits-pager.bits-pager-bottom {
+    /* Same styles as top pager - no overrides needed */
+}
+
+/* Mobile: same adjustments as top pager */
+@media screen and (max-width: 500px) {
+    .bits-bottom-pager-wrapper {
+        padding: 8px 4px;
     }
 }

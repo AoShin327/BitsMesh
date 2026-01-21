@@ -13,18 +13,14 @@ ul.DataList.Discussions {
 }
 
 /* List Item - Card Style */
+/* NodeSeek .post-list-item: pixel-perfect replica */
 ul.DataList.Discussions > li.ItemDiscussion {
     border-bottom: 1px solid var(--bits-glass);
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 12px 8px;
+    gap: 10px;
+    padding: 8px 8px 0px;
     position: relative;
-    transition: background-color 0.2s;
-}
-
-ul.DataList.Discussions > li.ItemDiscussion:hover {
-    background-color: var(--bits-bg-sub);
 }
 
 ul.DataList.Discussions > li.ItemDiscussion:last-child {
@@ -43,16 +39,12 @@ ul.DataList.Discussions .IndexPhoto {
 }
 
 ul.DataList.Discussions .IndexPhoto img {
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    height: 42px;
-    width: 42px;
+    /* Avatar: 40x40, 15% radius, subtle shadow */
+    border-radius: 15%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 3px 0px;
+    height: 40px;
+    width: 40px;
     object-fit: cover;
-    transition: transform 0.2s;
-}
-
-ul.DataList.Discussions .IndexPhoto:hover img {
-    transform: scale(1.05);
 }
 
 /* Content Area */
@@ -63,15 +55,17 @@ ul.DataList.Discussions .ItemContent.Discussion {
 }
 
 /* Discussion Title */
+/* NodeSeek .post-title: 14px bold, 19.5px line-height */
 ul.DataList .ItemContent .Title {
-    margin: 0 0 6px 0;
-    line-height: 1.4;
+    margin: 0;
+    line-height: 19.5px;
 }
 
 ul.DataList .ItemContent .Title a {
     color: var(--bits-text);
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 19.5px;
     text-decoration: none;
     display: block;
     overflow: hidden;
@@ -85,17 +79,18 @@ ul.DataList .ItemContent .Title a:hover {
 
 /* ============================================
    Discussion Meta (NodeSeek post-info Style)
-   精确复刻: fontSize 11px, lineHeight 19.5px
+   精确复刻: fontSize 11px, lineHeight 19.5px, marginTop 2px
    ============================================ */
 
 ul.DataList .Meta {
-    color: #555;
+    color: rgb(85, 85, 85);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     font-size: 11px;
     font-weight: 400;
     line-height: 19.5px;
+    margin-top: 2px;
 }
 
 body.dark-layout ul.DataList .Meta {
@@ -181,17 +176,24 @@ ul.DataList .ItemContent.Discussion {
 }
 
 ul.DataList .Meta .Category {
+    /* NodeSeek .post-category: pixel-perfect positioning */
     position: absolute;
-    right: 0;
-    top: 2px;
+    right: 13px;
+    bottom: 8px;
+    top: auto;
 }
 
 ul.DataList .Meta .Category a {
-    background-color: var(--bits-bg-sub);
-    border-radius: 4px;
-    color: var(--bits-text-gray);
+    /* NodeSeek .post-category: styles defined in Colorful Category Tags section */
+    background-color: rgb(251, 251, 251);
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 2px 0px;
+    color: rgb(85, 85, 85);
     font-size: 11px;
-    padding: 3px 10px;
+    font-weight: 400;
+    height: 20px;
+    line-height: 20px;
+    padding: 0px 4px;
     transition: all 0.2s;
 }
 
@@ -234,8 +236,9 @@ ul.DataList .Options {
 
     ul.DataList .Meta .Category {
         position: absolute;
-        right: 0;
-        top: 0;
+        right: 8px;
+        bottom: 6px;
+        top: auto;
     }
 }
 
@@ -249,17 +252,25 @@ ul.DataList .Options {
     margin-right: 4px;
 }
 
+/* Announcement/Read-only Badge - NodeSeek .nsk-badge.read-only replica */
 .Tag-Announcement {
-    background-color: var(--bits-text);
-    color: var(--bits-bg-main);
+    background-color: transparent;
+    color: rgb(199, 30, 30);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0px 2px;
 }
 
-/* Category Link in Meta */
+/* Category Link in Meta - NodeSeek style */
 .Meta .Category a {
-    background-color: var(--bits-bg-sub);
-    border-radius: 3px;
-    padding: 2px 6px;
+    background-color: rgb(251, 251, 251);
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 2px 0px;
+    padding: 0px 4px;
     font-size: 11px;
+    font-weight: 400;
+    height: 20px;
+    line-height: 20px;
 }
 
 /* ============================================
@@ -339,7 +350,7 @@ ul.DataList .Options {
 }
 
 /* ============================================
-   Buttons (.Button)
+   Buttons (.Button) - NodeSeek replica
    ============================================ */
 
 .Button {
@@ -348,15 +359,16 @@ ul.DataList .Options {
     appearance: none;
     background-color: var(--bits-bg-sub);
     border: 1px solid var(--bits-glass);
-    border-radius: 6px;
+    border-radius: 4px;
     box-sizing: border-box;
     color: var(--bits-text);
     cursor: pointer;
     display: inline-block;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.5;
-    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    height: 27px;
+    line-height: 25px;
+    padding: 0px 16px;
     text-align: center;
     text-decoration: none;
     transition: all 0.2s;
@@ -369,16 +381,18 @@ ul.DataList .Options {
     color: var(--bits-text);
 }
 
-/* Primary Button */
+/* Primary Button - NodeSeek green */
 .Button.Primary {
-    background-color: var(--bits-primary);
-    border-color: var(--bits-primary);
+    /* NodeSeek .btn.new-discussion: rgb(46, 164, 79) */
+    background-color: rgb(46, 164, 79);
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    box-shadow: rgba(27, 31, 35, 0.1) 0px 1px 0px 0px;
     color: #fff;
 }
 
 .Button.Primary:hover {
-    background-color: var(--bits-secondary);
-    border-color: var(--bits-secondary);
+    background-color: rgb(40, 148, 71);
+    border: 1px solid rgba(27, 31, 35, 0.15);
     color: #fff;
 }
 
@@ -432,33 +446,37 @@ h2.H {
 }
 
 /* ============================================
-   Pager / Pagination - Modern Forum Style
+   Pager / Pagination - NodeSeek Style
+   精确复刻: 18x18px, monospace, margin 2px
    ============================================ */
 
 .Pager {
     align-items: center;
     display: flex;
-    gap: 2px;
+    gap: 0;
     margin: 0;
 }
 
 /* Page number buttons and nav arrows */
 .Pager .Pager-p,
 .Pager .Pager-nav {
+    /* NodeSeek .pager-pos: pixel-perfect replica */
     align-items: center;
     border-radius: 3px;
     box-sizing: border-box;
-    color: #888;
+    color: rgb(136, 136, 136);
     display: inline-flex;
-    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-family: monospace;
     font-size: 16px;
     height: 18px;
     justify-content: center;
     line-height: 18px;
+    margin: 0px 2px;
     min-width: 18px;
     text-align: center;
     text-decoration: none;
     vertical-align: middle;
+    width: 18px;
 }
 
 /* Page numbers (links) */
@@ -472,12 +490,13 @@ a.Pager-p:hover {
 }
 
 /* Current page (highlighted) */
+/* NodeSeek .pager-cur: complex shadow, not-allowed cursor */
 .Pager .Pager-p.Highlight {
-    background-color: #fbfbfb;
-    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
-    color: #555;
-    cursor: default;
-    font-weight: 600;
+    background-color: rgb(251, 251, 251);
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px 0px, rgba(0, 0, 0, 0.24) 0px 1px 2px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    color: rgb(136, 136, 136);
+    cursor: not-allowed;
+    font-weight: 400;
 }
 
 /* Navigation arrows (prev/next) */
@@ -498,42 +517,36 @@ span.Pager-nav[aria-disabled="true"] {
 }
 
 /* Triangle arrows using CSS border technique */
+/* NodeSeek: border-width 0px 6px 10px, color rgb(128, 128, 128) */
 .Pager .Pager-nav::before {
+    border-color: transparent transparent rgb(128, 128, 128);
     border-style: solid;
+    border-width: 0px 6px 10px;
     content: '';
     display: block;
     height: 0;
     width: 0;
 }
 
-/* Previous arrow (left pointing triangle) */
+/* Previous arrow (left pointing triangle) - rotate 270deg */
 .Pager .Pager-nav.Previous::before {
-    border-color: transparent #888 transparent transparent;
-    border-width: 5px 8px 5px 0;
+    transform: rotate(270deg);
 }
 
-/* Next arrow (right pointing triangle) */
+/* Next arrow (right pointing triangle) - rotate 90deg */
 .Pager .Pager-nav.Next::before {
-    border-color: transparent transparent transparent #888;
-    border-width: 5px 0 5px 8px;
+    transform: rotate(90deg);
 }
 
 /* Hover states for arrows */
-a.Pager-nav.Previous:hover::before {
-    border-color: transparent #555 transparent transparent;
-}
-
+a.Pager-nav.Previous:hover::before,
 a.Pager-nav.Next:hover::before {
-    border-color: transparent transparent transparent #555;
+    border-color: transparent transparent rgb(85, 85, 85);
 }
 
 /* Disabled arrow colors */
-span.Pager-nav[aria-disabled="true"].Previous::before {
-    border-color: transparent #aaa transparent transparent;
-}
-
-span.Pager-nav[aria-disabled="true"].Next::before {
-    border-color: transparent transparent transparent #aaa;
+span.Pager-nav[aria-disabled="true"]::before {
+    border-color: transparent transparent rgb(170, 170, 170);
 }
 
 /* Ellipsis styling */
@@ -634,16 +647,17 @@ body.dark-layout a.Pager-nav.Next:hover::before {
 }
 
 /* ============================================
-   Announcement Badge
+   Announcement Badge - NodeSeek read-only style
    ============================================ */
 
 li.Announcement .Tag-Announcement {
-    background-color: #333;
-    color: #fff;
+    background-color: transparent;
+    color: rgb(199, 30, 30);
+    font-weight: 700;
 }
 
 body.dark-layout li.Announcement .Tag-Announcement {
-    background-color: #555;
+    color: rgb(255, 100, 100);
 }
 
 /* ============================================
@@ -660,25 +674,40 @@ a:hover {
 }
 
 /* ============================================
-   Form Elements
+   Form Elements - NodeSeek replica
    ============================================ */
 
 input.InputBox,
 textarea.InputBox {
-    background-color: var(--bits-bg-sub);
-    border: 1px solid var(--bits-glass);
+    /* NodeSeek input: pixel-perfect replica */
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(204, 204, 204);
     border-radius: 4px;
     box-sizing: border-box;
     color: var(--bits-text);
-    font-size: 14px;
-    padding: 8px 12px;
+    font-size: 13px;
+    height: 30px;
+    padding: 6px 8px;
     width: 100%;
+}
+
+textarea.InputBox {
+    height: auto;
+    min-height: 80px;
+    line-height: 1.5;
 }
 
 input.InputBox:focus,
 textarea.InputBox:focus {
-    border-color: var(--bits-primary);
+    border-color: rgb(59, 130, 246);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
     outline: none;
+}
+
+body.dark-layout input.InputBox,
+body.dark-layout textarea.InputBox {
+    background-color: var(--bits-bg-sub);
+    border-color: var(--bits-glass);
 }
 
 /* ============================================
@@ -707,11 +736,6 @@ textarea.InputBox:focus {
     display: none;
 }
 
-/* Hide New Discussion button in top controls (it's in sidebar) */
-.PageControls.Top .BoxNewDiscussion {
-    display: none;
-}
-
 .PageControls.Bottom {
     margin-top: 20px;
     margin-bottom: 0;
@@ -721,62 +745,6 @@ textarea.InputBox:focus {
 /* Hide PagerNub decorations */
 .PageControls .PagerNub {
     display: none;
-}
-
-/* New Discussion Button Container */
-.BoxNewDiscussion {
-    margin: 0;
-}
-
-/* New Discussion Button - Primary Action */
-.Button.NewDiscussion,
-a.Button.NewDiscussion {
-    background-color: var(--bits-primary);
-    border: none;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 8px 20px;
-    transition: all 0.2s;
-}
-
-.Button.NewDiscussion:hover,
-a.Button.NewDiscussion:hover {
-    background-color: var(--bits-secondary);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-/* Big Button Variant */
-.Button.NewDiscussion.BigButton {
-    font-size: 16px;
-    padding: 12px 28px;
-}
-
-/* Dark Mode */
-body.dark-layout .Button.NewDiscussion {
-    background-color: #158736;
-}
-
-body.dark-layout .Button.NewDiscussion:hover {
-    background-color: #23af4a;
-}
-
-/* Dropdown Menu for New Discussion */
-.BoxNewDiscussion .ButtonGroup {
-    display: inline-flex;
-}
-
-.BoxNewDiscussion .ButtonGroup .Button:first-child {
-    border-radius: 6px 0 0 6px;
-}
-
-.BoxNewDiscussion .ButtonGroup .Button:last-child {
-    border-radius: 0 6px 6px 0;
-    padding: 8px 10px;
 }
 
 /* Discussion Filters */
@@ -811,12 +779,6 @@ body.dark-layout .Button.NewDiscussion:hover {
         justify-content: center;
         gap: 8px;
     }
-
-    .Button.NewDiscussion {
-        font-size: 13px;
-        padding: 8px 16px;
-        width: auto;
-    }
 }
 
 /* ============================================
@@ -850,11 +812,60 @@ body.dark-layout .Button.NewDiscussion:hover {
     background-color: var(--bits-glass);
 }
 
+/* ============================================
+   Flyout/Dropdown Menu - NodeSeek replica
+   ============================================ */
+
+.Flyout.MenuItems {
+    /* NodeSeek .search-hint dropdown style */
+    background-color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px 0px;
+    padding: 5px 0;
+}
+
+.Flyout.MenuItems li {
+    list-style: none;
+}
+
+.Flyout.MenuItems li a,
+.dropdown-menu-link {
+    color: rgb(51, 51, 51);
+    display: block;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 5px 15px;
+    text-decoration: none;
+}
+
+.Flyout.MenuItems li a:hover,
+.dropdown-menu-link:hover {
+    background-color: rgb(245, 245, 245);
+    color: rgb(51, 51, 51);
+}
+
+body.dark-layout .Flyout.MenuItems {
+    background-color: #2a2a2a;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 8px 0px;
+}
+
+body.dark-layout .Flyout.MenuItems li a,
+body.dark-layout .dropdown-menu-link {
+    color: rgb(200, 200, 200);
+}
+
+body.dark-layout .Flyout.MenuItems li a:hover,
+body.dark-layout .dropdown-menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Discussion Sorter Flyout */
 .DiscussionSorter .Flyout {
-    background-color: var(--bits-bg-main);
-    border: 1px solid var(--bits-glass);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px 0px;
     display: none;
     min-width: 150px;
     position: absolute;
@@ -1010,14 +1021,18 @@ body.dark-layout .FilterMenu li a:hover {
    ============================================ */
 
 /* Base Category Tag Style */
+/* NodeSeek .post-category: pixel-perfect replica */
 ul.DataList .Meta .Category a,
 .Meta .Category a {
-    background-color: var(--bits-bg-sub);
-    border-radius: 4px;
-    color: var(--bits-text-gray);
+    background-color: rgb(251, 251, 251);
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 2px 0px;
+    color: rgb(85, 85, 85);
     font-size: 11px;
-    font-weight: 500;
-    padding: 3px 10px;
+    font-weight: 400;
+    height: 20px;
+    line-height: 20px;
+    padding: 0px 4px;
     transition: all 0.2s;
 }
 
@@ -1177,4 +1192,22 @@ body.dark-layout a[href*="/categories/support"] {
 body.dark-layout a[href*="/categories/off-topic"],
 body.dark-layout a[href*="/categories/chat"] {
     background-color: rgba(236, 72, 153, 0.25);
+}
+
+/* ============================================
+   Discussion List Item Spacing Enhancement
+   ============================================ */
+ul.DataList.Discussions > li.ItemDiscussion {
+    padding: 12px 8px 8px;
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   Hide Vanilla Native Bottom Pager
+   BitsMesh uses custom bits-pager in post-list-controler.tpl
+   which provides consistent sortBy parameter preservation
+   ============================================ */
+.PageControls.Top,
+.PageControls.Bottom {
+    display: none;
 }

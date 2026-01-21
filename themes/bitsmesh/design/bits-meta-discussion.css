@@ -16,13 +16,14 @@
    ============================================ */
 
 .Meta.Meta-Discussion {
+    /* NodeSeek .post-info: pixel-perfect replica */
     align-items: center;
-    color: var(--bits-text-gray, #888);
+    color: rgb(85, 85, 85);
     display: flex;
     flex-wrap: wrap;
     font-size: 11px;
     gap: 0;
-    line-height: 1.5;
+    line-height: 19.5px;
 }
 
 /* ============================================
@@ -43,6 +44,26 @@
 
 .Meta.Meta-Discussion .MItem * {
     vertical-align: middle;
+}
+
+/* ============================================
+   Meta Items Display - Show all items like NodeSeek
+   Only hide duplicate DiscussionAuthor (without icon)
+   ============================================ */
+
+/* Hide DiscussionAuthor WITHOUT icon (keep only the one with icon) */
+.Meta.Meta-Discussion .MItem.DiscussionAuthor:not(:has(.bits-meta-icon)) {
+    display: none;
+}
+
+/* Hide DiscussionScore (not used in NodeSeek style) */
+.Meta.Meta-Discussion .MItem.DiscussionScore {
+    display: none;
+}
+
+/* DiscussionAuthor is first .MItem in DOM, so margin-left: 0 */
+.Meta.Meta-Discussion .MItem.DiscussionAuthor:has(.bits-meta-icon) {
+    margin-left: 0;
 }
 
 /* Links inherit gray color, hover shows theme link color */
@@ -88,6 +109,7 @@
 
 .Meta.Meta-Discussion .Tag .bits-meta-icon,
 .Meta.Meta-Discussion .MItem.DiscussionScore .bits-meta-icon,
+.Meta.Meta-Discussion .MItem.Category .bits-meta-icon,
 .Meta.Meta-Discussion .NewCommentCount .bits-meta-icon {
     display: none;
 }
@@ -153,7 +175,8 @@ body.dark-layout .Meta.Meta-Discussion .MItem a:hover {
    ============================================ */
 
 ul.DataList .ItemContent.Discussion .Meta.Meta-Discussion {
-    margin-top: 4px;
+    /* NodeSeek .post-info: margin-top 0px (verified via getComputedStyle) */
+    margin-top: 0px;
 }
 
 /* Ensure SVG icons display correctly in list context */
