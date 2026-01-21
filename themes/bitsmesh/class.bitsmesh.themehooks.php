@@ -9,6 +9,68 @@
  */
 
 /**
+ * Override discussionUrl() to generate short URLs.
+ *
+ * Format: /post-{DiscussionID} or /post-{DiscussionID}/p{page}
+ * This function must be defined before the class to ensure it's loaded early.
+ *
+ * @param object|array $discussion The discussion object.
+ * @param int|string $page Page number (optional).
+ * @param bool $withDomain Include domain in URL.
+ * @return string The discussion URL.
+ */
+if (!function_exists('discussionUrl')) {
+    function discussionUrl($discussion, $page = '', $withDomain = true) {
+        $discussion = (object)$discussion;
+        $discussionID = isset($discussion->DiscussionID) ? (int)$discussion->DiscussionID : 0;
+
+        if ($discussionID <= 0) {
+            return url('/', $withDomain);
+        }
+
+        $result = '/post-' . $discussionID;
+
+        // Add page number if specified and greater than 1, or if user is logged in
+        if ($page && ($page > 1 || Gdn::session()->UserID)) {
+            $result .= '/p' . (int)$page;
+        }
+
+        return url($result, $withDomain);
+    }
+}
+
+/**
+ * Override commentUrl() to generate short URLs with comment anchor.
+ *
+ * Format: /post-{DiscussionID}#Comment_{CommentID}
+ * This function must be defined before the class to ensure it's loaded early.
+ *
+ * @param object|array $comment The comment object.
+ * @param bool $withDomain Include domain in URL.
+ * @return string The comment URL.
+ */
+if (!function_exists('commentUrl')) {
+    function commentUrl($comment, $withDomain = true) {
+        $comment = (object)$comment;
+        $commentID = isset($comment->CommentID) ? (int)$comment->CommentID : 0;
+
+        if ($commentID <= 0) {
+            return url('/', $withDomain);
+        }
+
+        // If we have the DiscussionID, use the short format
+        if (isset($comment->DiscussionID) && $comment->DiscussionID > 0) {
+            $result = '/post-' . (int)$comment->DiscussionID . '#Comment_' . $commentID;
+        } else {
+            // Fallback to action path (server will redirect)
+            $result = '/discussion/comment/' . $commentID . '#Comment_' . $commentID;
+        }
+
+        return url($result, $withDomain);
+    }
+}
+
+/**
  * Class BitsmeshThemeHooks
  */
 class BitsmeshThemeHooks extends Gdn_Plugin {
@@ -61,14 +123,16 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
     }
 
     /**
-     * Rewrite /page-N requests to /discussions/pN before routing.
+     * Rewrite URLs before routing.
      *
-     * This is a workaround for Vanilla's router bug where wildcard routes
-     * (using :num or :alphanum) don't match correctly in matchRoute().
+     * Handles:
+     * 1. /post-{id} → /discussion/{id}/x (new short URL format)
+     * 2. /post-{id}/p{page} → /discussion/{id}/x/p{page} (with pagination)
+     * 3. /discussion/{id}/* → 404 (block old format)
+     * 4. /page-N → /discussions/pN (pagination)
      *
-     * Example rewrites:
-     * - /page-2 → /discussions/p2
-     * - /page-2?sortBy=postTime → /discussions/p2?sortBy=postTime
+     * Note: DiscussionController action paths are preserved:
+     * /discussion/comment/{id}, /discussion/bookmark/{id}, etc.
      *
      * @param Gdn_Dispatcher $sender The dispatcher instance.
      * @return void
@@ -77,13 +141,37 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         $request = $sender->EventArguments['Request'];
         $path = $request->path();
 
-        // Check if path matches /page-N pattern
-        if (preg_match('#^page-(\d+)$#i', $path, $matches)) {
-            $pageNum = $matches[1];
+        // === 1. New short URL format: /post-{id} or /post-{id}/p{page} ===
+        if (preg_match('#^post-(\d+)(?:/p(\d+))?$#i', $path, $matches)) {
+            $discussionID = (int)$matches[1];
+            $page = isset($matches[2]) ? (int)$matches[2] : 0;
 
-            // Rewrite to /discussions/pN (Vanilla's internal pagination format)
-            $newPath = 'discussions/p' . $pageNum;
-            $request->path($newPath);
+            if ($discussionID > 0) {
+                // Rewrite to internal format: /discussion/{id}/x
+                // 'x' is a placeholder slug that Vanilla ignores
+                $newPath = 'discussion/' . $discussionID . '/x';
+                if ($page > 0) {
+                    $newPath .= '/p' . $page;
+                }
+                $request->path($newPath);
+            }
+            return;
+        }
+
+        // === 2. Block old URL format: /discussion/{id}/* ===
+        // Match /discussion/{numeric_id} or /discussion/{numeric_id}/anything
+        // But NOT action paths like /discussion/comment, /discussion/bookmark, etc.
+        if (preg_match('#^discussion/(\d+)(?:/|$)#i', $path)) {
+            // Return 404 for old format URLs
+            safeHeader('HTTP/1.1 404 Not Found', true, 404);
+            $request->path('dashboard/home/filenotfound');
+            return;
+        }
+
+        // === 3. Existing pagination: /page-N → /discussions/pN ===
+        if (preg_match('#^page-(\d+)$#i', $path, $matches)) {
+            $pageNum = (int)$matches[1];
+            $request->path('discussions/p' . $pageNum);
         }
     }
 
