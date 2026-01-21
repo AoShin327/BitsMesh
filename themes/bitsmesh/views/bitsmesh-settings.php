@@ -13,107 +13,6 @@
     <?php echo $this->Form->open(); ?>
     <?php echo $this->Form->errors(); ?>
 
-    <!-- Color Presets Section -->
-    <section class="bits-settings-section">
-        <h2 class="subheading"><?php echo t('Color Presets'); ?></h2>
-        <p class="info"><?php echo t('Select a preset color scheme or customize your own below.'); ?></p>
-
-        <div class="bits-preset-grid" id="ColorPresetGrid">
-            <?php foreach ($this->data('ColorPresets') as $key => $preset): ?>
-                <button type="button" class="bits-preset-card" data-preset="<?php echo htmlspecialchars($key); ?>"
-                        data-primary="<?php echo htmlspecialchars($preset['primary']); ?>"
-                        data-secondary="<?php echo htmlspecialchars($preset['secondary']); ?>"
-                        data-dark-primary="<?php echo htmlspecialchars($preset['darkPrimary']); ?>"
-                        data-dark-secondary="<?php echo htmlspecialchars($preset['darkSecondary']); ?>">
-                    <span class="bits-preset-color" style="background: <?php echo htmlspecialchars($preset['primary']); ?>"></span>
-                    <span class="bits-preset-name"><?php echo htmlspecialchars($preset['name']); ?></span>
-                </button>
-            <?php endforeach; ?>
-        </div>
-    </section>
-
-    <!-- Light Mode Colors -->
-    <section class="bits-settings-section">
-        <h2 class="subheading"><?php echo t('Light Mode Colors'); ?></h2>
-
-        <ul class="form-group-list">
-            <li class="form-group">
-                <div class="label-wrap">
-                    <?php echo $this->Form->label('Primary Color', 'Themes_BitsMesh_PrimaryColor'); ?>
-                    <div class="info"><?php echo t('Main accent color for buttons and links.'); ?></div>
-                </div>
-                <div class="input-wrap bits-color-wrap">
-                    <input type="color" id="ColorPicker_Primary"
-                           value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_PrimaryColor', '#3B82F6')); ?>"
-                           class="bits-color-picker">
-                    <?php echo $this->Form->textBox('Themes_BitsMesh_PrimaryColor', [
-                        'class' => 'bits-color-hex InputBox',
-                        'maxlength' => 7,
-                        'placeholder' => '#3B82F6'
-                    ]); ?>
-                </div>
-            </li>
-
-            <li class="form-group">
-                <div class="label-wrap">
-                    <?php echo $this->Form->label('Secondary Color', 'Themes_BitsMesh_SecondaryColor'); ?>
-                    <div class="info"><?php echo t('Hover and accent variations.'); ?></div>
-                </div>
-                <div class="input-wrap bits-color-wrap">
-                    <input type="color" id="ColorPicker_Secondary"
-                           value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_SecondaryColor', '#60A5FA')); ?>"
-                           class="bits-color-picker">
-                    <?php echo $this->Form->textBox('Themes_BitsMesh_SecondaryColor', [
-                        'class' => 'bits-color-hex InputBox',
-                        'maxlength' => 7,
-                        'placeholder' => '#60A5FA'
-                    ]); ?>
-                </div>
-            </li>
-        </ul>
-    </section>
-
-    <!-- Dark Mode Colors -->
-    <section class="bits-settings-section">
-        <h2 class="subheading"><?php echo t('Dark Mode Colors'); ?></h2>
-
-        <ul class="form-group-list">
-            <li class="form-group">
-                <div class="label-wrap">
-                    <?php echo $this->Form->label('Dark Primary Color', 'Themes_BitsMesh_DarkPrimaryColor'); ?>
-                    <div class="info"><?php echo t('Primary color used in dark mode.'); ?></div>
-                </div>
-                <div class="input-wrap bits-color-wrap">
-                    <input type="color" id="ColorPicker_DarkPrimary"
-                           value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_DarkPrimaryColor', '#2563EB')); ?>"
-                           class="bits-color-picker">
-                    <?php echo $this->Form->textBox('Themes_BitsMesh_DarkPrimaryColor', [
-                        'class' => 'bits-color-hex InputBox',
-                        'maxlength' => 7,
-                        'placeholder' => '#2563EB'
-                    ]); ?>
-                </div>
-            </li>
-
-            <li class="form-group">
-                <div class="label-wrap">
-                    <?php echo $this->Form->label('Dark Secondary Color', 'Themes_BitsMesh_DarkSecondaryColor'); ?>
-                    <div class="info"><?php echo t('Secondary color used in dark mode.'); ?></div>
-                </div>
-                <div class="input-wrap bits-color-wrap">
-                    <input type="color" id="ColorPicker_DarkSecondary"
-                           value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_DarkSecondaryColor', '#3B82F6')); ?>"
-                           class="bits-color-picker">
-                    <?php echo $this->Form->textBox('Themes_BitsMesh_DarkSecondaryColor', [
-                        'class' => 'bits-color-hex InputBox',
-                        'maxlength' => 7,
-                        'placeholder' => '#3B82F6'
-                    ]); ?>
-                </div>
-            </li>
-        </ul>
-    </section>
-
     <!-- Grid Background Settings -->
     <section class="bits-settings-section">
         <h2 class="subheading"><?php echo t('Grid Background'); ?></h2>
@@ -137,12 +36,13 @@
                 </div>
                 <div class="input-wrap bits-color-wrap">
                     <input type="color" id="ColorPicker_Grid"
-                           value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_GridColor', '#e5e7eb')); ?>"
-                           class="bits-color-picker">
+                           value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_GridColor', '#d4d4d4')); ?>"
+                           class="bits-color-picker"
+                           onchange="document.getElementById('Form_Themes_BitsMesh_GridColor').value = this.value">
                     <?php echo $this->Form->textBox('Themes_BitsMesh_GridColor', [
                         'class' => 'bits-color-hex InputBox',
                         'maxlength' => 7,
-                        'placeholder' => '#e5e7eb'
+                        'placeholder' => '#d4d4d4'
                     ]); ?>
                 </div>
             </li>
@@ -155,7 +55,8 @@
                 <div class="input-wrap bits-color-wrap">
                     <input type="color" id="ColorPicker_DarkGrid"
                            value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_DarkGridColor', '#404040')); ?>"
-                           class="bits-color-picker">
+                           class="bits-color-picker"
+                           onchange="document.getElementById('Form_Themes_BitsMesh_DarkGridColor').value = this.value">
                     <?php echo $this->Form->textBox('Themes_BitsMesh_DarkGridColor', [
                         'class' => 'bits-color-hex InputBox',
                         'maxlength' => 7,
@@ -172,7 +73,8 @@
                 <div class="input-wrap bits-color-wrap">
                     <input type="color" id="ColorPicker_GridBg"
                            value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_GridBgColor', '#fffcf8')); ?>"
-                           class="bits-color-picker">
+                           class="bits-color-picker"
+                           onchange="document.getElementById('Form_Themes_BitsMesh_GridBgColor').value = this.value">
                     <?php echo $this->Form->textBox('Themes_BitsMesh_GridBgColor', [
                         'class' => 'bits-color-hex InputBox',
                         'maxlength' => 7,
@@ -189,7 +91,8 @@
                 <div class="input-wrap bits-color-wrap">
                     <input type="color" id="ColorPicker_DarkGridBg"
                            value="<?php echo htmlspecialchars($this->Form->getValue('Themes_BitsMesh_DarkGridBgColor', '#1a1a1a')); ?>"
-                           class="bits-color-picker">
+                           class="bits-color-picker"
+                           onchange="document.getElementById('Form_Themes_BitsMesh_DarkGridBgColor').value = this.value">
                     <?php echo $this->Form->textBox('Themes_BitsMesh_DarkGridBgColor', [
                         'class' => 'bits-color-hex InputBox',
                         'maxlength' => 7,
@@ -203,13 +106,20 @@
     <!-- Submit Button -->
     <div class="form-footer">
         <?php echo $this->Form->button('Save', ['class' => 'btn btn-primary']); ?>
-        <button type="button" class="btn" id="ResetDefaultsBtn"><?php echo t('Reset to Defaults'); ?></button>
     </div>
 
     <?php echo $this->Form->close(); ?>
 </div>
 
 <script>
-// Pass default colors to JavaScript
-window.bitsDefaultColors = <?php echo json_encode($this->data('DefaultColors')); ?>;
+// Sync color picker with text input
+document.querySelectorAll('.bits-color-hex').forEach(function(input) {
+    input.addEventListener('input', function() {
+        var pickerId = this.id.replace('Form_Themes_BitsMesh_', 'ColorPicker_').replace('Color', '');
+        var picker = document.getElementById(pickerId);
+        if (picker && /^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+            picker.value = this.value;
+        }
+    });
+});
 </script>

@@ -14,55 +14,6 @@
 class BitsmeshThemeHooks extends Gdn_Plugin {
 
     /**
-     * Preset color schemes for quick selection.
-     * @var array
-     */
-    private static $colorPresets = [
-        'blue' => [
-            'name' => 'Blue',
-            'primary' => '#3B82F6',
-            'secondary' => '#60A5FA',
-            'darkPrimary' => '#2563EB',
-            'darkSecondary' => '#3B82F6',
-        ],
-        'green' => [
-            'name' => 'Green',
-            'primary' => '#22C55E',
-            'secondary' => '#4ADE80',
-            'darkPrimary' => '#16A34A',
-            'darkSecondary' => '#22C55E',
-        ],
-        'purple' => [
-            'name' => 'Purple',
-            'primary' => '#8B5CF6',
-            'secondary' => '#A78BFA',
-            'darkPrimary' => '#7C3AED',
-            'darkSecondary' => '#8B5CF6',
-        ],
-        'orange' => [
-            'name' => 'Orange',
-            'primary' => '#F97316',
-            'secondary' => '#FB923C',
-            'darkPrimary' => '#EA580C',
-            'darkSecondary' => '#F97316',
-        ],
-        'red' => [
-            'name' => 'Red',
-            'primary' => '#EF4444',
-            'secondary' => '#F87171',
-            'darkPrimary' => '#DC2626',
-            'darkSecondary' => '#EF4444',
-        ],
-        'teal' => [
-            'name' => 'Teal',
-            'primary' => '#06B6D4',
-            'secondary' => '#22D3EE',
-            'darkPrimary' => '#0891B2',
-            'darkSecondary' => '#06B6D4',
-        ],
-    ];
-
-    /**
      * Available IconPark icons for category selection.
      * @var array
      */
@@ -176,16 +127,12 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         $sender->title(t('BitsMesh Theme Settings'));
         $sender->addSideMenu('settings/bitsmesh');
 
-        // Add JS and CSS for color picker
-        $sender->addJsFile('color-settings.js', 'themes/bitsmesh');
+        // Add CSS for settings page
         $sender->addCssFile('settings.css', 'themes/bitsmesh');
 
         // Field mappings: form field name (underscore) => config key (dot)
+        // Only Grid settings are configurable now
         $fieldMappings = [
-            'Themes_BitsMesh_PrimaryColor' => 'Themes.BitsMesh.PrimaryColor',
-            'Themes_BitsMesh_SecondaryColor' => 'Themes.BitsMesh.SecondaryColor',
-            'Themes_BitsMesh_DarkPrimaryColor' => 'Themes.BitsMesh.DarkPrimaryColor',
-            'Themes_BitsMesh_DarkSecondaryColor' => 'Themes.BitsMesh.DarkSecondaryColor',
             'Themes_BitsMesh_GridEnabled' => 'Themes.BitsMesh.GridEnabled',
             'Themes_BitsMesh_GridColor' => 'Themes.BitsMesh.GridColor',
             'Themes_BitsMesh_DarkGridColor' => 'Themes.BitsMesh.DarkGridColor',
@@ -197,10 +144,6 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         if ($sender->Form->authenticatedPostBack()) {
             // Validate color inputs using form field names
             $colorFields = [
-                'Themes_BitsMesh_PrimaryColor',
-                'Themes_BitsMesh_SecondaryColor',
-                'Themes_BitsMesh_DarkPrimaryColor',
-                'Themes_BitsMesh_DarkSecondaryColor',
                 'Themes_BitsMesh_GridColor',
                 'Themes_BitsMesh_DarkGridColor',
                 'Themes_BitsMesh_GridBgColor',
@@ -246,10 +189,6 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         }
         $sender->Form->setData($formData);
 
-        // Pass data to view
-        $sender->setData('ColorPresets', self::$colorPresets);
-        $sender->setData('DefaultColors', self::getDefaultColors());
-
         $sender->render('bitsmesh-settings', '', 'themes/bitsmesh');
     }
 
@@ -261,10 +200,6 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
      */
     private static function getDefaultValueForField($configKey) {
         $defaults = [
-            'Themes.BitsMesh.PrimaryColor' => '#3B82F6',
-            'Themes.BitsMesh.SecondaryColor' => '#60A5FA',
-            'Themes.BitsMesh.DarkPrimaryColor' => '#2563EB',
-            'Themes.BitsMesh.DarkSecondaryColor' => '#3B82F6',
             'Themes.BitsMesh.GridEnabled' => true,
             'Themes.BitsMesh.GridColor' => '#d4d4d4',
             'Themes.BitsMesh.DarkGridColor' => '#404040',
@@ -275,39 +210,22 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
     }
 
     /**
-     * Get theme colors from configuration.
+     * Get theme colors (hardcoded green theme).
      *
      * @return array Theme colors.
      */
     private static function getThemeColors() {
         return [
-            'primary' => c('Themes.BitsMesh.PrimaryColor', '#3B82F6'),
-            'secondary' => c('Themes.BitsMesh.SecondaryColor', '#60A5FA'),
-            'darkPrimary' => c('Themes.BitsMesh.DarkPrimaryColor', '#2563EB'),
-            'darkSecondary' => c('Themes.BitsMesh.DarkSecondaryColor', '#3B82F6'),
+            // Green theme - hardcoded
+            'primary' => '#22C55E',
+            'secondary' => '#4ADE80',
+            'darkPrimary' => '#16A34A',
+            'darkSecondary' => '#22C55E',
+            // Grid colors from config
             'grid' => c('Themes.BitsMesh.GridColor', '#d4d4d4'),
-            'darkGrid' => c('Themes.BitsMesh.DarkGridColor', '#555'),
+            'darkGrid' => c('Themes.BitsMesh.DarkGridColor', '#404040'),
             'gridBg' => c('Themes.BitsMesh.GridBgColor', '#fffcf8'),
-            'darkGridBg' => c('Themes.BitsMesh.DarkGridBgColor', '#272727'),
-        ];
-    }
-
-    /**
-     * Get default color values.
-     *
-     * @return array Default colors.
-     */
-    private static function getDefaultColors() {
-        return [
-            'primaryColor' => '#3B82F6',
-            'secondaryColor' => '#60A5FA',
-            'darkPrimaryColor' => '#2563EB',
-            'darkSecondaryColor' => '#3B82F6',
-            'gridEnabled' => true,
-            'gridColor' => '#d4d4d4',
-            'darkGridColor' => '#555',
-            'gridBgColor' => '#fffcf8',
-            'darkGridBgColor' => '#272727',
+            'darkGridBg' => c('Themes.BitsMesh.DarkGridBgColor', '#1a1a1a'),
         ];
     }
 
