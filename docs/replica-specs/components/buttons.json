@@ -1,0 +1,53 @@
+{
+  "component": "buttons",
+  "description": "按钮样式 - 主要按钮、次要按钮、发帖按钮",
+  "extracted_from": "nodeseek-web-snap/用户登录时首页/NodeSeek.html",
+  "extracted_at": "2026-01-21",
+  "nodeseek_selector": ".btn, .nsk-btn",
+  "bitsmesh_selector": ".Button, .bits-btn",
+  "elements": [
+    {
+      "name": "primary-button",
+      "description": "主要按钮（绿色，发帖按钮）",
+      "nodeseek": ".btn.new-discussion",
+      "bitsmesh": ".bits-new-post-btn, .Button.Primary",
+      "properties": {
+        "background-color": "rgb(46, 164, 79)",
+        "color": "rgb(255, 255, 255)",
+        "padding": "0px 16px",
+        "border-radius": "4px",
+        "border": "1px solid rgba(27, 31, 35, 0.15)",
+        "font-size": "14px",
+        "font-weight": "600",
+        "height": "27px",
+        "line-height": "25px",
+        "box-shadow": "rgba(27, 31, 35, 0.1) 0px 1px 0px 0px",
+        "display": "inline-block"
+      }
+    },
+    {
+      "name": "nav-item-button",
+      "description": "导航项按钮（圆形图标按钮）",
+      "nodeseek": ".nav-item-btn",
+      "bitsmesh": ".bits-nav-btn",
+      "properties": {
+        "background-color": "rgb(255, 255, 255)",
+        "color": "rgb(51, 51, 51)",
+        "padding": "0px",
+        "border-radius": "20%",
+        "border": "1px solid rgba(0, 0, 0, 0.05)",
+        "font-size": "13px",
+        "width": "30px",
+        "height": "30px"
+      }
+    }
+  ],
+  "notes": [
+    "主要按钮使用绿色 rgb(46, 164, 79)",
+    "按钮高度 27px，行高 25px",
+    "圆角 4px",
+    "带有微弱阴影 rgba(27, 31, 35, 0.1) 0px 1px 0px",
+    "字重 600（semi-bold）",
+    "导航图标按钮为 30x30px 圆形"
+  ]
+}

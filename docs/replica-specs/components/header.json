@@ -1,0 +1,108 @@
+{
+  "component": "header",
+  "description": "顶部导航栏 - Logo、导航菜单、搜索框",
+  "extracted_from": "nodeseek-web-snap/用户登录时首页/NodeSeek.html",
+  "extracted_at": "2026-01-21",
+  "nodeseek_selector": "header",
+  "bitsmesh_selector": "#bits-header, .bits-header",
+  "elements": [
+    {
+      "name": "header",
+      "description": "顶部导航栏容器",
+      "nodeseek": "header",
+      "bitsmesh": "#bits-header",
+      "properties": {
+        "background-color": "rgb(255, 255, 255)",
+        "height": "40px",
+        "position": "fixed",
+        "top": "0px",
+        "left": "0px",
+        "width": "100%",
+        "z-index": "10",
+        "box-shadow": "rgba(0, 0, 0, 0.1) 0px 0px 5px 0px"
+      }
+    },
+    {
+      "name": "header-container",
+      "description": "导航栏内容容器",
+      "nodeseek": "#nsk-head",
+      "bitsmesh": ".bits-header-container",
+      "properties": {
+        "display": "flex",
+        "align-items": "center",
+        "height": "40px",
+        "padding": "0px"
+      }
+    },
+    {
+      "name": "site-title",
+      "description": "站点标题/Logo区域",
+      "nodeseek": ".site-title",
+      "bitsmesh": ".bits-logo",
+      "properties": {
+        "font-size": "24px",
+        "font-weight": "700",
+        "margin-right": "6px"
+      }
+    },
+    {
+      "name": "nav-menu",
+      "description": "导航菜单",
+      "nodeseek": ".nav-menu",
+      "bitsmesh": ".bits-nav-menu",
+      "properties": {
+        "display": "flex",
+        "align-items": "center",
+        "margin": "0px",
+        "padding": "0px",
+        "list-style": "none"
+      }
+    },
+    {
+      "name": "nav-item",
+      "description": "导航菜单项",
+      "nodeseek": ".nav-menu li",
+      "bitsmesh": ".bits-nav-menu li",
+      "properties": {
+        "margin": "0px 8px",
+        "padding": "0px"
+      }
+    },
+    {
+      "name": "nav-link",
+      "description": "导航链接",
+      "nodeseek": ".nav-menu li a",
+      "bitsmesh": ".bits-nav-menu li a",
+      "properties": {
+        "color": "rgb(85, 85, 85)",
+        "font-size": "13px",
+        "font-weight": "400",
+        "line-height": "19.5px",
+        "padding": "0px",
+        "text-decoration": "none"
+      }
+    },
+    {
+      "name": "search-input",
+      "description": "搜索框输入",
+      "nodeseek": "#search-site2",
+      "bitsmesh": ".bits-search-input",
+      "properties": {
+        "height": "30px",
+        "width": "170px",
+        "padding": "6.5px 7.8px",
+        "border": "1px solid rgb(204, 204, 204)",
+        "border-radius": "4px",
+        "font-size": "13px",
+        "background-color": "rgb(255, 255, 255)"
+      }
+    }
+  ],
+  "notes": [
+    "header 固定定位，高度 40px",
+    "背景白色，带微弱阴影 rgba(0,0,0,0.1) 0px 0px 5px",
+    "导航链接灰色 rgb(85,85,85)，13px 字号",
+    "导航项间距 margin: 0px 8px",
+    "搜索框高度 30px，圆角 4px"
+  ]
+}

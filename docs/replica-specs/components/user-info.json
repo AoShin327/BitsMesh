@@ -1,0 +1,87 @@
+{
+  "component": "user-info",
+  "description": "用户信息卡片 - 侧边栏登录用户信息展示",
+  "extracted_from": "nodeseek-web-snap/用户登录时首页/NodeSeek.html",
+  "extracted_at": "2026-01-21",
+  "nodeseek_selector": ".user-card, .user-head, .user-stat",
+  "bitsmesh_selector": ".bits-sidebar-user, .bits-user-card",
+  "elements": [
+    {
+      "name": "user-avatar",
+      "description": "用户头像",
+      "nodeseek": ".user-head img, .avatar-normal",
+      "bitsmesh": ".bits-sidebar-user .ProfilePhoto",
+      "properties": {
+        "width": "40px",
+        "height": "40px",
+        "border-radius": "15%",
+        "object-fit": "fill"
+      }
+    },
+    {
+      "name": "username-link",
+      "description": "用户名链接",
+      "nodeseek": ".user-head a",
+      "bitsmesh": ".bits-sidebar-user .bits-user-name a",
+      "properties": {
+        "color": "rgb(85, 85, 85)",
+        "font-size": "13px",
+        "font-weight": "400",
+        "text-decoration": "none"
+      }
+    },
+    {
+      "name": "stat-link",
+      "description": "统计信息链接（等级、鸡腿、主题帖等）",
+      "nodeseek": ".user-stat a",
+      "bitsmesh": ".bits-user-stats a",
+      "properties": {
+        "color": "rgb(51, 51, 51)",
+        "font-size": "14px",
+        "font-weight": "400",
+        "line-height": "19.5px",
+        "text-decoration": "none",
+        "display": "inline"
+      }
+    },
+    {
+      "name": "new-discussion-btn",
+      "description": "发帖按钮",
+      "nodeseek": ".btn.new-discussion",
+      "bitsmesh": ".bits-sidebar-user .Button.NewDiscussion",
+      "properties": {
+        "background-color": "rgb(46, 164, 79)",
+        "color": "rgb(255, 255, 255)",
+        "font-size": "14px",
+        "font-weight": "600",
+        "padding": "0px 16px",
+        "border-radius": "4px",
+        "border": "1px solid rgba(27, 31, 35, 0.15)",
+        "box-shadow": "rgba(27, 31, 35, 0.1) 0px 1px 0px 0px",
+        "height": "27px",
+        "line-height": "25px",
+        "width": "100%",
+        "display": "block",
+        "text-align": "center"
+      }
+    },
+    {
+      "name": "user-stat-container",
+      "description": "统计信息容器",
+      "nodeseek": ".user-stat",
+      "bitsmesh": ".bits-user-stats",
+      "properties": {
+        "display": "flex",
+        "flex-wrap": "wrap",
+        "padding": "10px"
+      }
+    }
+  ],
+  "notes": [
+    "头像尺寸 40x40px，圆角 15%",
+    "用户名颜色 rgb(85, 85, 85) 灰色",
+    "统计链接颜色 rgb(51, 51, 51) 深灰色",
+    "发帖按钮使用绿色 rgb(46, 164, 79)",
+    "发帖按钮宽度占满容器"
+  ]
+}

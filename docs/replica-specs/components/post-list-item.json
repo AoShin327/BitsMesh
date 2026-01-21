@@ -1,0 +1,87 @@
+{
+  "component": "post-list-item",
+  "description": "帖子列表项 - 包含头像、标题、元信息",
+  "extracted_from": "nodeseek-web-snap/用户登录时首页/NodeSeek.html",
+  "extracted_at": "2026-01-21",
+  "nodeseek_selector": ".post-list-item",
+  "bitsmesh_selector": ".bits-post-list-item",
+  "elements": [
+    {
+      "name": "container",
+      "description": "列表项容器",
+      "nodeseek": ".post-list-item",
+      "bitsmesh": ".bits-post-list-item",
+      "properties": {
+        "display": "flex",
+        "padding": "8px 8px 0px",
+        "margin": "0px",
+        "border": "0px none",
+        "border-radius": "0px",
+        "font-size": "13px",
+        "line-height": "19.5px",
+        "color": "rgb(51, 51, 51)"
+      }
+    },
+    {
+      "name": "avatar",
+      "description": "用户头像",
+      "nodeseek": ".post-list-item .avatar-normal",
+      "bitsmesh": ".bits-post-list-item .avatar-normal",
+      "properties": {
+        "width": "40px",
+        "height": "40px",
+        "border-radius": "15%",
+        "box-shadow": "rgba(0, 0, 0, 0.1) 0px 0px 3px 0px",
+        "flex-shrink": "0"
+      }
+    },
+    {
+      "name": "content",
+      "description": "内容区域",
+      "nodeseek": ".post-list-item 内容区",
+      "bitsmesh": ".bits-post-list-content",
+      "properties": {
+        "flex": "1",
+        "margin-left": "10px",
+        "min-width": "0"
+      }
+    },
+    {
+      "name": "title",
+      "description": "帖子标题",
+      "nodeseek": ".post-title",
+      "bitsmesh": ".bits-post-title",
+      "properties": {
+        "display": "block",
+        "font-size": "14px",
+        "font-weight": "700",
+        "line-height": "19.5px",
+        "color": "rgb(51, 51, 51)",
+        "white-space": "nowrap",
+        "overflow": "hidden",
+        "text-overflow": "ellipsis"
+      }
+    },
+    {
+      "name": "info",
+      "description": "帖子元信息（作者、时间等）",
+      "nodeseek": ".post-info",
+      "bitsmesh": ".bits-post-info",
+      "properties": {
+        "display": "block",
+        "font-size": "11px",
+        "font-weight": "400",
+        "line-height": "19.5px",
+        "color": "rgb(85, 85, 85)",
+        "margin-top": "2px"
+      }
+    }
+  ],
+  "notes": [
+    "容器 padding: 8px 8px 0px，底部无 padding",
+    "头像 40x40px，15% 圆角，带阴影",
+    "头像与内容间距 10px（通过 margin-left）",
+    "标题 14px 粗体，单行省略",
+    "元信息 11px 常规，灰色"
+  ]
+}
