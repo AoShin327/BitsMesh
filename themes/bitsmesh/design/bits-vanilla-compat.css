@@ -1211,3 +1211,51 @@ ul.DataList.Discussions > li.ItemDiscussion {
 .PageControls.Bottom {
     display: none;
 }
+
+/* ============================================
+   AdminCheck - Moderator Checkbox
+   Position: Left of avatar, low opacity by default
+   ============================================ */
+
+/* Container: flex item before avatar */
+ul.DataList.Discussions > li.ItemDiscussion > .AdminCheck {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    opacity: 0.3;
+    order: -1; /* Move to leftmost position (before avatar) */
+    transition: opacity 0.15s ease;
+    width: 20px;
+}
+
+/* Show fully on row hover */
+ul.DataList.Discussions > li.ItemDiscussion:hover > .AdminCheck {
+    opacity: 1;
+}
+
+/* Show fully when checked */
+ul.DataList.Discussions > li.ItemDiscussion > .AdminCheck:has(input:checked) {
+    opacity: 1;
+}
+
+/* Checkbox input - use native style */
+ul.DataList.Discussions > li.ItemDiscussion > .AdminCheck input[type="checkbox"] {
+    cursor: pointer;
+    height: 16px;
+    margin: 0;
+    width: 16px;
+}
+
+/* Mobile: slightly smaller checkbox */
+@media screen and (max-width: 500px) {
+    ul.DataList.Discussions > li.ItemDiscussion > .AdminCheck {
+        width: 18px;
+    }
+
+    ul.DataList.Discussions > li.ItemDiscussion > .AdminCheck input[type="checkbox"] {
+        height: 14px;
+        width: 14px;
+    }
+}
+

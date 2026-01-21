@@ -163,6 +163,9 @@ if (!function_exists('WriteDiscussion')) :
                 $sender->CanEditDiscussions = val('PermsDiscussionsEdit', CategoryModel::categories($discussion->CategoryID)) && c('Vanilla.AdminCheckboxes.Use');
             }
             $sender->fireEvent('BeforeDiscussionContent');
+
+            // AdminCheck - 放在帖子行最前面（头像左侧）
+            echo adminCheck($discussion);
             ?>
             <span class="Options">
                 <?php
@@ -174,7 +177,7 @@ if (!function_exists('WriteDiscussion')) :
             <div class="ItemContent Discussion">
                 <div class="Title" role="heading" aria-level="3">
                     <?php
-                    echo adminCheck($discussion, ['', ' ']).anchor($discussionName, $discussionUrl);
+                    echo anchor($discussionName, $discussionUrl);
                     $sender->fireEvent('AfterDiscussionTitle');
                     ?>
                 </div>
