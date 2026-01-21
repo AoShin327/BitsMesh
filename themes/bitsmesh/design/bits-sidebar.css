@@ -100,7 +100,9 @@ body.dark-layout .bits-panel {
    ============================================ */
 
 .bits-quick-access {
-    /* Inherits base .bits-panel styles */
+    /* NodeSeek .nsk-panel.quick-access: pixel-perfect replica */
+    background-color: transparent;
+    font-size: 13px;
 }
 
 .bits-quick-access .bits-panel-title {
@@ -129,10 +131,11 @@ body.dark-layout .bits-quick-links li:nth-last-child(n+2) {
 }
 
 .bits-quick-links li a {
+    /* NodeSeek: rgb(85,85,85), 13px */
     display: inline;
-    color: #888;
+    color: rgb(85, 85, 85);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .bits-quick-links li a:hover {
@@ -317,9 +320,15 @@ body.dark-layout .bits-btn:hover {
    ============================================ */
 
 .bits-user-card {
-    background-color: var(--bits-bg-main);
-    /* padding 复刻 NodeSeek .user-card-container: 12px 5px 5px */
-    padding: 12px 5px 5px;
+    /* NodeSeek .user-card: 透明背景，无圆角 */
+    background-color: transparent;
+    border-radius: 0px;
+    /* NodeSeek .user-card: padding 0, 由子元素控制间距 */
+    padding: 0px;
+    margin: 0px;
+    display: block;
+    font-size: 13px;
+    color: rgb(51, 51, 51);
 }
 
 /* User Head: Avatar + Menu (flex layout, pixel-perfect replica of NodeSeek) */
@@ -339,24 +348,22 @@ body.dark-layout .bits-btn:hover {
     flex-shrink: 0;
 }
 
-/* User Menu container - vertical stack (username on top, actions below) */
+/* User Menu container - NodeSeek .menu: padding 0px 16px */
 .bits-user-menu {
-    padding: 0 1rem;
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
+    padding: 0px 16px;
+    margin: 0px;
+    display: block;
+    height: 45px;
 }
 
-/* Username link - 16px (pixel-perfect replica) */
+/* Username link - NodeSeek .Username: inline, 16px, #555 */
 .bits-user-card .bits-username {
-    display: block;
+    display: inline;
     font-size: 16px;
-    color: var(--bits-link-color, #3B82F6);
+    font-weight: 400;
+    line-height: 19.5px;
+    color: rgb(85, 85, 85);
     text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .bits-user-card .bits-username:hover {
@@ -372,26 +379,26 @@ body.dark-layout .bits-btn:hover {
 .bits-user-actions span {
     display: inline-flex;
     align-items: center;
-    color: var(--bits-link-color, #3B82F6);
+    color: var(--bits-text, #333);
     text-decoration: none;
     cursor: pointer;
 }
 
 .bits-user-actions a:hover,
 .bits-user-actions span:hover {
-    color: var(--bits-link-hover-color, #2563EB);
+    color: var(--bits-link, #3B82F6);
 }
 
 .bits-user-actions .iconpark-icon {
     margin-right: 6px;
-    color: var(--bits-link-color, #3B82F6);
+    color: var(--bits-text, #333);
     width: 16px;
     height: 16px;
     cursor: pointer;
 }
 
 .bits-user-actions .iconpark-icon:hover {
-    color: var(--bits-link-hover-color, #2563EB);
+    color: var(--bits-link, #3B82F6);
 }
 
 /* ============================================
@@ -400,25 +407,36 @@ body.dark-layout .bits-btn:hover {
    ============================================ */
 
 .bits-user-stat {
-    background-color: #ffffda;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+    background-color: rgb(255, 255, 218);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 3px 0px;
     border-radius: 5px;
     padding: 10px;
     display: flex;
-    color: #333;
-    margin: 1rem -5px;  /* negative left/right to align with bits-panel edges */
-    font-size: 14px;
+    flex-direction: row;
+    color: rgb(51, 51, 51);
+    /* NodeSeek .user-stat: margin 16px 0px */
+    margin: 16px 0px;
+    font-size: 13px;
+    line-height: 19.5px;
+    width: 260px;
+    /* 确保 padding 包含在 260px 宽度内，避免撑大父容器 */
+    box-sizing: border-box;
 }
 
 .bits-user-stat .bits-stat-block {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    /* NodeSeek .stat-block: display block, not flex */
+    display: block;
+    font-size: 14px;
+    padding: 0px;
+    margin: 0px;
 }
 
 .bits-user-stat .bits-stat-block > div {
     margin-bottom: 6px;
-    line-height: 1.4;
+    /* NodeSeek: font-size 14px, line-height 19.5px */
+    font-size: 14px;
+    line-height: 19.5px;
 }
 
 .bits-user-stat .bits-stat-block > div:last-child {
@@ -478,21 +496,25 @@ body.dark-layout .bits-user-stat .bits-stat-block a:hover {
    ============================================ */
 
 .bits-new-discussion-btn {
-    margin-bottom: 16px;
+    /* 容器无需额外 margin，按钮自带 margin-bottom: 16px */
 }
 
 .bits-btn-new-discussion {
+    /* NodeSeek .btn.new-discussion: pixel-perfect replica */
     display: inline-block;
-    width: 100%;
+    width: 260px;
+    height: 27px;
+    padding: 0px 16px;
+    margin: 0px 0px 16px;
     text-align: center;
-    background-color: #2ea44f;
+    background-color: rgb(46, 164, 79);
+    border: 1px solid rgba(27, 31, 35, 0.15);
     border-radius: 4px;
-    color: #fff;
+    color: rgb(255, 255, 255);
     cursor: pointer;
     font-size: 14px;
-    height: 27px;
-    line-height: 27px;
-    padding: 0 16px;
+    font-weight: 600;
+    line-height: 25px;
     text-decoration: none;
     vertical-align: middle;
     white-space: nowrap;
@@ -501,8 +523,9 @@ body.dark-layout .bits-user-stat .bits-stat-block a:hover {
 }
 
 .bits-btn-new-discussion:hover {
-    background-color: #45ca6b;
-    color: #fff;
+    /* NodeSeek hover: rgb(69, 202, 107) */
+    background-color: rgb(69, 202, 107);
+    color: rgb(255, 255, 255);
 }
 
 .bits-btn-new-discussion:active {

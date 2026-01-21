@@ -125,15 +125,16 @@ body.dark-layout .bits-logo-dark {
 }
 
 .bits-search-input {
+    /* NodeSeek #search-site2: pixel-perfect replica */
     background-color: var(--bits-bg-main);
-    border: 1px solid #d4d4d4;
-    border-radius: 6px;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 4px;
     box-sizing: border-box;
     color: var(--bits-text);
-    font-size: 14px;
+    font-size: 13px;
     height: 30px;
-    padding: 0 12px 0 34px;
-    width: 170px; /* Standard search width */
+    padding: 0 8px 0 34px;
+    width: 170px;
     transition: width 0.3s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 

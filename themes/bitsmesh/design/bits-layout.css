@@ -162,18 +162,56 @@ header.bits-header {
     display: none !important;
 }
 
-/* Footer */
+/* Footer - NodeSeek replica */
 footer.bits-footer {
-    background-color: var(--bits-text);
-    color: var(--bits-text-gray);
-    padding: 20px 0;
+    /* NodeSeek footer: rgb(51, 51, 51) background */
+    background-color: rgb(51, 51, 51);
+    color: rgb(85, 85, 85);
+    font-size: 13px;
+    line-height: 19.5px;
+    padding: 0;
     width: 100%;
 }
 
+footer.bits-footer .bits-container {
+    /* NodeSeek .contain: flex layout with padding */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px 20px;
+}
+
+footer.bits-footer .bits-footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+footer.bits-footer .bits-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
 footer.bits-footer a {
-    color: var(--bits-text-gray);
+    /* NodeSeek footer link: rgb(85, 85, 85) */
+    color: rgb(85, 85, 85);
+    font-size: 13px;
+    line-height: 19.5px;
+    text-decoration: none;
 }
 
 footer.bits-footer a:hover {
-    color: var(--bits-bg-main);
+    color: rgb(153, 153, 153);
+}
+
+footer.bits-footer .bits-footer-copyright {
+    color: rgb(153, 153, 153);
+    font-size: 13px;
+}
+
+footer.bits-footer .bits-footer-copyright p {
+    margin: 0;
 }
