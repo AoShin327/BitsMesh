@@ -37,6 +37,11 @@
                     {/if}
 
                     {asset name="Content"}
+
+                    {* Bottom Pager - replicates top pager at bottom of discussion lists *}
+                    {if $BitsShowPostListControler}
+                        {include file="modules/bottom-pager.tpl"}
+                    {/if}
                 </div>
             </main>
 
