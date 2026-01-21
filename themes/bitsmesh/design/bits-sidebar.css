@@ -406,7 +406,7 @@ body.dark-layout .bits-btn:hover {
     padding: 10px;
     display: flex;
     color: #333;
-    margin: 1rem 0;
+    margin: 1rem -5px;  /* negative left/right to align with bits-panel edges */
     font-size: 14px;
 }
 
@@ -474,35 +474,30 @@ body.dark-layout .bits-user-stat .bits-stat-block a:hover {
 }
 
 /* ============================================
-   New Discussion Button (Modern forum style)
+   New Discussion Button (NodeSeek style replica)
    ============================================ */
 
 .bits-new-discussion-btn {
-    padding: 0 10px 10px;
+    margin-bottom: 16px;
 }
 
 .bits-btn-new-discussion {
-    display: flex;
+    display: inline-block;
     width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
+    text-align: center;
     background-color: #2ea44f;
-    border: 1px solid rgba(27, 31, 35, 0.15);
     border-radius: 4px;
-    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.1);
     color: #fff;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 600;
-    height: 32px;
-    line-height: 30px;
-    padding: 0 1rem;
-    text-align: center;
+    height: 27px;
+    line-height: 27px;
+    padding: 0 16px;
     text-decoration: none;
     vertical-align: middle;
     white-space: nowrap;
     transition: background-color 0.2s;
+    box-sizing: border-box;
 }
 
 .bits-btn-new-discussion:hover {

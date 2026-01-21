@@ -111,6 +111,9 @@
   {* folder-focus - 收藏 *}
   <symbol id="folder-focus" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M5 8a2 2 0 0 1 2-2h12l5 6h17a2 2 0 0 1 2 2v26a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m24 20 2.243 4.913 5.366.615-3.98 3.651 1.073 5.293L24 31.816l-4.702 2.656 1.073-5.293-3.98-3.651 5.366-.615L24 20Z" data-follow-stroke="currentColor"/></symbol>
 
+  {* plus-cross - 发帖按钮图标 *}
+  <symbol id="plus-cross" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M30 4H18v14H4v12h14v14h12V30h14V18H30V4Z" data-follow-stroke="currentColor"/></symbol>
+
   {* ============================================
      Quick Access Panel Icons (Modern Forum Style)
      ============================================ *}
