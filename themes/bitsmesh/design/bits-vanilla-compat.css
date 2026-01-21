@@ -1036,92 +1036,6 @@ ul.DataList .Meta .Category a,
     transition: all 0.2s;
 }
 
-/* Category Color Palette - URL-based colors */
-.Meta .Category a[href*="/categories/general"],
-.Meta .Category a[href*="/categories/default"],
-ul.DataList a[href*="/categories/general"],
-ul.DataList a[href*="/categories/default"] {
-    background-color: rgba(99, 102, 241, 0.15) !important;
-    color: #6366f1 !important;
-}
-.Meta .Category a[href*="/categories/general"]:hover,
-.Meta .Category a[href*="/categories/default"]:hover,
-ul.DataList a[href*="/categories/general"]:hover,
-ul.DataList a[href*="/categories/default"]:hover {
-    background-color: #6366f1 !important;
-    color: #fff !important;
-}
-
-.Meta .Category a[href*="/categories/tech"],
-.Meta .Category a[href*="/categories/technology"],
-ul.DataList a[href*="/categories/tech"],
-ul.DataList a[href*="/categories/technology"] {
-    background-color: rgba(16, 185, 129, 0.15) !important;
-    color: #10b981 !important;
-}
-.Meta .Category a[href*="/categories/tech"]:hover,
-.Meta .Category a[href*="/categories/technology"]:hover,
-ul.DataList a[href*="/categories/tech"]:hover,
-ul.DataList a[href*="/categories/technology"]:hover {
-    background-color: #10b981 !important;
-    color: #fff !important;
-}
-
-.Meta .Category a[href*="/categories/news"],
-.Meta .Category a[href*="/categories/announcement"],
-ul.DataList a[href*="/categories/news"],
-ul.DataList a[href*="/categories/announcement"] {
-    background-color: rgba(239, 68, 68, 0.15) !important;
-    color: #ef4444 !important;
-}
-.Meta .Category a[href*="/categories/news"]:hover,
-.Meta .Category a[href*="/categories/announcement"]:hover,
-ul.DataList a[href*="/categories/news"]:hover,
-ul.DataList a[href*="/categories/announcement"]:hover {
-    background-color: #ef4444 !important;
-    color: #fff !important;
-}
-
-.Meta .Category a[href*="/categories/help"],
-.Meta .Category a[href*="/categories/support"],
-ul.DataList a[href*="/categories/help"],
-ul.DataList a[href*="/categories/support"] {
-    background-color: rgba(245, 158, 11, 0.15) !important;
-    color: #f59e0b !important;
-}
-.Meta .Category a[href*="/categories/help"]:hover,
-.Meta .Category a[href*="/categories/support"]:hover,
-ul.DataList a[href*="/categories/help"]:hover,
-ul.DataList a[href*="/categories/support"]:hover {
-    background-color: #f59e0b !important;
-    color: #fff !important;
-}
-
-.Meta .Category a[href*="/categories/off-topic"],
-.Meta .Category a[href*="/categories/chat"],
-ul.DataList a[href*="/categories/off-topic"],
-ul.DataList a[href*="/categories/chat"] {
-    background-color: rgba(236, 72, 153, 0.15) !important;
-    color: #ec4899 !important;
-}
-.Meta .Category a[href*="/categories/off-topic"]:hover,
-.Meta .Category a[href*="/categories/chat"]:hover,
-ul.DataList a[href*="/categories/off-topic"]:hover,
-ul.DataList a[href*="/categories/chat"]:hover {
-    background-color: #ec4899 !important;
-    color: #fff !important;
-}
-
-/* Sidebar Category List Colors */
-.bits-category-list li a[href*="/categories/general"],
-.BoxCategories a[href*="/categories/general"] {
-    border-left: 3px solid #6366f1;
-}
-
-.bits-category-list li a[href*="/categories/tech"],
-.BoxCategories a[href*="/categories/tech"] {
-    border-left: 3px solid #10b981;
-}
 
 /* Category Count Badge */
 .bits-category-list .Count,
@@ -1166,32 +1080,6 @@ nav.bits-category-list .Count {
     font-size: 11px;
     font-weight: 600;
     padding: 2px 8px;
-}
-
-/* Dark Mode Adjustments */
-body.dark-layout a[href*="/categories/general"],
-body.dark-layout a[href*="/categories/default"] {
-    background-color: rgba(99, 102, 241, 0.25);
-}
-
-body.dark-layout a[href*="/categories/tech"],
-body.dark-layout a[href*="/categories/technology"] {
-    background-color: rgba(16, 185, 129, 0.25);
-}
-
-body.dark-layout a[href*="/categories/news"],
-body.dark-layout a[href*="/categories/announcement"] {
-    background-color: rgba(239, 68, 68, 0.25);
-}
-
-body.dark-layout a[href*="/categories/help"],
-body.dark-layout a[href*="/categories/support"] {
-    background-color: rgba(245, 158, 11, 0.25);
-}
-
-body.dark-layout a[href*="/categories/off-topic"],
-body.dark-layout a[href*="/categories/chat"] {
-    background-color: rgba(236, 72, 153, 0.25);
 }
 
 /* ============================================
