@@ -29,30 +29,24 @@ class IndexPhotosPlugin extends Gdn_Plugin {
 
     /**
      * Add OP name to start of discussion meta on discussions pages.
+     * NOTE: BitsMesh theme handles DiscussionAuthor with icon in helper_functions.php
      *
      * @param DiscussionController $sender
      * @param array $args
      */
     public function discussionsController_afterDiscussionLabels_handler($sender, $args) {
-        if (self::c('Vanilla.Discussions.Layout') != 'table') {
-            if (val('FirstUser', $args)) {
-                echo '<span class="MItem DiscussionAuthor">'.userAnchor(val('FirstUser', $args)).'</span>';
-            }
-        }
+        // Removed: BitsMesh theme adds DiscussionAuthor with icon
     }
 
     /**
      * Add OP name to start of discussion meta on categories pages
+     * NOTE: BitsMesh theme handles DiscussionAuthor with icon in helper_functions.php
      *
      * @param CategoriesController $sender
      * @param array $args
      */
     public function categoriesController_afterDiscussionLabels_handler($sender, $args) {
-        if (self::c('Vanilla.Discussions.Layout') != 'table') {
-            if (val('FirstUser', $args)) {
-                echo '<span class="MItem DiscussionAuthor">'.userAnchor(val('FirstUser', $args)).'</span>';
-            }
-        }
+        // Removed: BitsMesh theme adds DiscussionAuthor with icon
     }
 
     /**
