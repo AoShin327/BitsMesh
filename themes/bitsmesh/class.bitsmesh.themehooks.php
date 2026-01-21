@@ -701,10 +701,20 @@ body.dark-layout {
         }
 
         // Last resort: query DiscussionModel for count
+        // For category pages, get count for specific category only
         if ($totalRecords <= 0) {
             try {
                 $discussionModel = new DiscussionModel();
-                $totalRecords = $discussionModel->getCount();
+
+                // Check if we're on a category page and get category-specific count
+                $categoryID = $sender->data('Category.CategoryID', 0);
+                if ($categoryID > 0) {
+                    // Get count for this category only
+                    $totalRecords = $discussionModel->getCount(['d.CategoryID' => $categoryID]);
+                } else {
+                    // Homepage: get total count
+                    $totalRecords = $discussionModel->getCount();
+                }
             } catch (Exception $e) {
                 // Silently fail
             }
