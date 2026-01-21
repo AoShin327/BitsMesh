@@ -105,111 +105,6 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
     }
 
     /**
-     * Register theme settings menu item in dashboard.
-     *
-     * @param object $sender The controller instance.
-     * @return void
-     */
-    public function base_getAppSettingsMenuItems_handler($sender) {
-        $menu = &$sender->EventArguments['SideMenu'];
-        $menu->addLink('Appearance', t('BitsMesh Theme'), 'settings/bitsmesh', 'Garden.Settings.Manage', ['class' => 'nav-bitsmesh']);
-    }
-
-    /**
-     * Theme settings page controller.
-     *
-     * @param SettingsController $sender The controller instance.
-     * @return void
-     */
-    public function settingsController_bitsmesh_create($sender) {
-        $sender->permission('Garden.Settings.Manage');
-        $sender->setHighlightRoute('settings/bitsmesh');
-        $sender->title(t('BitsMesh Theme Settings'));
-        $sender->addSideMenu('settings/bitsmesh');
-
-        // Add CSS for settings page
-        $sender->addCssFile('settings.css', 'themes/bitsmesh');
-
-        // Field mappings: form field name (underscore) => config key (dot)
-        // Only Grid settings are configurable now
-        $fieldMappings = [
-            'Themes_BitsMesh_GridEnabled' => 'Themes.BitsMesh.GridEnabled',
-            'Themes_BitsMesh_GridColor' => 'Themes.BitsMesh.GridColor',
-            'Themes_BitsMesh_DarkGridColor' => 'Themes.BitsMesh.DarkGridColor',
-            'Themes_BitsMesh_GridBgColor' => 'Themes.BitsMesh.GridBgColor',
-            'Themes_BitsMesh_DarkGridBgColor' => 'Themes.BitsMesh.DarkGridBgColor',
-        ];
-
-        // Handle form submission
-        if ($sender->Form->authenticatedPostBack()) {
-            // Validate color inputs using form field names
-            $colorFields = [
-                'Themes_BitsMesh_GridColor',
-                'Themes_BitsMesh_DarkGridColor',
-                'Themes_BitsMesh_GridBgColor',
-                'Themes_BitsMesh_DarkGridBgColor',
-            ];
-
-            foreach ($colorFields as $field) {
-                $value = $sender->Form->getFormValue($field);
-                if (!empty($value) && !preg_match('/^#[0-9A-Fa-f]{6}$/', $value)) {
-                    $sender->Form->addError(sprintf(t('%s must be a valid hex color (e.g., #3B82F6).'), $field));
-                }
-            }
-
-            if ($sender->Form->errorCount() === 0) {
-                // Save each field directly using saveToConfig()
-                $configValues = [];
-                foreach ($fieldMappings as $formField => $configKey) {
-                    $value = $sender->Form->getFormValue($formField);
-
-                    // Handle checkbox (GridEnabled)
-                    if ($formField === 'Themes_BitsMesh_GridEnabled') {
-                        $value = $value ? true : false;
-                    }
-
-                    // Only save non-empty values (or false for checkbox)
-                    if ($value !== null && $value !== '') {
-                        $configValues[$configKey] = $value;
-                    }
-                }
-
-                // Save all config values at once
-                saveToConfig($configValues);
-
-                $sender->informMessage(t('Your settings have been saved.'));
-            }
-        }
-
-        // Load existing config values into form (using underscore field names)
-        $formData = [];
-        foreach ($fieldMappings as $formField => $configKey) {
-            $defaultValue = self::getDefaultValueForField($configKey);
-            $formData[$formField] = c($configKey, $defaultValue);
-        }
-        $sender->Form->setData($formData);
-
-        $sender->render('bitsmesh-settings', '', 'themes/bitsmesh');
-    }
-
-    /**
-     * Get default value for a config field.
-     *
-     * @param string $configKey The config key.
-     * @return mixed Default value.
-     */
-    private static function getDefaultValueForField($configKey) {
-        $defaults = [
-            'Themes.BitsMesh.GridEnabled' => true,
-            'Themes.BitsMesh.GridColor' => '#d4d4d4',
-            'Themes.BitsMesh.DarkGridColor' => '#404040',
-            'Themes.BitsMesh.GridBgColor' => '#fffcf8',
-            'Themes.BitsMesh.DarkGridBgColor' => '#1a1a1a',
-        ];
-        return isset($defaults[$configKey]) ? $defaults[$configKey] : '';
-    }
-
-    /**
      * Get theme colors (hardcoded green theme).
      *
      * @return array Theme colors.
@@ -221,11 +116,11 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             'secondary' => '#4ADE80',
             'darkPrimary' => '#16A34A',
             'darkSecondary' => '#22C55E',
-            // Grid colors from config
-            'grid' => c('Themes.BitsMesh.GridColor', '#d4d4d4'),
-            'darkGrid' => c('Themes.BitsMesh.DarkGridColor', '#404040'),
-            'gridBg' => c('Themes.BitsMesh.GridBgColor', '#fffcf8'),
-            'darkGridBg' => c('Themes.BitsMesh.DarkGridBgColor', '#1a1a1a'),
+            // Grid colors - hardcoded
+            'grid' => '#d4d4d4',
+            'darkGrid' => '#404040',
+            'gridBg' => '#fffcf8',
+            'darkGridBg' => '#1a1a1a',
         ];
     }
 
@@ -237,7 +132,6 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
      */
     private function injectThemeStyles($sender) {
         $colors = self::getThemeColors();
-        $gridEnabled = c('Themes.BitsMesh.GridEnabled', true);
 
         // Sanitize color values for CSS injection
         foreach ($colors as $key => $value) {
@@ -252,11 +146,7 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
 body.dark-layout {
     --bits-primary: ' . $colors['darkPrimary'] . ';
     --bits-secondary: ' . $colors['darkSecondary'] . ';
-}';
-
-        // Grid background styles
-        if ($gridEnabled) {
-            $css .= '
+}
 @media only screen and (min-width: 500px) {
     body {
         background-color: ' . $colors['gridBg'] . ';
@@ -270,10 +160,8 @@ body.dark-layout {
                           linear-gradient(to right, ' . $colors['darkGrid'] . ' 1px, transparent 1px);
         background-size: 32px 32px;
     }
-}';
-        }
-
-        $css .= '</style>';
+}
+</style>';
 
         if ($sender->Head) {
             $sender->Head->addString($css);
