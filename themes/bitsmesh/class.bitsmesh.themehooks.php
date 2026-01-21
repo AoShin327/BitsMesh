@@ -363,6 +363,49 @@ body.dark-layout {
     }
 
     /**
+     * Inject early sort redirect script into page head.
+     *
+     * This script runs BEFORE page content renders, checking localStorage
+     * for sort preference and redirecting immediately if needed.
+     * This minimizes the flash/flicker when redirecting.
+     *
+     * Only runs on homepage-related paths (/, /discussions, /page-N).
+     *
+     * @param Gdn_Controller $sender The controller instance.
+     * @return void
+     */
+    private function injectEarlySortRedirect($sender) {
+        // Only inject on homepage-related pages
+        $path = Gdn::request()->path();
+        $isHomepage = (
+            $path === '' ||
+            $path === '/' ||
+            preg_match('#^discussions(/p\d+)?$#i', $path) ||
+            preg_match('#^page-\d+$#i', $path)
+        );
+
+        if (!$isHomepage) {
+            return;
+        }
+
+        // Inline script - runs synchronously before page renders
+        // Kept minimal for fast execution
+        $script = '<script id="bits-early-sort-redirect">(function(){
+try{
+var k="bits_sort_preference",u=new URL(location.href);
+if(!u.searchParams.get("sortBy")){
+var s=localStorage.getItem(k);
+if(s==="postTime"){u.searchParams.set("sortBy",s);location.replace(u.toString());}
+}
+}catch(e){}
+})();</script>';
+
+        if ($sender->Head) {
+            $sender->Head->addString($script);
+        }
+    }
+
+    /**
      * Inject category list data for Smarty templates.
      *
      * Fetches all visible categories with their icons for sidebar display.
@@ -700,6 +743,10 @@ body.dark-layout {
     public function base_render_before($sender) {
         // Frontend: inject dynamic theme styles and load JS files
         if (!inSection('Dashboard')) {
+            // IMPORTANT: Early sort redirect must be injected FIRST
+            // so it runs before any other scripts or content renders
+            $this->injectEarlySortRedirect($sender);
+
             $this->injectThemeStyles($sender);
             $this->injectSidebarData($sender);
             $this->injectCategoryListData($sender);
