@@ -181,6 +181,9 @@ if (!function_exists('WriteDiscussion')) :
                 <div class="Meta Meta-Discussion">
                     <?php
                     writeTags($discussion);
+
+                    // DiscussionAuthor - 楼主 (icon-user) - 放在最左边
+                    echo '<span class="MItem DiscussionAuthor">'.bitsMetaIcon('icon-user').userAnchor($first).'</span>';
                     ?>
                     <span class="MItem MCount ViewCount"><?php
                         echo bitsMetaIcon('icon-eyes');
@@ -202,9 +205,6 @@ if (!function_exists('WriteDiscussion')) :
 
                     $sender->fireEvent('AfterCountMeta');
 
-                    // DiscussionAuthor - 楼主 (icon-user)
-                    echo ' <span class="MItem DiscussionAuthor">'.bitsMetaIcon('icon-user').userAnchor($first).'</span> ';
-
                     if ($discussion->LastCommentID != '') {
                         // LastCommentBy - 最后回复者 (icon-lightning)
                         echo ' <span class="MItem LastCommentBy">'.bitsMetaIcon('icon-lightning').userAnchor($last).'</span> ';
@@ -222,7 +222,7 @@ if (!function_exists('WriteDiscussion')) :
                         CategoryModel::checkPermission($category, 'Vanilla.Discussions.View')) {
 
                         echo wrap(
-                            bitsMetaIcon('icon-category').anchor(htmlspecialchars($discussion->Category),
+                            anchor(htmlspecialchars($discussion->Category),
                             categoryUrl($discussion->CategoryUrlCode)),
                             'span',
                             ['class' => 'MItem Category '.$category['CssClass']]
