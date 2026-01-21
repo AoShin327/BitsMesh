@@ -86,11 +86,54 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
     /**
      * Run once on theme enable.
      * Adds IconID column to Category table if it doesn't exist.
+     * Registers custom routes for clean URLs.
      *
      * @return void
      */
     public function setup() {
         $this->structure();
+        $this->registerRoutes();
+    }
+
+    /**
+     * Register custom routes for BitsMesh theme.
+     *
+     * Note: Vanilla's router has a bug where wildcard routes (:num, :alphanum)
+     * don't work correctly in matchRoute(). We use gdn_dispatcher_beforeDispatch_handler
+     * instead to handle /page-N → /discussions/pN rewrites.
+     *
+     * @return void
+     */
+    private function registerRoutes() {
+        // Wildcard routes don't work due to Vanilla router bug.
+        // Handled in gdn_dispatcher_beforeDispatch_handler instead.
+    }
+
+    /**
+     * Rewrite /page-N requests to /discussions/pN before routing.
+     *
+     * This is a workaround for Vanilla's router bug where wildcard routes
+     * (using :num or :alphanum) don't match correctly in matchRoute().
+     *
+     * Example rewrites:
+     * - /page-2 → /discussions/p2
+     * - /page-2?sortBy=postTime → /discussions/p2?sortBy=postTime
+     *
+     * @param Gdn_Dispatcher $sender The dispatcher instance.
+     * @return void
+     */
+    public function gdn_dispatcher_beforeDispatch_handler($sender) {
+        $request = $sender->EventArguments['Request'];
+        $path = $request->path();
+
+        // Check if path matches /page-N pattern
+        if (preg_match('#^page-(\d+)$#i', $path, $matches)) {
+            $pageNum = $matches[1];
+
+            // Rewrite to /discussions/pN (Vanilla's internal pagination format)
+            $newPath = 'discussions/p' . $pageNum;
+            $request->path($newPath);
+        }
     }
 
     /**
@@ -752,6 +795,12 @@ body.dark-layout {
         $request = Gdn::request();
         $currentPath = $request->path();
 
+        // Extract current page number from path (e.g., discussions/p2 -> 2)
+        $currentPage = 1;
+        if (preg_match('#/p(\d+)/?$#i', $currentPath, $pageMatches)) {
+            $currentPage = (int)$pageMatches[1];
+        }
+
         // Clean page numbers from path
         $basePath = preg_replace('#/p\d+/?$#i', '', $currentPath);
 
@@ -768,8 +817,27 @@ body.dark-layout {
         // sortBy=postTime (新帖子 - sort by post creation time)
         // DiscussionModel::getSortFromArray() maps these to internal sort keys
         // For homepage, default view (replyTime) uses clean URL without sortBy
-        $sortCommentsUrl = $isHomepage ? url('/') : url($basePath . '?sortBy=replyTime');
-        $sortPostsUrl = url(($basePath ?: '/') . '?sortBy=postTime');
+        // IMPORTANT: Preserve current page number when switching sort mode
+        if ($isHomepage) {
+            if ($currentPage > 1) {
+                // On page 2+, include page number in sort URLs
+                $sortCommentsUrl = url('/page-' . $currentPage);
+                $sortPostsUrl = url('/page-' . $currentPage . '?sortBy=postTime');
+            } else {
+                // On page 1, use clean URLs
+                $sortCommentsUrl = url('/');
+                $sortPostsUrl = url('/?sortBy=postTime');
+            }
+        } else {
+            // Category pages - use standard format with page preservation
+            if ($currentPage > 1) {
+                $sortCommentsUrl = url($basePath . '/p' . $currentPage . '?sortBy=replyTime');
+                $sortPostsUrl = url($basePath . '/p' . $currentPage . '?sortBy=postTime');
+            } else {
+                $sortCommentsUrl = url($basePath . '?sortBy=replyTime');
+                $sortPostsUrl = url($basePath . '?sortBy=postTime');
+            }
+        }
 
         // Determine current sort from sortBy parameter
         // Default to 'comments' (replyTime/hot - by latest reply)
@@ -988,10 +1056,9 @@ body.dark-layout {
      */
     private function buildPageUrl($basePath, $page, $queryString) {
         // Handle empty basePath (homepage)
-        // Homepage must use /discussions/pN format for Vanilla routing to work
         $isHomepage = ($basePath === '' || $basePath === '/');
 
-        // Page 1 doesn't need 'p1' in URL
+        // Page 1 doesn't need page number in URL
         if ($page <= 1) {
             if ($isHomepage) {
                 // Homepage page 1: / or /?sortBy=xxx
@@ -1002,12 +1069,12 @@ body.dark-layout {
 
         // Append page number
         if ($isHomepage) {
-            // Homepage pagination: /discussions/p2?sortBy=xxx
-            // Vanilla routing requires /discussions prefix for pagination
-            return url('/discussions/p' . $page . $queryString);
+            // Homepage pagination: /page-2?sortBy=xxx
+            // Uses custom route mapping: /page-N → /discussions/pN
+            return url('/page-' . $page . $queryString);
         }
 
-        // Other pages: /categories/xxx/p2?sortBy=xxx
+        // Other pages (categories): /categories/xxx/p2?sortBy=xxx
         return url($basePath . '/p' . $page . $queryString);
     }
 }
