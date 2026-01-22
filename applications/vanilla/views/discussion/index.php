@@ -13,7 +13,7 @@ echo '<!-- Page Title -->
 echo '<div class="Options">';
 
 $this->fireEvent('BeforeDiscussionOptions');
-writeBookmarkLink();
+// writeBookmarkLink(); // Removed: bookmark button already exists in comment-menu
 echo getDiscussionOptionsDropdown();
 writeAdminCheck();
 
