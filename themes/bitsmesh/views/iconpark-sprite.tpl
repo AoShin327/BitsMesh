@@ -207,4 +207,7 @@
 
   {* chart-line - 社区统计 *}
   <symbol id="chart-line" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 6v36h36" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m14 30 8-8 6 6 12-12" data-follow-stroke="currentColor"/></symbol>
+
+  {* book-one - 等级进度/经验值 *}
+  <symbol id="book-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M5 7h38v34H11a6 6 0 0 1-6-6V7Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M5 35a6 6 0 0 1 6-6h32" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M23 14v10m-5-5h10" data-follow-stroke="currentColor"/></symbol>
 </svg>
