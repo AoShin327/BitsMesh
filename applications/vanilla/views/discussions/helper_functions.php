@@ -73,7 +73,7 @@ if (!function_exists('BookmarkButton')) {
         return anchor(
             $title,
             '/discussion/bookmark/'.$discussion->DiscussionID.'/'.Gdn::session()->transientKey(),
-            'Hijack Bookmark'.($discussion->Bookmarked == '1' ? ' Bookmarked' : ''),
+            $discussion->Bookmarked == '1' ? 'Bookmarked' : '',
             ['title' => $title]
         );
     }
