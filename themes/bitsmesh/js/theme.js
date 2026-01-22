@@ -495,6 +495,186 @@
     }
 
     /**
+     * FollowButton - Handle follow/unfollow button interactions
+     * Uses AJAX to toggle follow state without page reload.
+     */
+    class FollowButton {
+        constructor() {
+            this.handleClick = null;
+            this.pendingRequests = new Set(); // Prevent duplicate requests
+        }
+
+        init() {
+            this.bindEvents();
+        }
+
+        bindEvents() {
+            this.handleClick = (e) => {
+                const followBtn = e.target.closest('.bits-follow-btn');
+                if (!followBtn) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                this.toggleFollow(followBtn);
+            };
+
+            document.addEventListener('click', this.handleClick);
+        }
+
+        /**
+         * Toggle follow state for a user
+         * @param {HTMLElement} button - The follow button element
+         */
+        async toggleFollow(button) {
+            const userID = button.dataset.userid;
+            if (!userID) {
+                console.error('FollowButton: Missing userid');
+                return;
+            }
+
+            // Prevent duplicate requests
+            if (this.pendingRequests.has(userID)) {
+                return;
+            }
+
+            // Get TransientKey for CSRF protection
+            const transientKey = this.getTransientKey();
+            if (!transientKey) {
+                console.error('FollowButton: TransientKey not found');
+                return;
+            }
+
+            // Mark as pending
+            this.pendingRequests.add(userID);
+            button.classList.add('bits-loading');
+            button.disabled = true;
+
+            try {
+                const response = await fetch('/profile/togglefollow.json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `UserID=${encodeURIComponent(userID)}&TransientKey=${encodeURIComponent(transientKey)}`
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.Success) {
+                    this.updateButtonState(button, data.IsFollowing);
+                    // Also update any other follow buttons for the same user on the page
+                    this.updateAllButtonsForUser(userID, data.IsFollowing, button);
+                } else {
+                    console.error('FollowButton: Server error', data.Message || 'Unknown error');
+                    this.showError(button, data.Message || '操作失败');
+                }
+            } catch (error) {
+                console.error('FollowButton: Request failed', error);
+                this.showError(button, '网络错误，请重试');
+            } finally {
+                // Remove pending state
+                this.pendingRequests.delete(userID);
+                button.classList.remove('bits-loading');
+                button.disabled = false;
+            }
+        }
+
+        /**
+         * Update button visual state
+         * @param {HTMLElement} button - The button element
+         * @param {boolean} isFollowing - New follow state
+         */
+        updateButtonState(button, isFollowing) {
+            button.dataset.following = isFollowing ? '1' : '0';
+
+            if (isFollowing) {
+                button.classList.remove('bits-btn-follow');
+                button.classList.add('bits-btn-following');
+                button.textContent = '已关注';
+            } else {
+                button.classList.remove('bits-btn-following');
+                button.classList.add('bits-btn-follow');
+                button.textContent = '关注';
+            }
+        }
+
+        /**
+         * Update all follow buttons for the same user on the page
+         * @param {string} userID - User ID
+         * @param {boolean} isFollowing - New follow state
+         * @param {HTMLElement} excludeButton - Button to exclude (already updated)
+         */
+        updateAllButtonsForUser(userID, isFollowing, excludeButton) {
+            const buttons = document.querySelectorAll(`.bits-follow-btn[data-userid="${userID}"]`);
+            buttons.forEach(btn => {
+                if (btn !== excludeButton) {
+                    this.updateButtonState(btn, isFollowing);
+                }
+            });
+        }
+
+        /**
+         * Show error message temporarily
+         * @param {HTMLElement} button - The button element
+         * @param {string} message - Error message
+         */
+        showError(button, message) {
+            const originalText = button.textContent;
+            button.textContent = message;
+            button.classList.add('bits-btn-error');
+
+            setTimeout(() => {
+                // Restore original state
+                const isFollowing = button.dataset.following === '1';
+                this.updateButtonState(button, isFollowing);
+                button.classList.remove('bits-btn-error');
+            }, 2000);
+        }
+
+        /**
+         * Get CSRF TransientKey from page
+         * @returns {string|null}
+         */
+        getTransientKey() {
+            // Try multiple sources
+            // 1. gdn.definition (Vanilla's JS config)
+            if (typeof gdn !== 'undefined' && gdn.definition) {
+                const tk = gdn.definition('TransientKey');
+                if (tk) return tk;
+            }
+
+            // 2. Hidden input field
+            const tkInput = document.querySelector('input[name="TransientKey"]');
+            if (tkInput) return tkInput.value;
+
+            // 3. Meta tag
+            const tkMeta = document.querySelector('meta[name="TransientKey"]');
+            if (tkMeta) return tkMeta.content;
+
+            // 4. URL parameter in existing links
+            const tkLink = document.querySelector('a[href*="TransientKey="]');
+            if (tkLink) {
+                const match = tkLink.href.match(/TransientKey=([^&]+)/);
+                if (match) return decodeURIComponent(match[1]);
+            }
+
+            return null;
+        }
+
+        destroy() {
+            if (this.handleClick) {
+                document.removeEventListener('click', this.handleClick);
+            }
+        }
+    }
+
+    /**
      * Initialize all theme components
      */
     function initTheme() {
@@ -521,6 +701,10 @@
         // Initialize BookmarkButton (handle bookmark UI updates)
         bitsTheme.bookmarkButton = new BookmarkButton();
         bitsTheme.bookmarkButton.init();
+
+        // Initialize FollowButton (handle follow/unfollow interactions)
+        bitsTheme.followButton = new FollowButton();
+        bitsTheme.followButton.init();
 
         // Initialize DarkMode if available
         if (typeof DarkModeToggle !== 'undefined') {

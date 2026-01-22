@@ -67,9 +67,9 @@
                 </a>
             </div>
             <div>
-                <a href="#">
+                <a href="{$SidebarFollowingUrl}">
                     <svg class="iconpark-icon"><use href="#star"></use></svg>
-                    <span>{t c='Following' d='关注'} 0</span>
+                    <span>{t c='Following' d='关注'} {$SidebarUserFollowingCount}</span>
                 </a>
             </div>
             <div>
@@ -93,9 +93,9 @@
                 </a>
             </div>
             <div>
-                <a href="{$SidebarUserProfileUrl}">
+                <a href="{$SidebarFollowersUrl}">
                     <svg class="iconpark-icon"><use href="#concern"></use></svg>
-                    <span>{t c='Followers' d='粉丝'} 0</span>
+                    <span>{t c='Followers' d='粉丝'} {$SidebarUserFollowersCount}</span>
                 </a>
             </div>
             <div>

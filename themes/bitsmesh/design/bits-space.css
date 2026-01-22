@@ -529,6 +529,179 @@ body.dark-layout .bits-btn-message:hover {
 }
 
 /* ============================================
+   Follow List Styles
+   ============================================ */
+.bits-follow-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.bits-follow-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px dashed var(--bits-border-color, #e5e7eb);
+    transition: background-color 0.2s ease;
+}
+
+.bits-follow-item:last-child {
+    border-bottom: none;
+}
+
+.bits-follow-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.bits-follow-avatar {
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+
+.bits-follow-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.bits-follow-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bits-follow-name {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--bits-text-color, #333);
+    text-decoration: none;
+    margin-bottom: 4px;
+}
+
+.bits-follow-name:hover {
+    color: var(--bits-primary, #22C55E);
+    text-decoration: none;
+}
+
+.bits-follow-date {
+    font-size: 12px;
+    color: var(--bits-text-muted, #888);
+}
+
+.bits-follow-btn {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.bits-follow-btn.bits-btn-follow {
+    background-color: var(--bits-primary, #22C55E);
+    color: white;
+}
+
+.bits-follow-btn.bits-btn-follow:hover {
+    background-color: #16a34a;
+}
+
+.bits-follow-btn.bits-btn-following {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: var(--bits-primary, #22C55E);
+    border: 1px solid var(--bits-primary, #22C55E);
+}
+
+.bits-follow-btn.bits-btn-following:hover {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 500px) {
+    .bits-follow-avatar img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .bits-follow-name {
+        font-size: 14px;
+    }
+
+    .bits-follow-btn {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Dark mode support */
+body.dark-layout .bits-follow-item {
+    border-bottom-color: var(--bits-dark-border-color, #404040);
+}
+
+body.dark-layout .bits-follow-item:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+body.dark-layout .bits-follow-name {
+    color: var(--bits-dark-text-color, #e5e5e5);
+}
+
+body.dark-layout .bits-follow-date {
+    color: var(--bits-dark-text-muted, #999);
+}
+
+body.dark-layout .bits-follow-btn.bits-btn-following {
+    background-color: rgba(34, 197, 94, 0.2);
+}
+
+body.dark-layout .bits-follow-btn.bits-btn-following:hover {
+    background-color: rgba(220, 38, 38, 0.2);
+}
+
+/* Button Loading State */
+.bits-follow-btn.bits-loading {
+    pointer-events: none;
+    opacity: 0.7;
+    position: relative;
+}
+
+.bits-follow-btn.bits-loading::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    top: 50%;
+    left: 50%;
+    margin-top: -7px;
+    margin-left: -7px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: bits-spin 0.6s linear infinite;
+}
+
+@keyframes bits-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Button Error State */
+.bits-follow-btn.bits-btn-error {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+body.dark-layout .bits-follow-btn.bits-btn-error {
+    background-color: rgba(220, 38, 38, 0.2);
+}
+
+/* ============================================
    CSS Variables (Defaults)
    ============================================ */
 :root {

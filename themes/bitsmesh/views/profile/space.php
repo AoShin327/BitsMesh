@@ -18,6 +18,24 @@ $credits = $this->data('Credits', 0);
 $discussionCount = $this->data('DiscussionCount', 0);
 $commentCount = $this->data('CommentCount', 0);
 
+// Get follow status if logged in and viewing another user
+$isFollowing = false;
+$followingCount = 0;
+$followersCount = 0;
+
+if (Gdn::session()->UserID && Gdn::session()->UserID != $userID) {
+    require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+    $followModel = UserFollowModel::instance();
+    $isFollowing = $followModel->isFollowing(Gdn::session()->UserID, $userID);
+    $followingCount = $followModel->getFollowingCount($userID);
+    $followersCount = $followModel->getFollowersCount($userID);
+} else {
+    require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+    $followModel = UserFollowModel::instance();
+    $followingCount = $followModel->getFollowingCount($userID);
+    $followersCount = $followModel->getFollowersCount($userID);
+}
+
 // Get user photo - use userPhotoUrl() to ensure correct absolute URL
 $photoUrl = userPhotoUrl($user);
 
@@ -49,9 +67,12 @@ $tabs = [
         <?php if (Gdn::session()->UserID && Gdn::session()->UserID != $userID): ?>
         <!-- Action buttons for viewing other users -->
         <div class="bits-space-actions">
-            <a href="#" class="bits-btn bits-btn-follow">
-                <?php echo t('Follow', '关注'); ?>
-            </a>
+            <button type="button"
+                    class="bits-btn bits-follow-btn <?php echo $isFollowing ? 'bits-btn-following' : 'bits-btn-follow'; ?>"
+                    data-userid="<?php echo $userID; ?>"
+                    data-following="<?php echo $isFollowing ? '1' : '0'; ?>">
+                <?php echo $isFollowing ? t('Following', '已关注') : t('Follow', '关注'); ?>
+            </button>
             <a href="<?php echo url('/messages/add?to=' . urlencode($user->Name)); ?>" class="bits-btn bits-btn-message">
                 <?php echo t('Message', '私信'); ?>
             </a>

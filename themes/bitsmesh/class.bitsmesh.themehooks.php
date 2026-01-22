@@ -197,13 +197,20 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
 
         // === 3. User space: /space/{userid} → /profile/space/{userid} ===
         // Map short URL to internal profile action
-        if (preg_match('#^space/(\d+)(?:/(general|thread|post|favorite))?$#i', $path, $matches)) {
+        if (preg_match('#^space/(\d+)(?:/(general|thread|post|favorite|follow))?(?:/(following|followers))?$#i', $path, $matches)) {
             $userID = (int)$matches[1];
             $tab = isset($matches[2]) ? strtolower($matches[2]) : 'general';
+            $subTab = isset($matches[3]) ? strtolower($matches[3]) : '';
 
             if ($userID > 0) {
-                // Rewrite to internal format: /profile/space/{userid}/{tab}
-                $newPath = 'profile/space/' . $userID . '/' . $tab;
+                // Handle follow tab with subtab
+                if ($tab === 'follow') {
+                    $followTab = $subTab ?: 'following';
+                    $newPath = 'profile/follow/' . $userID . '/' . $followTab;
+                } else {
+                    // Rewrite to internal format: /profile/space/{userid}/{tab}
+                    $newPath = 'profile/space/' . $userID . '/' . $tab;
+                }
                 $request->path($newPath);
             }
             return;
@@ -259,6 +266,10 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $construct->column('IconID', 'varchar(50)', true);
             $construct->set(false, false);
         }
+
+        // Create UserFollow table
+        require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+        UserFollowModel::structure();
     }
 
     /**
@@ -431,6 +442,8 @@ body.dark-layout {
         $userProfileUrl = '';
         $userSpaceUrl = '';
         $userBookmarkCount = 0;
+        $userFollowingCount = 0;
+        $userFollowersCount = 0;
 
         if ($isLoggedIn && $session->User) {
             $userDiscussionCount = val('CountDiscussions', $session->User, 0);
@@ -451,6 +464,16 @@ body.dark-layout {
                 $photo = UserModel::getDefaultAvatarUrl($session->User);
             }
             $userPhoto = $photo;
+
+            // Get follow/followers count
+            try {
+                require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+                $followModel = UserFollowModel::instance();
+                $userFollowingCount = $followModel->getFollowingCount($session->UserID);
+                $userFollowersCount = $followModel->getFollowersCount($session->UserID);
+            } catch (Exception $e) {
+                // Silently fail
+            }
         }
 
         // Get newest members (limit to 8)
@@ -491,6 +514,8 @@ body.dark-layout {
         $sender->setData('SidebarUserDiscussionCount', $userDiscussionCount);
         $sender->setData('SidebarUserCommentCount', $userCommentCount);
         $sender->setData('SidebarUserBookmarkCount', $userBookmarkCount);
+        $sender->setData('SidebarUserFollowingCount', $userFollowingCount);
+        $sender->setData('SidebarUserFollowersCount', $userFollowersCount);
         $sender->setData('SidebarUserName', $userName);
         $sender->setData('SidebarUserPhoto', $userPhoto);
         $sender->setData('SidebarUserProfileUrl', $userProfileUrl);
@@ -509,6 +534,13 @@ body.dark-layout {
             ? url('/space/' . val('UserID', $session->User) . '/favorite')
             : url('/discussions/bookmarked'));
         $sender->setData('SidebarSettingsUrl', url('/profile/preferences'));
+        // Follow list URL
+        $sender->setData('SidebarFollowingUrl', $isLoggedIn && $session->User
+            ? url('/space/' . $session->UserID . '/follow/following')
+            : '');
+        $sender->setData('SidebarFollowersUrl', $isLoggedIn && $session->User
+            ? url('/space/' . $session->UserID . '/follow/followers')
+            : '');
 
         // Category page detection and data injection
         // Check if we're on a category page (CategoriesController with a specific category)
@@ -1284,5 +1316,175 @@ body.dark-layout {
 
         // Render
         $sender->render('space', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * User follow/followers list page - /space/{userid}/follow/{tab}
+     *
+     * Modern forum style follow list with tab navigation.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @param int $userID User ID to display.
+     * @param string $tab Current tab (following, followers).
+     * @return void
+     */
+    public function profileController_follow_create($sender, $userID = 0, $tab = 'following') {
+        $userID = (int)$userID;
+
+        // Validate user ID
+        if ($userID <= 0) {
+            throw notFoundException('User');
+        }
+
+        // Get user data
+        $userModel = new UserModel();
+        $user = $userModel->getID($userID, DATASET_TYPE_ARRAY);
+
+        if (!$user) {
+            throw notFoundException('User');
+        }
+
+        // Convert to object for easier access
+        $user = (object)$user;
+
+        // Load UserFollowModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+        $followModel = UserFollowModel::instance();
+
+        // Set up the page
+        $sender->setData('User', $user);
+        $sender->setData('UserID', $userID);
+        $sender->setData('Tab', strtolower($tab));
+
+        // Page title
+        $titleKey = ($tab === 'followers') ? '%s\'s Followers' : '%s\'s Following';
+        $sender->title(sprintf(t($titleKey), htmlspecialchars($user->Name)));
+
+        // Add CSS
+        $sender->addCssFile('bits-space.css', 'themes/bitsmesh');
+
+        // Get counts
+        $followingCount = $followModel->getFollowingCount($userID);
+        $followersCount = $followModel->getFollowersCount($userID);
+        $sender->setData('FollowingCount', $followingCount);
+        $sender->setData('FollowersCount', $followersCount);
+
+        // Pagination
+        $limit = 20;
+        $page = (int)Gdn::request()->get('page', 1);
+        $page = max(1, $page);
+        $offset = ($page - 1) * $limit;
+
+        // Get users based on tab
+        if ($tab === 'followers') {
+            $users = $followModel->getFollowers($userID, $limit, $offset);
+            $totalCount = $followersCount;
+        } else {
+            $users = $followModel->getFollowing($userID, $limit, $offset);
+            $totalCount = $followingCount;
+        }
+
+        $sender->setData('Users', $users);
+        $sender->setData('TotalCount', $totalCount);
+        $sender->setData('CurrentPage', $page);
+        $sender->setData('TotalPages', $totalCount > 0 ? ceil($totalCount / $limit) : 1);
+
+        // Render
+        $sender->render('follow', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * AJAX endpoint for follow/unfollow toggle - /profile/togglefollow.json
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_toggleFollow_create($sender) {
+        // Require logged in user
+        if (!Gdn::session()->isValid()) {
+            throw permissionException('SignedIn');
+        }
+
+        // CSRF protection
+        $transientKey = Gdn::request()->get('TransientKey', Gdn::request()->post('TransientKey'));
+        if (!Gdn::session()->validateTransientKey($transientKey)) {
+            throw new Gdn_UserException(t('Invalid CSRF token'));
+        }
+
+        // Get target user ID
+        $followUserID = (int)Gdn::request()->getValue('UserID', 0);
+
+        if ($followUserID <= 0) {
+            throw new Gdn_UserException(t('Invalid user'));
+        }
+
+        // Cannot follow yourself
+        if ($followUserID === Gdn::session()->UserID) {
+            throw new Gdn_UserException(t('You cannot follow yourself'));
+        }
+
+        // Check if target user exists
+        $userModel = new UserModel();
+        $targetUser = $userModel->getID($followUserID);
+        if (!$targetUser) {
+            throw notFoundException('User');
+        }
+
+        // Load UserFollowModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+        $followModel = UserFollowModel::instance();
+
+        // Toggle follow
+        $result = $followModel->toggle(Gdn::session()->UserID, $followUserID);
+
+        // Return JSON response
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->setData('Success', true);
+        $sender->setData('IsFollowing', $result['isFollowing']);
+        $sender->setData('FollowingCount', $result['followingCount']);
+        $sender->setData('FollowersCount', $result['followersCount']);
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * AJAX endpoint to get follow status - /profile/followstatus.json
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_followStatus_create($sender) {
+        $followUserID = (int)Gdn::request()->getValue('UserID', 0);
+
+        if ($followUserID <= 0) {
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'Invalid user');
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Load UserFollowModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
+        $followModel = UserFollowModel::instance();
+
+        // Get status
+        $isFollowing = false;
+        if (Gdn::session()->isValid()) {
+            $isFollowing = $followModel->isFollowing(Gdn::session()->UserID, $followUserID);
+        }
+
+        $followingCount = $followModel->getFollowingCount($followUserID);
+        $followersCount = $followModel->getFollowersCount($followUserID);
+
+        // Return JSON response
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->setData('Success', true);
+        $sender->setData('IsFollowing', $isFollowing);
+        $sender->setData('FollowingCount', $followingCount);
+        $sender->setData('FollowersCount', $followersCount);
+        $sender->render('blank', 'utility', 'dashboard');
     }
 }
