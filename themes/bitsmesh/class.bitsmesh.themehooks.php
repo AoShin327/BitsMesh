@@ -593,7 +593,12 @@ body.dark-layout {
      */
     public function base_render_before($sender) {
         // Frontend: inject dynamic theme styles and load JS files
-        if (!inSection('Dashboard')) {
+        // Check for Vanilla section OR NOT in Dashboard section
+        // PluginController pages may have both 'Dashboard' and 'Vanilla' sections
+        // so we need to check for 'Vanilla' presence as priority
+        $isFrontend = inSection('Vanilla') || !inSection('Dashboard');
+
+        if ($isFrontend) {
             $this->injectThemeStyles($sender);
             $this->injectSidebarData($sender);
             $this->injectCategoryListData($sender);

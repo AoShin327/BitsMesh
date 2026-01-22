@@ -968,7 +968,8 @@ class Gdn_Format {
         foreach ($parts as $i => $str) {
             // Text before the mention.
             if ($i == 0) {
-                $str[$i] = htmlspecialchars($str);
+                // PHP 8.x fix: use $parts[$i] instead of $str[$i] to avoid string offset assignment error
+                $parts[$i] = htmlspecialchars($str);
                 continue;
             }
 
@@ -979,7 +980,8 @@ class Gdn_Format {
             }
 
             if (preg_match('`\w$`', $parts[$i - 1])) {
-                $str[$i] = htmlspecialchars($str);
+                // PHP 8.x fix: use $parts[$i] instead of $str[$i] to avoid string offset assignment error
+                $parts[$i] = htmlspecialchars($str);
                 continue;
             }
 

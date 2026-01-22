@@ -1,0 +1,996 @@
+/* BitsMesh Theme - Discussion Detail Page Styles
+ *
+ * Pixel-level replication of modern forum post detail page
+ * Specifications:
+ * - Post title: 18px bold
+ * - Avatar: 40px × 40px, 15% border-radius
+ * - Author name: 15px bold
+ * - Meta info: 11px gray
+ * - Floor link: positioned absolute right
+ * - Content item padding: 8px
+ *
+ * v1.4.12: Discussion detail page styling
+ */
+
+/* ============================================
+   Discussion Page Container
+   ============================================ */
+
+.MessageList.Discussion {
+    background-color: var(--bits-bg-main);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+/* ============================================
+   Page Title Section (Post Header)
+   ============================================ */
+
+#Item_0.PageTitle {
+    border-bottom: 1px solid var(--bits-glass);
+    padding: 8px;
+    position: relative;
+}
+
+body.dark-layout #Item_0.PageTitle {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+#Item_0.PageTitle h1 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+#Item_0.PageTitle h1 > * {
+    vertical-align: middle;
+}
+
+/* Options dropdown in title area */
+#Item_0.PageTitle .Options {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+}
+
+/* ============================================
+   Discussion Item (Main Post / #0)
+   ============================================ */
+
+.Discussion .ItemDiscussion {
+    border-bottom: 1px solid var(--bits-glass);
+    padding: 8px;
+    position: relative;
+}
+
+/* Inner container needs position for floor links */
+.Discussion .ItemDiscussion > .Discussion {
+    position: relative;
+}
+
+body.dark-layout .Discussion .ItemDiscussion {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   Author Section - Modern Forum Style
+   ============================================ */
+
+.Discussion .Item-Header,
+.Comment .Item-Header {
+    display: flex;
+    align-items: flex-start;
+}
+
+.Discussion .AuthorWrap,
+.Comment .AuthorWrap {
+    display: flex;
+    align-items: flex-start;
+    flex: 1;
+}
+
+.Discussion .Author,
+.Comment .Author {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+/* Avatar styling */
+.Discussion .Author .PhotoWrap,
+.Comment .Author .PhotoWrap {
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.Discussion .Author .PhotoWrap img,
+.Comment .Author .PhotoWrap img {
+    border-radius: 15%;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    height: 40px;
+    width: 40px;
+    display: block;
+}
+
+body.dark-layout .Discussion .Author .PhotoWrap img,
+body.dark-layout .Comment .Author .PhotoWrap img {
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Username styling */
+.Discussion .Author .Username,
+.Comment .Author .Username {
+    color: var(--bits-text);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.Discussion .Author .Username:hover,
+.Comment .Author .Username:hover {
+    color: var(--bits-link);
+}
+
+/* Author info container (title, location) */
+.Discussion .AuthorInfo,
+.Comment .AuthorInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.Discussion .AuthorInfo .MItem,
+.Comment .AuthorInfo .MItem {
+    color: var(--bits-text-gray);
+    font-size: 11px;
+}
+
+/* ============================================
+   Meta Information Line
+   ============================================ */
+
+.Discussion .DiscussionMeta,
+.Comment .CommentMeta {
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.Discussion .DiscussionMeta .MItem,
+.Comment .CommentMeta .MItem {
+    margin-right: 8px;
+}
+
+.Discussion .DiscussionMeta .MItem > *,
+.Comment .CommentMeta .MItem > * {
+    vertical-align: middle;
+}
+
+/* Date link styling */
+.Discussion .DiscussionMeta .DateCreated a,
+.Comment .CommentMeta .DateCreated a {
+    color: var(--bits-text-gray);
+    text-decoration: none;
+}
+
+.Discussion .DiscussionMeta .DateCreated a:hover,
+.Comment .CommentMeta .DateCreated a:hover {
+    color: var(--bits-link);
+}
+
+/* Category link */
+.Discussion .DiscussionMeta .Category a {
+    color: var(--bits-text-gray);
+}
+
+.Discussion .DiscussionMeta .Category a:hover {
+    color: var(--bits-link);
+}
+
+/* "楼主" / Original Poster badge */
+.bits-is-poster,
+.isOriginalPoster .Author::after {
+    border: 1px solid #00eaff;
+    border-radius: 3px;
+    color: #00eaff;
+    content: "楼主";
+    font-size: 11px;
+    margin-left: 5px;
+    padding: 0 3px;
+}
+
+/* If using class-based approach */
+.bits-is-poster {
+    display: inline-block;
+}
+
+/* ============================================
+   Floor Link (楼层号)
+   ============================================ */
+
+.bits-floor-link,
+.Discussion .floor-link,
+.Comment .floor-link {
+    color: var(--bits-text-gray);
+    font-size: 12px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    text-decoration: none;
+}
+
+.bits-floor-link:hover,
+.Discussion .floor-link:hover,
+.Comment .floor-link:hover {
+    color: var(--bits-link);
+}
+
+/* ============================================
+   Post Content Body
+   ============================================ */
+
+.Discussion .Item-BodyWrap,
+.Comment .Item-BodyWrap {
+    margin-top: 8px;
+}
+
+.Discussion .Item-Body .Message,
+.Comment .Item-Body .Message {
+    color: var(--bits-text);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+body.dark-layout .Discussion .Item-Body .Message,
+body.dark-layout .Comment .Item-Body .Message {
+    color: var(--bits-text);
+}
+
+/* Content formatting - paragraphs */
+.Discussion .Message p,
+.Comment .Message p {
+    margin: 10px 0;
+}
+
+/* Content formatting - headings */
+.Discussion .Message h2,
+.Comment .Message h2 {
+    border-bottom: 1px solid var(--bits-glass);
+    color: var(--bits-primary);
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+body.dark-layout .Discussion .Message h2,
+body.dark-layout .Comment .Message h2 {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+.Discussion .Message h3,
+.Comment .Message h3 {
+    font-size: 16px;
+}
+
+/* Content formatting - links */
+.Discussion .Message a,
+.Comment .Message a {
+    color: var(--bits-primary);
+}
+
+.Discussion .Message a:hover,
+.Comment .Message a:hover {
+    color: var(--bits-link-hover);
+}
+
+/* Content formatting - code */
+.Discussion .Message code,
+.Discussion .Message pre,
+.Comment .Message code,
+.Comment .Message pre {
+    background: #ffff9954;
+    border: 1px solid #eec;
+    border-radius: 2px;
+    font-family: monospace;
+    overflow: auto;
+    padding: 4px 8px;
+}
+
+body.dark-layout .Discussion .Message code,
+body.dark-layout .Discussion .Message pre,
+body.dark-layout .Comment .Message code,
+body.dark-layout .Comment .Message pre {
+    background: #2e2e04;
+    border-color: #56560b;
+}
+
+.Discussion .Message pre,
+.Comment .Message pre {
+    box-sizing: border-box;
+    margin: 1em 0;
+    max-width: 100%;
+    white-space: pre;
+}
+
+.Discussion .Message pre code,
+.Comment .Message pre code {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+/* Content formatting - blockquote */
+.Discussion .Message blockquote,
+.Comment .Message blockquote {
+    background: var(--bits-glass);
+    border-left: 4px solid rgba(0, 0, 0, 0.1);
+    margin: 1em;
+    min-width: 200px;
+    overflow-y: auto;
+    padding: 1ex 10px;
+}
+
+body.dark-layout .Discussion .Message blockquote,
+body.dark-layout .Comment .Message blockquote {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Content formatting - images */
+.Discussion .Message img,
+.Comment .Message img {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    margin: 1rem 2.5%;
+    max-width: 95%;
+}
+
+.Discussion .Message img.sticker,
+.Comment .Message img.sticker {
+    box-shadow: none;
+    margin: 0;
+    max-width: 90px;
+    vertical-align: middle;
+}
+
+/* Content formatting - tables */
+.Discussion .Message table,
+.Comment .Message table {
+    background: #f2f6fc;
+    border: 1px solid #dcdcdc;
+    border-collapse: unset;
+    border-radius: 4px;
+    border-spacing: 0;
+    box-sizing: border-box;
+    font-size: 13px;
+    margin-bottom: 18px;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+}
+
+body.dark-layout .Discussion .Message table,
+body.dark-layout .Comment .Message table {
+    background: #323232;
+    border-color: #1e1d1d;
+}
+
+/* Content formatting - lists */
+.Discussion .Message ol,
+.Discussion .Message ul,
+.Comment .Message ol,
+.Comment .Message ul {
+    margin: 1em 0 1em 2em;
+}
+
+.Discussion .Message ol li,
+.Comment .Message ol li {
+    list-style: decimal !important;
+}
+
+.Discussion .Message ul li,
+.Comment .Message ul li {
+    list-style: none !important;
+    position: relative;
+}
+
+.Discussion .Message ul li::before,
+.Comment .Message ul li::before {
+    content: "\2022";
+    font-family: arial, serif !important;
+    left: -1em;
+    position: absolute;
+}
+
+/* ============================================
+   Comments Section
+   ============================================ */
+
+.CommentsWrap {
+    background-color: var(--bits-bg-main);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.DataBox-Comments {
+    padding: 0;
+}
+
+.DataBox-Comments .CommentHeading {
+    border-bottom: 1px solid var(--bits-glass);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    padding: 12px 8px;
+}
+
+body.dark-layout .DataBox-Comments .CommentHeading {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Comments list */
+.MessageList.Comments {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.MessageList.Comments > li {
+    border-bottom: 1px solid var(--bits-glass);
+    padding: 8px;
+    position: relative;
+}
+
+body.dark-layout .MessageList.Comments > li {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+.MessageList.Comments > li:last-child {
+    border-bottom: none;
+}
+
+/* ============================================
+   Comment Item
+   ============================================ */
+
+.Comment .Comment {
+    position: relative;
+}
+
+/* Inner container needs position for floor links */
+.MessageList.Comments > li > .Comment {
+    position: relative;
+}
+
+/* Comment Options (dropdown menu) */
+.Comment .Options {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    z-index: 10;
+}
+
+/* ============================================
+   Comment Menu - Modern Forum Style
+   Pixel-perfect replica of contemporary forum design
+   ============================================ */
+
+/* Comment Menu Container */
+.comment-menu,
+.bits-comment-menu,
+.Reactions,
+.Comment .ReactionsWrap {
+    align-items: center;
+    display: flex;
+    font-size: 13px;
+    justify-content: flex-end;
+    line-height: 19.5px;
+    margin-top: 8px;
+}
+
+/* Menu Item */
+.comment-menu .menu-item,
+.bits-comment-menu .menu-item,
+.Reactions .ReactButton,
+.Comment .ReactButton {
+    align-items: center;
+    color: #999;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 13px;
+    gap: 4px;
+    line-height: 19.5px;
+    margin-right: 15px;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.comment-menu .menu-item:last-child,
+.bits-comment-menu .menu-item:last-child,
+.Reactions .ReactButton:last-child,
+.Comment .ReactButton:last-child {
+    margin-right: 0;
+}
+
+/* Menu Item Hover */
+.comment-menu .menu-item:hover,
+.bits-comment-menu .menu-item:hover,
+.Reactions .ReactButton:hover,
+.Comment .ReactButton:hover {
+    color: var(--bits-text);
+}
+
+body.dark-layout .comment-menu .menu-item:hover,
+body.dark-layout .bits-comment-menu .menu-item:hover,
+body.dark-layout .Reactions .ReactButton:hover,
+body.dark-layout .Comment .ReactButton:hover {
+    color: var(--bits-link);
+}
+
+/* Menu Item Active/Clicked State */
+.comment-menu .menu-item.active,
+.comment-menu .menu-item.clicked,
+.bits-comment-menu .menu-item.active,
+.bits-comment-menu .menu-item.clicked,
+.Reactions .ReactButton.clicked,
+.Comment .ReactButton.clicked {
+    color: #e70606;
+}
+
+/* Menu Item Icons (SVG) */
+.comment-menu .menu-item .iconpark-icon,
+.comment-menu .menu-item svg,
+.bits-comment-menu .menu-item .iconpark-icon,
+.bits-comment-menu .menu-item svg,
+.Reactions .ReactButton .iconpark-icon,
+.Reactions .ReactButton svg,
+.Comment .ReactButton .iconpark-icon,
+.Comment .ReactButton svg {
+    height: 12px;
+    margin-right: 3px;
+    vertical-align: middle;
+    width: 12px;
+}
+
+/* Menu Item Count/Text */
+.comment-menu .menu-item span,
+.bits-comment-menu .menu-item span {
+    font-size: 13px;
+}
+
+/* Vanilla Quote Button Styling */
+.Reactions a,
+.Comment .ReactionsWrap a {
+    align-items: center;
+    color: #999;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 13px;
+    gap: 4px;
+    line-height: 19.5px;
+    margin-right: 15px;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.Reactions a:hover,
+.Comment .ReactionsWrap a:hover {
+    color: var(--bits-text);
+}
+
+body.dark-layout .Reactions a:hover,
+body.dark-layout .Comment .ReactionsWrap a:hover {
+    color: var(--bits-link);
+}
+
+/* Quote icon in Vanilla */
+.Reactions a .ReactSprite,
+.Comment .ReactionsWrap a .ReactSprite {
+    display: none;
+}
+
+/* ============================================
+   Pager / Pagination
+   ============================================ */
+
+.PagerWrap {
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.Pager {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.Pager a,
+.Pager span {
+    border: 1px solid rgba(0, 0, 0, 0.01);
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: var(--bits-text-gray);
+    display: inline-block;
+    font-family: monospace;
+    font-size: 14px;
+    height: 28px;
+    line-height: 26px;
+    min-width: 28px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.Pager a:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-layout .Pager a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.Pager .Highlight {
+    background-color: var(--bits-bg-sub) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    cursor: not-allowed;
+}
+
+/* ============================================
+   Comment Form
+   ============================================ */
+
+.CommentFormWrap {
+    background-color: var(--bits-bg-main);
+    border-radius: 8px;
+    box-shadow: var(--bits-shadow-light);
+    padding: 16px;
+}
+
+.CommentFormWrap h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 12px;
+}
+
+/* ============================================
+   BitsMesh Modern Forum Style (bits-* classes)
+   Pixel-level replication of modern forum layout
+   ============================================ */
+
+/* Content Item Container */
+.bits-content-item {
+    position: relative;
+}
+
+/* Content Meta Info Header (avatar + author + floor link) */
+.bits-content-meta-info {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+
+/* Avatar Wrapper */
+.bits-avatar-wrapper {
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.bits-avatar-wrapper a {
+    display: block;
+}
+
+.bits-avatar {
+    border-radius: 15%;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    display: block;
+    height: 40px;
+    width: 40px;
+}
+
+body.dark-layout .bits-avatar {
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Author Container */
+.bits-author-container {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Author Info Line (name + badges) */
+.bits-author-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.bits-author-name {
+    color: var(--bits-text);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.bits-author-name:hover {
+    color: var(--bits-link);
+}
+
+/* Original Poster Badge */
+.bits-is-poster {
+    border: 1px solid #00eaff;
+    border-radius: 3px;
+    color: #00eaff;
+    display: inline-block;
+    font-size: 11px;
+    padding: 0 3px;
+}
+
+/* Author Title Badge */
+.bits-author-title {
+    border: 1px solid var(--bits-text-gray);
+    border-radius: 3px;
+    color: var(--bits-text-gray);
+    display: inline-block;
+    font-size: 10px;
+    padding: 0 3px;
+}
+
+/* Content Info Line (date + category) */
+.bits-content-info {
+    color: var(--bits-text-gray);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.bits-content-info > * {
+    margin-right: 8px;
+}
+
+/* Date Styles */
+.bits-date-created,
+.bits-date-created a,
+.bits-date-created time {
+    color: var(--bits-text-gray);
+    text-decoration: none;
+}
+
+.bits-date-created a:hover,
+.bits-date-created time:hover {
+    color: var(--bits-link);
+}
+
+.bits-date-updated {
+    color: var(--bits-text-gray);
+}
+
+/* Category Link */
+.bits-content-category {
+    color: var(--bits-text-gray);
+}
+
+.bits-content-category a {
+    color: var(--bits-text-gray);
+    text-decoration: none;
+}
+
+.bits-content-category a:hover {
+    color: var(--bits-link);
+}
+
+/* IP Address */
+.bits-ip-address {
+    color: var(--bits-text-gray);
+    font-size: 10px;
+}
+
+/* Floor Link Wrapper */
+.bits-floor-link-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.bits-floor-link {
+    color: var(--bits-text-gray);
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.bits-floor-link:hover {
+    color: var(--bits-link);
+}
+
+/* Post Content Article */
+.bits-post-content {
+    color: var(--bits-text);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+body.dark-layout .bits-post-content {
+    color: var(--bits-text);
+}
+
+/* Post Content Formatting */
+.bits-post-content p {
+    margin: 10px 0;
+}
+
+.bits-post-content h2 {
+    border-bottom: 1px solid var(--bits-glass);
+    color: var(--bits-primary);
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+body.dark-layout .bits-post-content h2 {
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+}
+
+.bits-post-content h3 {
+    font-size: 16px;
+}
+
+.bits-post-content a {
+    color: var(--bits-primary);
+}
+
+.bits-post-content a:hover {
+    color: var(--bits-link-hover);
+}
+
+/* Code blocks in post content */
+.bits-post-content code,
+.bits-post-content pre {
+    background: #ffff9954;
+    border: 1px solid #eec;
+    border-radius: 2px;
+    font-family: monospace;
+    overflow: auto;
+    padding: 4px 8px;
+}
+
+body.dark-layout .bits-post-content code,
+body.dark-layout .bits-post-content pre {
+    background: #2e2e04;
+    border-color: #56560b;
+}
+
+.bits-post-content pre {
+    box-sizing: border-box;
+    margin: 1em 0;
+    max-width: 100%;
+    white-space: pre;
+}
+
+.bits-post-content pre code {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+/* Blockquotes */
+.bits-post-content blockquote {
+    background: var(--bits-glass);
+    border-left: 4px solid rgba(0, 0, 0, 0.1);
+    margin: 1em;
+    min-width: 200px;
+    overflow-y: auto;
+    padding: 1ex 10px;
+}
+
+body.dark-layout .bits-post-content blockquote {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Images */
+.bits-post-content img {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    margin: 1rem 2.5%;
+    max-width: 95%;
+}
+
+.bits-post-content img.sticker {
+    box-shadow: none;
+    margin: 0;
+    max-width: 90px;
+    vertical-align: middle;
+}
+
+/* Tables */
+.bits-post-content table {
+    background: #f2f6fc;
+    border: 1px solid #dcdcdc;
+    border-collapse: unset;
+    border-radius: 4px;
+    border-spacing: 0;
+    box-sizing: border-box;
+    font-size: 13px;
+    margin-bottom: 18px;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+}
+
+body.dark-layout .bits-post-content table {
+    background: #323232;
+    border-color: #1e1d1d;
+}
+
+/* Lists */
+.bits-post-content ol,
+.bits-post-content ul {
+    margin: 1em 0 1em 2em;
+}
+
+.bits-post-content ol li {
+    list-style: decimal !important;
+}
+
+.bits-post-content ul li {
+    list-style: none !important;
+    position: relative;
+}
+
+.bits-post-content ul li::before {
+    content: "\2022";
+    font-family: arial, serif !important;
+    left: -1em;
+    position: absolute;
+}
+
+/* Reactions Wrap */
+.bits-reactions-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 8px;
+    gap: 15px;
+}
+
+/* Attachments Wrap */
+.bits-attachments-wrap {
+    margin-top: 10px;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+@media screen and (max-width: 500px) {
+    #Item_0.PageTitle h1 {
+        font-size: 16px;
+    }
+
+    .Discussion .Author .PhotoWrap img,
+    .Comment .Author .PhotoWrap img,
+    .bits-avatar {
+        height: 32px;
+        width: 32px;
+    }
+
+    .Discussion .Author .Username,
+    .Comment .Author .Username,
+    .bits-author-name {
+        font-size: 14px;
+    }
+
+    .Discussion .DiscussionMeta,
+    .Comment .CommentMeta,
+    .bits-content-info {
+        font-size: 10px;
+    }
+
+    .bits-floor-link,
+    .Discussion .floor-link,
+    .Comment .floor-link {
+        font-size: 11px;
+    }
+}

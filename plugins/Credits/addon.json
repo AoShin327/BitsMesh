@@ -1,0 +1,14 @@
+{
+    "key": "credits",
+    "name": "Credits System",
+    "description": "BitsMesh Credits (Chicken Legs) and Level System",
+    "version": "1.0.0",
+    "type": "addon",
+    "priority": 100,
+    "settingsUrl": "/settings/credits",
+    "settingsPermission": "Garden.Settings.Manage",
+    "mobileFriendly": true,
+    "hasLocale": true,
+    "license": "GPL-2.0-only",
+    "author": "BitsMesh"
+}

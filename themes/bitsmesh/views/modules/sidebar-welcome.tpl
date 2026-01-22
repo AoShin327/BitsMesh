@@ -36,9 +36,9 @@
         <div class="bits-user-menu">
             <a href="{$SidebarUserProfileUrl}" class="bits-username">{$SidebarUserName|escape:'html'}</a>
             <div class="bits-user-actions">
-                <span title="{t c='Check In' d='签到'}">
+                <a href="/board" title="{t c='Check In' d='签到'}">
                     <svg class="iconpark-icon"><use href="#plan"></use></svg>
-                </span>
+                </a>
                 <a href="#" title="{t c='Transfer' d='转账'}">
                     <svg class="iconpark-icon"><use href="#exchange-four"></use></svg>
                 </a>
@@ -58,13 +58,13 @@
     <div class="bits-user-stat">
         <div class="bits-stat-block">
             <div>
-                <a href="{$SidebarUserProfileUrl}">
+                <a href="/progress">
                     <svg class="iconpark-icon"><use href="#level"></use></svg>
                     <span>{t c='Level' d='等级'} Lv 1</span>
                 </a>
             </div>
             <div>
-                <a href="#">
+                <a href="/credit">
                     <svg class="iconpark-icon"><use href="#chicken-leg"></use></svg>
                     <span>{t c='Credits' d='鸡腿'} 0</span>
                 </a>

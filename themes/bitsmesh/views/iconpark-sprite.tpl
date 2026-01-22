@@ -138,4 +138,23 @@
 
   {* link - 友站链接 *}
   <symbol id="link" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24.707 9.565 9.858 24.415a9 9 0 0 0 0 12.727v0a9 9 0 0 0 12.728 0l17.678-17.677a6 6 0 0 0 0-8.486v0a6 6 0 0 0-8.486 0L14.101 28.657a3 3 0 0 0 0 4.243v0a3 3 0 0 0 4.242 0l14.85-14.85"/></symbol>
+
+  {* ============================================
+     Comment Menu Icons (点赞/反对/收藏/引用)
+     ============================================ *}
+
+  {* good-one - 点赞 *}
+  <symbol id="good-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m35.911 41.544 5.37-19A2 2 0 0 0 39.356 20H27.875a1.094 1.094 0 0 1-1.066-1.34l.5-2.164c.458-1.985.605-4.03.436-6.06l-.092-1.103A5.02 5.02 0 0 0 26.2 6.2 4.096 4.096 0 0 0 23.304 5h-.24c-.657 0-1.262.356-1.58.93l-2.659 4.785a12.962 12.962 0 0 1-5.124 5.085l-6.659 3.63A2 2 0 0 0 6 21.188V41a2 2 0 0 0 2 2h25.987a2 2 0 0 0 1.924-1.456Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* bad-one - 反对 *}
+  <symbol id="bad-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m35.911 6.456 5.37 19A2 2 0 0 1 39.356 28H27.875c-.704 0-1.224.654-1.066 1.34l.5 2.164c.458 1.985.605 4.03.436 6.06l-.092 1.103A5.02 5.02 0 0 1 26.2 41.8a4.096 4.096 0 0 1-2.896 1.2h-.24a1.809 1.809 0 0 1-1.58-.93l-2.659-4.785a12.962 12.962 0 0 0-5.124-5.084l-6.659-3.633A2 2 0 0 1 6 26.814V7a2 2 0 0 1 2-2h25.987a2 2 0 0 1 1.924 1.456Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* star - 收藏 *}
+  <symbol id="star" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="m23.999 5-6.113 12.478L4 19.49l10.059 9.834L11.654 43 24 36.42 36.345 43 33.96 29.325 44 19.491l-13.809-2.013L24 5Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* quote - 引用 *}
+  <symbol id="quote" viewBox="0 0 48 48" fill="none"><path fill="currentColor" d="M18.853 9.116C11.323 13.952 7.14 19.58 6.303 26.003 5 36 13.94 40.893 18.47 36.497 23 32.1 20.285 26.52 17.005 24.994c-3.28-1.525-5.286-.994-4.936-3.033.35-2.038 5.016-7.69 9.116-10.322a.749.749 0 0 0 .114-1.02L20.285 9.3c-.44-.572-.862-.55-1.432-.185Zm19.826 0c-7.53 4.836-11.714 10.465-12.55 16.887-1.303 9.997 7.637 14.89 12.167 10.494 4.53-4.397 1.815-9.977-1.466-11.503-3.28-1.525-5.286-.994-4.936-3.033.35-2.038 5.017-7.69 9.117-10.322a.749.749 0 0 0 .113-1.02L40.11 9.3c-.44-.572-.862-.55-1.431-.185Z" clip-rule="evenodd" fill-rule="evenodd" data-follow-fill="currentColor"/></symbol>
+
+  {* back - 回复 *}
+  <symbol id="back" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M44 40.836c-4.893-5.973-9.238-9.362-13.036-10.168-3.797-.805-7.412-.927-10.846-.365V41L4 23.545 20.118 7v10.167c6.349.05 11.746 2.328 16.192 6.833 4.445 4.505 7.009 10.117 7.69 16.836Z" clip-rule="evenodd" data-follow-stroke="currentColor"/></symbol>
 </svg>

@@ -42,10 +42,17 @@ node_modules/
 # Claude Code 会话数据
 .claude/
 .spec-workflow/
+CLAUDE.md
+**/CLAUDE.md
 
 # 临时快照
 web-snap/
 nodeseek-web-snap/
+
+# 临时截图
+*.png
+!themes/**/images/*.png
+!plugins/**/images/*.png
 
 # Playwright MCP 临时目录
 .playwright-mcp/

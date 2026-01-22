@@ -238,6 +238,83 @@
     }
 
     /**
+     * ReplyButton - Handle reply button clicks
+     * Inserts @username #floor format into comment form
+     */
+    class ReplyButton {
+        constructor() {
+            this.handleClick = null;
+        }
+
+        init() {
+            this.bindEvents();
+        }
+
+        bindEvents() {
+            this.handleClick = (e) => {
+                const replyBtn = e.target.closest('.bits-reply-btn');
+                if (!replyBtn) return;
+
+                e.preventDefault();
+
+                const author = replyBtn.dataset.author;
+                const floor = replyBtn.dataset.floor;
+                const floorUrl = replyBtn.dataset.floorUrl;
+
+                if (!author) return;
+
+                // Find the comment form textarea
+                const textarea = document.querySelector('#Form_Body, .BodyBox textarea, textarea.TextBox');
+                if (!textarea) {
+                    // Fallback: just scroll to comment form
+                    const commentForm = document.getElementById('CommentForm');
+                    if (commentForm) {
+                        commentForm.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    return;
+                }
+
+                // Build reply text: @username #floor
+                let replyText = `@${author} [#${floor}](${floorUrl}) `;
+
+                // Insert at cursor position or append
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const currentValue = textarea.value;
+
+                // If there's already content, add newline before reply text
+                if (currentValue.trim() && start === currentValue.length) {
+                    replyText = '\n' + replyText;
+                }
+
+                textarea.value = currentValue.substring(0, start) + replyText + currentValue.substring(end);
+
+                // Move cursor to end of inserted text
+                const newPos = start + replyText.length;
+                textarea.setSelectionRange(newPos, newPos);
+
+                // Focus and scroll to textarea
+                textarea.focus();
+                const commentForm = document.getElementById('CommentForm');
+                if (commentForm) {
+                    commentForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                // Trigger resize event for auto-resize textareas
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+
+            document.addEventListener('click', this.handleClick);
+        }
+
+        destroy() {
+            if (this.handleClick) {
+                document.removeEventListener('click', this.handleClick);
+            }
+        }
+    }
+
+    /**
      * MetaIcons - Lightweight Meta Discussion enhancement
      *
      * v1.4.6: Performance optimization
@@ -295,6 +372,10 @@
         // Initialize MetaIcons (SVG icons for post info)
         bitsTheme.metaIcons = new MetaIcons();
         bitsTheme.metaIcons.init();
+
+        // Initialize ReplyButton (handle @username #floor reply)
+        bitsTheme.replyButton = new ReplyButton();
+        bitsTheme.replyButton.init();
 
         // Initialize DarkMode if available
         if (typeof DarkModeToggle !== 'undefined') {
