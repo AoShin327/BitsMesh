@@ -324,6 +324,12 @@ class UtilityController extends DashboardController {
      * @access public
      */
     public function update() {
+        // Security fix: require admin permission upfront to prevent CC attacks
+        // Non-admins are rejected immediately without any database operations
+        if (!Gdn::session()->checkPermission('Garden.Settings.Manage')) {
+            throw permissionException();
+        }
+
         if (\Vanilla\FeatureFlagHelper::featureEnabled('updateTokens')) {
             $this->updateWithToken();
         } else {
