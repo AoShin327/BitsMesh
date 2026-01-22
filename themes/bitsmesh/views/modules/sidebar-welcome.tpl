@@ -84,13 +84,13 @@
         </div>
         <div class="bits-stat-block">
             <div>
-                <a href="{$SidebarMyDiscussionsUrl}">
+                <a href="{$SidebarUserSpaceUrl}/thread">
                     <svg class="iconpark-icon"><use href="#write"></use></svg>
                     <span>{t c='Topics' d='主题帖'} {$SidebarUserDiscussionCount}</span>
                 </a>
             </div>
             <div>
-                <a href="{$SidebarUserProfileUrl}#comments">
+                <a href="{$SidebarUserSpaceUrl}/post">
                     <svg class="iconpark-icon"><use href="#comments"></use></svg>
                     <span>{t c='Comments' d='评论数'} {$SidebarUserCommentCount}</span>
                 </a>

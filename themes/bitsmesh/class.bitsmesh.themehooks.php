@@ -429,12 +429,14 @@ body.dark-layout {
         $userName = '';
         $userPhoto = '';
         $userProfileUrl = '';
+        $userSpaceUrl = '';
 
         if ($isLoggedIn && $session->User) {
             $userDiscussionCount = val('CountDiscussions', $session->User, 0);
             $userCommentCount = val('CountComments', $session->User, 0);
             $userName = val('Name', $session->User, '');
             $userProfileUrl = userUrl($session->User);
+            $userSpaceUrl = url('/space/' . val('UserID', $session->User));
 
             // Get user photo URL
             $photo = val('Photo', $session->User, '');
@@ -489,6 +491,7 @@ body.dark-layout {
         $sender->setData('SidebarUserName', $userName);
         $sender->setData('SidebarUserPhoto', $userPhoto);
         $sender->setData('SidebarUserProfileUrl', $userProfileUrl);
+        $sender->setData('SidebarUserSpaceUrl', $userSpaceUrl);
         $sender->setData('SidebarNewMembers', $newMembers);
         $sender->setData('SidebarSignInUrl', url('/entry/signin'));
         $sender->setData('SidebarRegisterUrl', url('/entry/register'));
