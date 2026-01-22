@@ -12,10 +12,13 @@ echo '<!-- Page Title -->
 
 echo '<div class="Options">';
 
-$this->fireEvent('BeforeDiscussionOptions');
-// writeBookmarkLink(); // Removed: bookmark button already exists in comment-menu
-echo getDiscussionOptionsDropdown();
-writeAdminCheck();
+// Only show admin options for users with Garden.Settings.Manage permission
+if (Gdn::session()->checkPermission('Garden.Settings.Manage')) {
+    $this->fireEvent('BeforeDiscussionOptions');
+    // writeBookmarkLink(); // Removed: bookmark button already exists in comment-menu
+    echo getDiscussionOptionsDropdown();
+    writeAdminCheck();
+}
 
 echo '</div>';
 
