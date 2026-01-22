@@ -44,6 +44,7 @@ node_modules/
 .spec-workflow/
 CLAUDE.md
 **/CLAUDE.md
+docs/
 
 # 临时快照
 web-snap/
