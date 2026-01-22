@@ -4,7 +4,10 @@
 <?php
 
 // Pager setup
-$PagerOptions = ['CurrentRecords' => count($this->data('Conversations'))];
+// BitsMesh: PHP 8.x 兼容性修复 - 防御性编程处理空值
+$conversations = $this->data('Conversations');
+$conversationCount = is_array($conversations) ? count($conversations) : 0;
+$PagerOptions = ['CurrentRecords' => $conversationCount];
 if ($this->data('_PagerUrl'))
     $PagerOptions['Url'] = $this->data('_PagerUrl');
 
@@ -20,8 +23,9 @@ echo '</div>';
 ?>
     <div class="DataListWrap">
         <ul class="Condensed DataList Conversations">
-            <?php
-            if (count($this->data('Conversations') > 0)):
+        <?php
+            // BitsMesh: PHP 8.x 兼容性修复 - 修正括号位置
+            if ($conversationCount > 0):
                 $ViewLocation = $this->fetchViewLocation('conversations');
                 include $ViewLocation;
             else:

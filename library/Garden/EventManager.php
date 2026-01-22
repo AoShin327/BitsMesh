@@ -249,7 +249,9 @@ class EventManager {
             $instance = $callback[0];
 
             if ($instance === $class || (is_string($class) && is_object($instance) && is_a($instance, $class))) {
-                call_user_func_array($callback, $args);
+                // PHP 8.x compatibility: ensure $args has only numeric keys
+                $safeArgs = array_values($args);
+                call_user_func_array($callback, $safeArgs);
             }
         }
     }
@@ -275,7 +277,10 @@ class EventManager {
 
         $result = [];
         foreach ($handlers as $callback) {
-            $result[] = call_user_func_array($callback, $args);
+            // PHP 8.x compatibility: ensure $args has only numeric keys
+            // to prevent "Cannot use positional argument after named argument" error
+            $safeArgs = array_values($args);
+            $result[] = call_user_func_array($callback, $safeArgs);
         }
 
         // Call the meta event if it's there.
@@ -424,7 +429,9 @@ class EventManager {
         // Grab the handlers and call them.
         $result = [];
         foreach ($handlers as $callback) {
-            $result[] = call_user_func_array($callback, $args);
+            // PHP 8.x compatibility: ensure $args has only numeric keys
+            $safeArgs = array_values($args);
+            $result[] = call_user_func_array($callback, $safeArgs);
         }
 
         // Call the meta event if it's there.

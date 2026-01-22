@@ -541,6 +541,31 @@ body.dark-layout .Comment .ReactButton:hover {
     color: #e70606;
 }
 
+/* Bookmark Button - Bookmarked State (yellow/gold star) */
+.comment-menu .menu-item.bookmarked,
+.bits-comment-menu .menu-item.bookmarked,
+.menu-item.menu-bookmark.bookmarked {
+    color: #f59e0b;
+}
+
+.comment-menu .menu-item.bookmarked:hover,
+.bits-comment-menu .menu-item.bookmarked:hover,
+.menu-item.menu-bookmark.bookmarked:hover {
+    color: #d97706;
+}
+
+body.dark-layout .comment-menu .menu-item.bookmarked,
+body.dark-layout .bits-comment-menu .menu-item.bookmarked,
+body.dark-layout .menu-item.menu-bookmark.bookmarked {
+    color: #fbbf24;
+}
+
+body.dark-layout .comment-menu .menu-item.bookmarked:hover,
+body.dark-layout .bits-comment-menu .menu-item.bookmarked:hover,
+body.dark-layout .menu-item.menu-bookmark.bookmarked:hover {
+    color: #f59e0b;
+}
+
 /* Menu Item Icons (SVG) */
 .comment-menu .menu-item .iconpark-icon,
 .comment-menu .menu-item svg,

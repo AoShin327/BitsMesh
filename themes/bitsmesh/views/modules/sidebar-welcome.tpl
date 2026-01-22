@@ -39,14 +39,11 @@
                 <a href="/board" title="{t c='Check In' d='签到'}">
                     <svg class="iconpark-icon"><use href="#plan"></use></svg>
                 </a>
-                <a href="#" title="{t c='Transfer' d='转账'}">
-                    <svg class="iconpark-icon"><use href="#exchange-four"></use></svg>
+                <a href="/activity" title="{t c='Activity' d='动态'}">
+                    <svg class="iconpark-icon"><use href="#dashboard-one"></use></svg>
                 </a>
                 <a href="{$SidebarSettingsUrl}" title="{t c='Settings' d='设置'}">
                     <svg class="iconpark-icon"><use href="#setting-two"></use></svg>
-                </a>
-                <a href="#" title="{t c='Show Block' d='显示Block'}">
-                    <svg class="iconpark-icon"><use href="#vr-glasses"></use></svg>
                 </a>
                 <a href="{$SidebarSignOutUrl}" title="{t c='Sign Out' d='登出'}">
                     <svg class="iconpark-icon"><use href="#logout"></use></svg>
@@ -71,8 +68,8 @@
             </div>
             <div>
                 <a href="#">
-                    <svg class="iconpark-icon"><use href="#wallet"></use></svg>
-                    <span>{t c='Stardust' d='星辰'} 0</span>
+                    <svg class="iconpark-icon"><use href="#star"></use></svg>
+                    <span>{t c='Following' d='关注'} 0</span>
                 </a>
             </div>
             <div>
@@ -104,7 +101,7 @@
             <div>
                 <a href="{$SidebarBookmarksUrl}">
                     <svg class="iconpark-icon"><use href="#folder-focus"></use></svg>
-                    <span>{t c='Bookmarks' d='收藏'} 0</span>
+                    <span>{t c='Bookmarks' d='收藏'} {$SidebarUserBookmarkCount}</span>
                 </a>
             </div>
         </div>

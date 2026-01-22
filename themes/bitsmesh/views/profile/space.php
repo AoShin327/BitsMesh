@@ -34,7 +34,7 @@ $tabs = [
 ?>
 
 <div class="bits-space-page">
-    <!-- Head Container: Avatar + User Info -->
+    <!-- Head Container: Avatar + User Info + Actions -->
     <div class="bits-space-head">
         <img src="<?php echo htmlspecialchars($photoUrl); ?>" alt="<?php echo htmlspecialchars($user->Name); ?>" class="bits-space-avatar">
         <div class="bits-space-info">
@@ -46,6 +46,17 @@ $tabs = [
             </h1>
             <p class="bits-space-bio"><?php echo t('Welcome to my space!', '一句话介绍自己'); ?></p>
         </div>
+        <?php if (Gdn::session()->UserID && Gdn::session()->UserID != $userID): ?>
+        <!-- Action buttons for viewing other users -->
+        <div class="bits-space-actions">
+            <a href="#" class="bits-btn bits-btn-follow">
+                <?php echo t('Follow', '关注'); ?>
+            </a>
+            <a href="<?php echo url('/messages/add?to=' . urlencode($user->Name)); ?>" class="bits-btn bits-btn-message">
+                <?php echo t('Message', '私信'); ?>
+            </a>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- Tab Selector -->

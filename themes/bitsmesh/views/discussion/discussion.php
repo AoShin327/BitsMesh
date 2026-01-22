@@ -119,6 +119,14 @@ $FloorUrl = $Discussion->Url.'#0';
             // Logged-in users get additional quote and reply buttons
             $isLoggedIn = Gdn::session()->isValid();
             $quoteUrl = url("/post/quote/{$Discussion->DiscussionID}/Discussion_{$Discussion->DiscussionID}");
+
+            // Bookmark status and count
+            $isBookmarked = (bool)val('Bookmarked', $Discussion, false);
+            $bookmarkCount = (int)val('CountBookmarks', $Discussion, 0);
+            $bookmarkUrl = url('/discussion/bookmark/' . $Discussion->DiscussionID . '/' . Gdn::session()->transientKey());
+            $bookmarkTitle = $isBookmarked ? t('取消收藏') : t('收藏');
+            $bookmarkIcon = $isBookmarked ? 'star-one' : 'star';
+            $bookmarkClass = $isBookmarked ? 'menu-bookmark bookmarked' : 'menu-bookmark';
             ?>
             <div class="comment-menu">
                 <div class="menu-item menu-like" title="<?php echo t('点赞'); ?>">
@@ -133,10 +141,19 @@ $FloorUrl = $Discussion->Url.'#0';
                     <svg class="iconpark-icon" width="12" height="12"><use href="#bad-one"></use></svg>
                     <span>0</span>
                 </div>
-                <div class="menu-item menu-bookmark" title="<?php echo t('收藏'); ?>">
+                <?php if ($isLoggedIn): ?>
+                <a href="<?php echo $bookmarkUrl; ?>" class="menu-item <?php echo $bookmarkClass; ?> Hijack"
+                   title="<?php echo $bookmarkTitle; ?>"
+                   data-discussion-id="<?php echo $Discussion->DiscussionID; ?>">
+                    <svg class="iconpark-icon" width="12" height="12"><use href="#<?php echo $bookmarkIcon; ?>"></use></svg>
+                    <span class="bookmark-count"><?php echo $bookmarkCount > 0 ? $bookmarkCount : ''; ?></span>
+                </a>
+                <?php else: ?>
+                <div class="menu-item menu-bookmark" title="<?php echo t('登录后收藏'); ?>">
                     <svg class="iconpark-icon" width="12" height="12"><use href="#star"></use></svg>
-                    <span>0</span>
+                    <span><?php echo $bookmarkCount > 0 ? $bookmarkCount : ''; ?></span>
                 </div>
+                <?php endif; ?>
                 <?php if ($isLoggedIn): ?>
                 <a href="<?php echo $quoteUrl; ?>" class="menu-item menu-quote ReactButton Quote" title="<?php echo t('引用'); ?>">
                     <svg class="iconpark-icon" width="12" height="12"><use href="#quote"></use></svg>

@@ -128,9 +128,8 @@ if (!function_exists('WriteDiscussion')) :
         $discussionUrl = $discussion->Url;
         $category = CategoryModel::categories($discussion->CategoryID);
 
-        if ($session->UserID) {
-            $discussionUrl .= '#latest';
-        }
+        // BitsMesh: 移除 #latest 锚点，让用户直接看到帖子顶部（主帖内容）
+        // 原代码: if ($session->UserID) { $discussionUrl .= '#latest'; }
         $sender->EventArguments['DiscussionUrl'] = &$discussionUrl;
         $sender->EventArguments['Discussion'] = &$discussion;
         $sender->EventArguments['CssClass'] = &$cssClass;

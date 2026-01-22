@@ -430,10 +430,12 @@ body.dark-layout {
         $userPhoto = '';
         $userProfileUrl = '';
         $userSpaceUrl = '';
+        $userBookmarkCount = 0;
 
         if ($isLoggedIn && $session->User) {
             $userDiscussionCount = val('CountDiscussions', $session->User, 0);
             $userCommentCount = val('CountComments', $session->User, 0);
+            $userBookmarkCount = val('CountBookmarks', $session->User, 0);
             $userName = val('Name', $session->User, '');
             $userProfileUrl = userUrl($session->User);
             $userSpaceUrl = url('/space/' . val('UserID', $session->User));
@@ -488,6 +490,7 @@ body.dark-layout {
         $sender->setData('SidebarUserCount', $userCount);
         $sender->setData('SidebarUserDiscussionCount', $userDiscussionCount);
         $sender->setData('SidebarUserCommentCount', $userCommentCount);
+        $sender->setData('SidebarUserBookmarkCount', $userBookmarkCount);
         $sender->setData('SidebarUserName', $userName);
         $sender->setData('SidebarUserPhoto', $userPhoto);
         $sender->setData('SidebarUserProfileUrl', $userProfileUrl);
@@ -501,7 +504,10 @@ body.dark-layout {
         $sender->setData('SidebarDiscussionsUrl', url('/discussions'));
         $sender->setData('SidebarActivityUrl', url('/activity'));
         $sender->setData('SidebarMyDiscussionsUrl', url('/discussions/mine'));
-        $sender->setData('SidebarBookmarksUrl', url('/discussions/bookmarked'));
+        // Bookmarks URL points to user space favorite tab
+        $sender->setData('SidebarBookmarksUrl', $isLoggedIn && $session->User
+            ? url('/space/' . val('UserID', $session->User) . '/favorite')
+            : url('/discussions/bookmarked'));
         $sender->setData('SidebarSettingsUrl', url('/profile/preferences'));
 
         // Category page detection and data injection
@@ -1241,10 +1247,18 @@ body.dark-layout {
                 // User's bookmarks (if viewing own profile and logged in)
                 if (Gdn::session()->UserID == $userID) {
                     $discussionModel = new DiscussionModel();
-                    $bookmarks = $discussionModel->get($offset, $limit, ['w.Bookmarked' => 1]);
+                    // Get bookmarked discussions with proper user filter
+                    $bookmarks = $discussionModel->get($offset, $limit, [
+                        'w.Bookmarked' => 1,
+                        'w.UserID' => $userID
+                    ]);
                     $sender->setData('Bookmarks', $bookmarks);
+                    // Get total bookmark count for pagination
+                    $bookmarkCount = val('CountBookmarks', $user, 0);
+                    $sender->setData('TotalCount', $bookmarkCount);
                 } else {
                     $sender->setData('Bookmarks', []);
+                    $sender->setData('TotalCount', 0);
                 }
                 break;
 

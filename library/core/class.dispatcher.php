@@ -869,7 +869,9 @@ class Gdn_Dispatcher extends Gdn_Pluggable {
             $this->fireEvent('BeforeControllerMethod');
             Gdn::pluginManager()->callEventHandlers($controller, $controllerName, $controllerMethod, 'before');
 
-            call_user_func_array($callback, $args);
+            // PHP 8.x compatibility: ensure $args has only numeric keys
+            // to prevent "Cannot use positional argument after named argument" error
+            call_user_func_array($callback, array_values($args));
         } catch (\Throwable $ex) {
             if ($this->dispatchException === null) {
                 $this->dispatchException = $ex;

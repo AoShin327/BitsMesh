@@ -354,6 +354,147 @@
     }
 
     /**
+     * BookmarkButton - Handle bookmark button UI updates
+     *
+     * Vanilla's Hijack class handles AJAX requests, this class updates
+     * the UI (icon and class) after bookmark state changes.
+     */
+    class BookmarkButton {
+        constructor() {
+            this.handleClick = null;
+        }
+
+        init() {
+            this.bindEvents();
+        }
+
+        bindEvents() {
+            // Listen for clicks on bookmark buttons with Hijack class
+            this.handleClick = (e) => {
+                const bookmarkBtn = e.target.closest('.menu-bookmark.Hijack, a.Hijack[href*="/bookmark/"]');
+                if (!bookmarkBtn) return;
+
+                // Store reference to button for AJAX callback
+                const discussionID = bookmarkBtn.dataset.discussionId;
+                if (!discussionID) return;
+
+                // Use jQuery ajaxComplete to detect when Vanilla's Hijack finishes
+                // This is more reliable than trying to intercept the click
+                this.setupAjaxCallback(bookmarkBtn, discussionID);
+            };
+
+            document.addEventListener('click', this.handleClick);
+
+            // Also listen for Vanilla's AJAX complete events
+            this.setupGlobalAjaxHandler();
+        }
+
+        /**
+         * Setup callback to handle UI update after AJAX completes
+         */
+        setupAjaxCallback(button, discussionID) {
+            // Mark button as pending
+            button.classList.add('bits-loading');
+
+            // Store the button reference for the AJAX handler
+            if (!window._bitsBookmarkPending) {
+                window._bitsBookmarkPending = {};
+            }
+            window._bitsBookmarkPending[discussionID] = button;
+        }
+
+        /**
+         * Setup global AJAX handler to catch bookmark responses
+         */
+        setupGlobalAjaxHandler() {
+            // Check if jQuery is available (Vanilla uses jQuery)
+            if (typeof jQuery !== 'undefined') {
+                jQuery(document).ajaxComplete((event, xhr, settings) => {
+                    // Check if this is a bookmark request
+                    if (settings.url && settings.url.includes('/bookmark/')) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response && typeof response.Bookmarked !== 'undefined') {
+                                this.handleBookmarkResponse(response);
+                            }
+                        } catch (e) {
+                            // Not JSON or parsing error
+                        }
+                    }
+                });
+            }
+
+            // Also listen for Vanilla's custom events
+            jQuery(document).on('ajaxComplete', '.Hijack', (e) => {
+                // Remove loading state from any pending buttons
+                document.querySelectorAll('.menu-bookmark.bits-loading').forEach(btn => {
+                    btn.classList.remove('bits-loading');
+                });
+            });
+        }
+
+        /**
+         * Handle bookmark response and update UI
+         */
+        handleBookmarkResponse(response) {
+            const discussionID = response.DiscussionID;
+            const isBookmarked = response.Bookmarked;
+
+            // Find the button by discussion ID
+            const button = document.querySelector(`.menu-bookmark[data-discussion-id="${discussionID}"]`);
+            if (!button) return;
+
+            // Update button state
+            button.classList.remove('bits-loading');
+
+            if (isBookmarked) {
+                button.classList.add('bookmarked');
+                button.title = '取消收藏';
+                // Update icon to filled star
+                const svgUse = button.querySelector('use');
+                if (svgUse) {
+                    svgUse.setAttribute('href', '#star-one');
+                }
+            } else {
+                button.classList.remove('bookmarked');
+                button.title = '收藏';
+                // Update icon to outline star
+                const svgUse = button.querySelector('use');
+                if (svgUse) {
+                    svgUse.setAttribute('href', '#star');
+                }
+            }
+
+            // Update bookmark count display
+            const countSpan = button.querySelector('.bookmark-count');
+            if (countSpan) {
+                // Count changed - we need to refresh or estimate
+                // For now, just toggle the visual state
+            }
+
+            // Update URL with new transient key if provided
+            if (response.TransientKey) {
+                const href = button.getAttribute('href');
+                if (href) {
+                    const newHref = href.replace(/\/[^\/]+$/, '/' + response.TransientKey);
+                    button.setAttribute('href', newHref);
+                }
+            }
+
+            // Clean up pending reference
+            if (window._bitsBookmarkPending && window._bitsBookmarkPending[discussionID]) {
+                delete window._bitsBookmarkPending[discussionID];
+            }
+        }
+
+        destroy() {
+            if (this.handleClick) {
+                document.removeEventListener('click', this.handleClick);
+            }
+        }
+    }
+
+    /**
      * Initialize all theme components
      */
     function initTheme() {
@@ -376,6 +517,10 @@
         // Initialize ReplyButton (handle @username #floor reply)
         bitsTheme.replyButton = new ReplyButton();
         bitsTheme.replyButton.init();
+
+        // Initialize BookmarkButton (handle bookmark UI updates)
+        bitsTheme.bookmarkButton = new BookmarkButton();
+        bitsTheme.bookmarkButton.init();
 
         // Initialize DarkMode if available
         if (typeof DarkModeToggle !== 'undefined') {
