@@ -1,0 +1,460 @@
+/**
+ * BitsMesh User Space Styles
+ *
+ * Modern forum style user profile page styles.
+ * Pixel-perfect replication of reference design.
+ *
+ * @copyright 2026 BitsMesh
+ * @license GPL-2.0-only
+ */
+
+/* ============================================
+   User Space Page Container
+   ============================================ */
+.bits-space-page {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* ============================================
+   Head Container: Avatar + User Info
+   Matches: .head-container from reference
+   ============================================ */
+.bits-space-head {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    height: 150px;
+    padding: 0 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    background-color: var(--bits-glass-bg, rgba(255, 255, 255, 0.8));
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+@media screen and (max-width: 500px) {
+    .bits-space-head {
+        margin: 20px 4px;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    }
+}
+
+.bits-space-avatar {
+    border-radius: 9px;
+    max-width: 100px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.bits-space-info {
+    padding-left: 14px;
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--bits-text-color, #333);
+    flex: 1;
+}
+
+.bits-space-username {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--bits-text-color, #333);
+}
+
+.bits-space-bio {
+    margin: 0;
+    font-size: 14px;
+    color: var(--bits-text-muted, #666);
+}
+
+/* Level Tags */
+.bits-role-tag {
+    font-size: 12px;
+    font-weight: normal;
+    vertical-align: middle;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+.bits-level-1 { background-color: #e5e7eb; color: #4b5563; }
+.bits-level-2 { background-color: #dbeafe; color: #1d4ed8; }
+.bits-level-3 { background-color: #dcfce7; color: #16a34a; }
+.bits-level-4 { background-color: #fef9c3; color: #ca8a04; }
+.bits-level-5 { background-color: #fee2e2; color: #dc2626; }
+.bits-level-6 { background-color: #f3e8ff; color: #9333ea; }
+
+/* ============================================
+   Tab Selector
+   Matches: .selector from reference
+   ============================================ */
+.bits-space-selector {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    padding: 15px 20px;
+    background-color: var(--bits-glass-bg, rgba(255, 255, 255, 0.8));
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border-radius: 9px;
+    color: #444;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-space-selector {
+        margin: 0 4px 10px;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    }
+}
+
+.bits-select-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+    margin-right: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--bits-text-color, #444);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.bits-select-item:hover {
+    border-bottom-color: #9191ff;
+    text-decoration: none;
+    color: var(--bits-text-color, #444);
+}
+
+.bits-select-item.active {
+    border-bottom-color: var(--bits-primary, #22C55E);
+    color: var(--bits-primary, #22C55E);
+    font-weight: 500;
+}
+
+.bits-select-item .iconpark-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================
+   Statistics Cards
+   Matches: .card-block, .card-item from reference
+   ============================================ */
+.bits-space-cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.bits-card-item {
+    flex: 1;
+    min-width: 120px;
+    margin: 0;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 10px;
+    background-color: rgba(0, 0, 0, 0.808);
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px;
+    transition: transform 0.2s ease;
+}
+
+.bits-card-item:hover {
+    transform: translateY(-2px);
+}
+
+@media screen and (max-width: 500px) {
+    .bits-card-item {
+        font-size: 12px;
+        height: 80px;
+        min-width: 60px;
+        padding: 10px 5px;
+    }
+}
+
+.bits-card-item .iconpark-icon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 8px;
+    color: white;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-card-item .iconpark-icon {
+        width: 20px;
+        height: 20px;
+        margin-bottom: 4px;
+    }
+}
+
+.bits-card-name {
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.bits-card-value {
+    font-weight: normal;
+    font-size: 1.1rem;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-card-name,
+    .bits-card-value {
+        font-size: 11px;
+        margin-bottom: 2px;
+    }
+}
+
+/* ============================================
+   Content Area
+   ============================================ */
+.bits-space-content {
+    background-color: var(--bits-glass-bg, rgba(255, 255, 255, 0.95));
+    border-radius: 9px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 500px) {
+    .bits-space-content {
+        margin: 0 4px 20px;
+        padding: 15px;
+    }
+}
+
+/* Section Titles */
+.bits-space-section {
+    margin-bottom: 25px;
+}
+
+.bits-space-section:last-child {
+    margin-bottom: 0;
+}
+
+.bits-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--bits-border-color, #e5e7eb);
+    color: var(--bits-text-color, #333);
+}
+
+.bits-section-title .iconpark-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--bits-primary, #22C55E);
+}
+
+/* Content Lists */
+.bits-space-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.bits-space-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--bits-border-color, #e5e7eb);
+    color: var(--bits-text-color, #333);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.bits-space-list-item:last-child {
+    border-bottom: none;
+}
+
+.bits-space-list-item:hover {
+    color: var(--bits-primary, #22C55E);
+    text-decoration: none;
+}
+
+.bits-list-title {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 15px;
+}
+
+.bits-list-content {
+    flex: 1;
+}
+
+.bits-list-excerpt {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--bits-text-color, #333);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bits-list-meta {
+    font-size: 12px;
+    color: var(--bits-text-muted, #888);
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+/* View More Link */
+.bits-view-more {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: var(--bits-primary, #22C55E);
+    text-decoration: none;
+    border: 1px solid var(--bits-primary, #22C55E);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.bits-view-more:hover {
+    background-color: var(--bits-primary, #22C55E);
+    color: white;
+    text-decoration: none;
+}
+
+/* Empty State */
+.bits-empty-message {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--bits-text-muted, #888);
+    font-size: 14px;
+}
+
+/* ============================================
+   Pagination
+   ============================================ */
+.bits-space-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--bits-border-color, #e5e7eb);
+}
+
+.bits-page-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background-color: var(--bits-glass-bg, #f5f5f5);
+    color: var(--bits-text-color, #333);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.bits-page-btn:hover {
+    background-color: var(--bits-primary, #22C55E);
+    color: white;
+    text-decoration: none;
+}
+
+.bits-page-btn .iconpark-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.bits-page-info {
+    font-size: 14px;
+    color: var(--bits-text-muted, #666);
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+body.dark-layout .bits-space-head,
+body.dark-layout .bits-space-selector,
+body.dark-layout .bits-space-content {
+    background-color: var(--bits-dark-glass-bg, rgba(39, 39, 39, 0.95));
+    color: var(--bits-dark-text-color, #e5e5e5);
+}
+
+body.dark-layout .bits-space-username,
+body.dark-layout .bits-space-info,
+body.dark-layout .bits-section-title,
+body.dark-layout .bits-space-list-item,
+body.dark-layout .bits-list-excerpt {
+    color: var(--bits-dark-text-color, #e5e5e5);
+}
+
+body.dark-layout .bits-space-bio,
+body.dark-layout .bits-list-meta,
+body.dark-layout .bits-empty-message,
+body.dark-layout .bits-page-info {
+    color: var(--bits-dark-text-muted, #999);
+}
+
+body.dark-layout .bits-select-item {
+    color: var(--bits-dark-text-color, #e5e5e5);
+}
+
+body.dark-layout .bits-space-list-item {
+    border-bottom-color: var(--bits-dark-border-color, #404040);
+}
+
+body.dark-layout .bits-section-title {
+    border-bottom-color: var(--bits-dark-border-color, #404040);
+}
+
+body.dark-layout .bits-space-pagination {
+    border-top-color: var(--bits-dark-border-color, #404040);
+}
+
+body.dark-layout .bits-page-btn {
+    background-color: var(--bits-dark-glass-bg, #333);
+    color: var(--bits-dark-text-color, #e5e5e5);
+}
+
+/* ============================================
+   CSS Variables (Defaults)
+   ============================================ */
+:root {
+    --bits-glass-bg: rgba(255, 255, 255, 0.95);
+    --bits-text-color: #333;
+    --bits-text-muted: #666;
+    --bits-border-color: #e5e7eb;
+    --bits-primary: #22C55E;
+
+    /* Dark mode vars */
+    --bits-dark-glass-bg: rgba(39, 39, 39, 0.95);
+    --bits-dark-text-color: #e5e5e5;
+    --bits-dark-text-muted: #999;
+    --bits-dark-border-color: #404040;
+}

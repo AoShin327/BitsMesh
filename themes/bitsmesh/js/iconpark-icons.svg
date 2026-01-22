@@ -1,6 +1,11 @@
 <!-- IconPark Icons Sprite - Extracted from ByteDance IconPark -->
 <!-- Usage: <svg class="iconpark-icon"><use href="#icon-id"></use></svg> -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+
+  <!-- ============================================ -->
+  <!-- Category Icons (分类图标)                    -->
+  <!-- ============================================ -->
+
   <!-- tea - 日常 -->
   <symbol id="tea" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M11 18.167c0-.092.075-.167.167-.167h23.666c.092 0 .167.075.167.167V30c0 6.627-5.373 12-12 12s-12-5.373-12-12V18.167Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M35 30a6 6 0 0 0 0-12" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M11 8v3m24-3v3M23 5v6" data-follow-stroke="currentColor"/></symbol>
 
@@ -42,4 +47,144 @@
 
   <!-- all-application - 默认/所有版块 -->
   <symbol id="all-application" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M18 6H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2ZM40 6H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm0 22H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- ============================================ -->
+  <!-- User Space Icons (用户空间图标)              -->
+  <!-- ============================================ -->
+
+  <!-- home - 概览 -->
+  <symbol id="home" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 44V20L24 4 4 20v24h12V26h16v18h12Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- edit - 主题帖/编辑 -->
+  <symbol id="edit" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M42 26v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 26.72V34h7.317L42 13.308 34.695 6 14 26.72Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- comments-6ncdh3ka - 回复/评论 (自定义ID保持兼容) -->
+  <symbol id="comments-6ncdh3ka" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 6H4v30h9v8l10-8h21V6Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 19.5h20m-20 8h14" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- comments - 评论 (标准ID) -->
+  <symbol id="comments" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 6H4v30h9v8l10-8h21V6Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 19.5h20m-20 8h14" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- folder-focus - 收藏 -->
+  <symbol id="folder-focus" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M5 8a2 2 0 0 1 2-2h11.528a2 2 0 0 1 1.665.89L24 12h17a2 2 0 0 1 2 2v26a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8Z" data-follow-stroke="currentColor"/><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="6" cy="28" cx="24" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- stopwatch-start - 加入天数/计时 -->
+  <symbol id="stopwatch-start" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c9.941 0 18-8.059 18-18S33.941 8 24 8 6 16.059 6 26s8.059 18 18 18Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 4v4m-6-4h12" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 18v9h7" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- level - 等级 -->
+  <symbol id="level" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m24 4 5.253 3.832 6.503-.012 2.004 6.163 5.24 3.85L41 24l2 6.167-5.24 3.85-2.004 6.163-6.503-.012L24 44l-5.253-3.832-6.503.012-2.004-6.163L5 30.167 7 24l-2-6.167 5.24-3.85 2.004-6.163 6.503.012L24 4Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m17 24 5 5 10-10" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- chicken-leg - 鸡腿 -->
+  <symbol id="chicken-leg" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M29 7.69c6.476 1.736 10.575 8.32 8.839 14.796a12.002 12.002 0 0 1-6.147 7.617l-3.22 9.327a6 6 0 0 1-9.498 2.476l-.188-.163a6 6 0 0 1-1.158-7.506L20.8 29.19A12.001 12.001 0 0 1 17.36 22.3C15.624 15.822 19.8 9.329 26.277 7.593L29 7.69Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m25 21 5 2" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- left - 左箭头 -->
+  <symbol id="left" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M31 36 19 24l12-12" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- right - 右箭头 -->
+  <symbol id="right" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m19 12 12 12-12 12" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- ============================================ -->
+  <!-- Sidebar Icons (侧边栏图标)                   -->
+  <!-- ============================================ -->
+
+  <!-- plan - 签到 -->
+  <symbol id="plan" viewBox="0 0 48 48" fill="none"><rect stroke-linejoin="round" stroke-width="4" stroke="currentColor" rx="2" height="36" width="36" y="8" x="6" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M16 4v8m16-8v8m-16 9h10m-10 8h16" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- exchange-four - 转账 -->
+  <symbol id="exchange-four" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m30 6 6 6-6 6" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M12 12h24" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m18 30-6 6 6 6" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M36 36H12" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- setting-two - 设置 -->
+  <symbol id="setting-two" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M36.686 15.171a15 15 0 0 1 2.529 6.102H44v5.454h-4.785a15 15 0 0 1-2.53 6.102l3.386 3.386-3.857 3.857-3.386-3.386a15 15 0 0 1-6.101 2.529V44h-5.454v-4.785a15 15 0 0 1-6.102-2.53l-3.386 3.386-3.857-3.857 3.386-3.386a15 15 0 0 1-2.529-6.101H4v-5.454h4.785a15 15 0 0 1 2.53-6.102l-3.386-3.386 3.857-3.857 3.386 3.386a15 15 0 0 1 6.101-2.529V4h5.454v4.785a15 15 0 0 1 6.102 2.53l3.386-3.386 3.857 3.857-3.386 3.385Z" data-follow-stroke="currentColor"/><circle stroke-linejoin="round" stroke-width="4" stroke="currentColor" r="6" cy="24" cx="24" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- vr-glasses - 显示Block -->
+  <symbol id="vr-glasses" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M24 42c11.046 0 20-8.059 20-18S35.046 6 24 6 4 14.059 4 24s8.954 18 20 18Z" data-follow-stroke="currentColor"/><circle stroke-linejoin="round" stroke-width="4" stroke="currentColor" r="5" cy="24" cx="14" data-follow-stroke="currentColor"/><circle stroke-linejoin="round" stroke-width="4" stroke="currentColor" r="5" cy="24" cx="34" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M19 24h10" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- logout - 登出 -->
+  <symbol id="logout" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M23.992 6H6v36h18m9-9 9-9-9-9m-15 9h24" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- wallet - 钱包/星辰 -->
+  <symbol id="wallet" viewBox="0 0 48 48" fill="none"><rect stroke-linejoin="round" stroke-width="4" stroke="currentColor" rx="2" height="32" width="40" y="8" x="4" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M16 8 8 20m24-12 8 12" data-follow-stroke="currentColor"/><circle fill="currentColor" r="3" cy="27" cx="37" data-follow-fill="currentColor"/></symbol>
+
+  <!-- remind - 通知/提醒 -->
+  <symbol id="remind" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 4c-6.627 0-12 5.373-12 12v8l-6 6v4h36v-4l-6-6v-8c0-6.627-5.373-12-12-12Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M20 34c0 2.21 1.79 6 4 6s4-3.79 4-6" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- write - 主题帖/写作 -->
+  <symbol id="write" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M5.325 43.255a2 2 0 0 0 2.42 2.42l9.896-2.12a2 2 0 0 0 1.066-.588L42.8 18.874a4 4 0 0 0 0-5.657l-8.016-8.016a4 4 0 0 0-5.657 0L5.034 29.294a2 2 0 0 0-.589 1.066l-2.12 9.895Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m27 8 13 13" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- concern - 粉丝/关注 -->
+  <symbol id="concern" viewBox="0 0 48 48" fill="none"><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="6" cy="12" cx="24" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M11 36v-3a13 13 0 0 1 26 0v3" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M4 44h40" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- plus-cross - 发帖/添加 -->
+  <symbol id="plus-cross" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 6v36M6 24h36" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- road-sign-both - 所有版块标题 -->
+  <symbol id="road-sign-both" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44V4" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M8 12h24l6 6-6 6H8V12Zm32 12H16l-6 6 6 6h24V24Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- rocket-one - 快捷功能区标题 -->
+  <symbol id="rocket-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M12 30.586a2 2 0 0 0-.586 1.414v6h6a2 2 0 0 0 1.414-.586L40 16.243V10a4 4 0 0 0-4-4h-6.243L12 23.757a2 2 0 0 0 0 2.829l4.243 4.243" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M4 42s2-2 6-2 8 4 12 4 6-2 6-2m-10.343-7.515L11.515 28.343a9 9 0 0 0-.78-.607C7.633 25.585 4 26 4 26s.415-3.633-2.236-6.735A9 9 0 0 0 1 18.5" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- diamonds - 推荐阅读 -->
+  <symbol id="diamonds" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M14 6h20l10 12-20 26L4 18l10-12Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M4 18h40" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- balance-two - 管理记录 -->
+  <symbol id="balance-two" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 6v36M10 42h28" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="m8 18 6 14H2l6-14Zm32 0 6 14h-12l6-14Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M8 18h32" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- optimize - 幸运抽奖 -->
+  <symbol id="optimize" viewBox="0 0 48 48" fill="none"><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M40 14V6m0 0h-8m8 0-9 9M8 34v8m0 0h8M8 42l9-9" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4 4 12.954 4 24s8.954 20 20 20Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 31a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- key - 邀请好友 -->
+  <symbol id="key" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m33 5 9 9-4 4-4-1-3 3-1-4-4 4 9 9 4-4 4 4-9 9-9-9-4 4L8 20 5 8l13 3 11-11 4 5Z" data-follow-stroke="currentColor"/><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="6" cy="37" cx="15" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- cooperative-handshake - 合作商家 -->
+  <symbol id="cooperative-handshake" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m6 15 10-9 7.142 6.124a4 4 0 0 0 5.192 0L35 6l7 6v14l-12.566 8.914a4 4 0 0 1-4.868-.07L17 28l-11 6V15Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M17 28c0 5 4 14 7 14s7-9 7-14" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- link - 友站链接 -->
+  <symbol id="link" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M27.613 36.042 26.1 37.556a10 10 0 0 1-14.142 0v0a10 10 0 0 1 0-14.142l1.514-1.514M36.042 27.613l1.514-1.514a10 10 0 0 0 0-14.142v0a10 10 0 0 0-14.142 0l-1.514 1.514" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18 30 30 18" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- chart-line - 社区统计 -->
+  <symbol id="chart-line" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 6v36h36" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m14 30 8-8 6 6L42 14" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- ============================================ -->
+  <!-- Discussion Icons (讨论页图标)                -->
+  <!-- ============================================ -->
+
+  <!-- good-one - 点赞 -->
+  <symbol id="good-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 24v18h8V24H4Zm40-2-4 22H18V20l8-16 4 2-2 14h16v2Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- bad-one - 点踩 -->
+  <symbol id="bad-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 6v18h8V6H4Zm40 2 4 22v2H32l2 14-4 2-8-16V8h22Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- star - 收藏 -->
+  <symbol id="star" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="m24 4 5.708 11.794L42 17.626l-9 8.997L35.416 44 24 37.794 12.584 44 15 26.623l-9-8.997 12.292-1.832L24 4Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- quote - 引用 -->
+  <symbol id="quote" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M21 24H4v14h12l-4 6h8l4-6V9H4v15h17Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 24H27v14h12l-4 6h8l4-6V9H27v15h17Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- back - 回复 -->
+  <symbol id="back" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M5 24c0 11.046 8.954 20 20 20s20-8.954 20-20S36.046 4 25 4" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M25 4 17 12l8 8" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- ============================================ -->
+  <!-- Check-in Page Icons (签到页图标)             -->
+  <!-- ============================================ -->
+
+  <!-- check - 已签到/完成 -->
+  <symbol id="check" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m4 24 15 15L44 9" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- check-small - 日历选中标记 -->
+  <symbol id="check-small" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m10 24 10 10 18-18" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- fire - 连续签到 -->
+  <symbol id="fire" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c8.837 0 16-7.163 16-16 0-3.636-.86-8.185-3-12 0 4-2.5 6-5 6-.702-4.63-2.613-7.523-5-11-2 4-4 6.5-7 8-1.5-1.5-3.5-4.5-4-8-3.926 4.66-8 11.71-8 17 0 8.837 7.163 16 16 16Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c3.314 0 6-2.91 6-6.5 0-4.103-3.5-7-6-10-2.5 3-6 5.897-6 10 0 3.59 2.686 6.5 6 6.5Z" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- tips - 提示 -->
+  <symbol id="tips" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44a20 20 0 1 0 0-40 20 20 0 0 0 0 40Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 28V14" data-follow-stroke="currentColor"/><path fill="currentColor" d="M24 37a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" data-follow-fill="currentColor"/></symbol>
+
+  <!-- protect - 稳定签到/保护 -->
+  <symbol id="protect" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 9s6-3 18-3 18 3 18 3v14c0 14-18 19-18 19S6 37 6 23V9Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m16 24 6 6 12-12" data-follow-stroke="currentColor"/></symbol>
+
+  <!-- game-three - 随机签到/游戏 -->
+  <symbol id="game-three" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M8 16a4 4 0 0 1 4-4h24a4 4 0 0 1 4 4v16a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V16Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M17 20v8m-4-4h8" data-follow-stroke="currentColor"/><circle fill="currentColor" r="2" cy="22" cx="31" data-follow-fill="currentColor"/><circle fill="currentColor" r="2" cy="26" cx="35" data-follow-fill="currentColor"/></symbol>
+
+  <!-- calendar-thirty - 签到日历 -->
+  <symbol id="calendar-thirty" viewBox="0 0 48 48" fill="none"><rect stroke-linejoin="round" stroke-width="4" stroke="currentColor" rx="2" height="36" width="36" y="8" x="6" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M16 4v8m16-8v8M6 20h36" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18 30h4v8m-4-8h8" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M27 30a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3h-2a3 3 0 0 0-3 3v1a3 3 0 0 0 3 3h5" data-follow-stroke="currentColor"/></symbol>
+
 </svg>

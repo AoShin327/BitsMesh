@@ -9,6 +9,33 @@
  */
 
 /**
+ * Override userUrl() to generate short space URLs.
+ *
+ * Format: /space/{UserID}
+ * This function must be defined before the class to ensure it's loaded early.
+ *
+ * @param object|array $user The user object.
+ * @param string $px Prefix (unused in new format).
+ * @param string $method Method name (unused in new format).
+ * @param bool $withDomain Include domain in URL.
+ * @return string The user space URL.
+ */
+if (!function_exists('userUrl')) {
+    function userUrl($user, $px = '', $method = '', $withDomain = true) {
+        $user = (object)$user;
+        $userID = isset($user->UserID) ? (int)$user->UserID : 0;
+
+        if ($userID <= 0) {
+            return url('/', $withDomain);
+        }
+
+        $result = '/space/' . $userID;
+
+        return url($result, $withDomain);
+    }
+}
+
+/**
  * Override discussionUrl() to generate short URLs.
  *
  * Format: /post-{DiscussionID} or /post-{DiscussionID}/p{page}
@@ -168,7 +195,49 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             return;
         }
 
-        // === 3. Existing pagination: /page-N → /discussions/pN ===
+        // === 3. User space: /space/{userid} → /profile/space/{userid} ===
+        // Map short URL to internal profile action
+        if (preg_match('#^space/(\d+)(?:/(general|thread|post|favorite))?$#i', $path, $matches)) {
+            $userID = (int)$matches[1];
+            $tab = isset($matches[2]) ? strtolower($matches[2]) : 'general';
+
+            if ($userID > 0) {
+                // Rewrite to internal format: /profile/space/{userid}/{tab}
+                $newPath = 'profile/space/' . $userID . '/' . $tab;
+                $request->path($newPath);
+            }
+            return;
+        }
+
+        // === 4. Block old profile URL format: /profile/{username} ===
+        // Only allow /profile/space/* and action paths
+        // Redirect others to new /space/{userid} format
+        if (preg_match('#^profile/([^/]+)/?$#i', $path, $matches)) {
+            $userRef = $matches[1];
+            // Allow action paths (edit, picture, preferences, etc.)
+            $allowedActions = ['space', 'edit', 'picture', 'preferences', 'connections', 'tokens', 'password', 'activity', 'notifications', 'invitations', 'count', 'nomobile'];
+            if (!in_array(strtolower($userRef), $allowedActions)) {
+                // Try to get user ID and redirect to new format
+                $userModel = new UserModel();
+                $user = null;
+
+                // Check if it's a username
+                if (!is_numeric($userRef)) {
+                    $user = $userModel->getByUsername($userRef);
+                } else {
+                    $user = $userModel->getID($userRef);
+                }
+
+                if ($user && isset($user->UserID)) {
+                    // 301 redirect to new URL format
+                    safeHeader('HTTP/1.1 301 Moved Permanently');
+                    safeHeader('Location: ' . url('/space/' . $user->UserID, true));
+                    exit;
+                }
+            }
+        }
+
+        // === 5. Existing pagination: /page-N → /discussions/pN ===
         if (preg_match('#^page-(\d+)$#i', $path, $matches)) {
             $pageNum = (int)$matches[1];
             $request->path('discussions/p' . $pageNum);
@@ -985,5 +1054,218 @@ body.dark-layout {
 
         // Other pages (categories): /categories/xxx/p2?sortBy=xxx
         return url($basePath . '/p' . $page . $queryString);
+    }
+
+    /**
+     * Add BitsMesh settings menu item to Dashboard.
+     *
+     * @param Gdn_Controller $sender The controller instance.
+     * @return void
+     */
+    public function base_getAppSettingsMenuItems_handler($sender) {
+        $menu = &$sender->EventArguments['SideMenu'];
+        if ($menu) {
+            $menu->addLink('Site', t('BitsMesh'), 'dashboard/settings/bitsmesh', 'Garden.Settings.Manage', ['class' => 'nav-bitsmesh']);
+        }
+    }
+
+    /**
+     * BitsMesh settings page - /dashboard/settings/bitsmesh
+     *
+     * @param SettingsController $sender The controller instance.
+     * @return void
+     */
+    public function settingsController_bitsmesh_create($sender) {
+        $sender->permission('Garden.Settings.Manage');
+        $sender->setHighlightRoute('dashboard/settings/bitsmesh');
+        $sender->title(t('BitsMesh 主题设置'));
+
+        // Configuration keys
+        $configKeys = [
+            'CheckIn_DistributionN' => 'BitsMesh.CheckIn.DistributionN',
+            'CheckIn_DistributionP' => 'BitsMesh.CheckIn.DistributionP',
+            'CheckIn_MinAmount' => 'BitsMesh.CheckIn.MinAmount',
+        ];
+
+        // Default values
+        $defaults = [
+            'CheckIn_DistributionN' => 50,
+            'CheckIn_DistributionP' => 0.1,
+            'CheckIn_MinAmount' => 1,
+        ];
+
+        // Load current values
+        foreach ($configKeys as $formKey => $configKey) {
+            $sender->setData($formKey, c($configKey, $defaults[$formKey]));
+        }
+
+        // Handle form submission
+        if ($sender->Form->authenticatedPostBack()) {
+            // Get and validate form values
+            $n = (int)$sender->Form->getFormValue('CheckIn_DistributionN', 50);
+            $p = (float)$sender->Form->getFormValue('CheckIn_DistributionP', 0.1);
+            $min = (int)$sender->Form->getFormValue('CheckIn_MinAmount', 1);
+
+            // Validate ranges
+            $errors = [];
+            if ($n < 10 || $n > 200) {
+                $errors[] = t('最大鸡腿数必须在 10-200 之间');
+            }
+            if ($p < 0.01 || $p > 0.5) {
+                $errors[] = t('成功概率必须在 0.01-0.5 之间');
+            }
+            if ($min < 1 || $min > 10) {
+                $errors[] = t('保底最小值必须在 1-10 之间');
+            }
+            if ($min > $n) {
+                $errors[] = t('保底最小值不能大于最大鸡腿数');
+            }
+
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    $sender->Form->addError($error);
+                }
+            } else {
+                // Save configuration
+                saveToConfig('BitsMesh.CheckIn.DistributionN', $n);
+                saveToConfig('BitsMesh.CheckIn.DistributionP', $p);
+                saveToConfig('BitsMesh.CheckIn.MinAmount', $min);
+
+                // Update view data
+                $sender->setData('CheckIn_DistributionN', $n);
+                $sender->setData('CheckIn_DistributionP', $p);
+                $sender->setData('CheckIn_MinAmount', $min);
+
+                $sender->informMessage(t('设置已保存'));
+            }
+        }
+
+        // Set form values
+        $sender->Form->setData([
+            'CheckIn_DistributionN' => $sender->data('CheckIn_DistributionN'),
+            'CheckIn_DistributionP' => $sender->data('CheckIn_DistributionP'),
+            'CheckIn_MinAmount' => $sender->data('CheckIn_MinAmount'),
+        ]);
+
+        $sender->render('bitsmesh', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * User space page - /space/{userid}
+     *
+     * Modern forum style user profile page with statistics cards,
+     * discussion/comment lists, and tab navigation.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @param int $userID User ID to display.
+     * @param string $tab Current tab (general, thread, post, favorite).
+     * @return void
+     */
+    public function profileController_space_create($sender, $userID = 0, $tab = 'general') {
+        $userID = (int)$userID;
+
+        // Validate user ID
+        if ($userID <= 0) {
+            throw notFoundException('User');
+        }
+
+        // Get user data
+        $userModel = new UserModel();
+        $user = $userModel->getID($userID, DATASET_TYPE_ARRAY);
+
+        if (!$user) {
+            throw notFoundException('User');
+        }
+
+        // Convert to object for easier access
+        $user = (object)$user;
+
+        // Set up the page
+        $sender->setData('User', $user);
+        $sender->setData('UserID', $userID);
+        $sender->setData('Tab', strtolower($tab));
+
+        // Page title
+        $sender->title(sprintf(t('%s\'s Space'), htmlspecialchars($user->Name)));
+
+        // Add CSS
+        $sender->addCssFile('bits-space.css', 'themes/bitsmesh');
+
+        // Calculate user statistics
+        $joinDays = floor((time() - strtotime($user->DateInserted)) / 86400);
+        $sender->setData('JoinDays', $joinDays);
+
+        // Get user level from Credits plugin if available
+        $level = 1;
+        $credits = 0;
+        if (class_exists('CreditsPlugin')) {
+            $creditsMeta = Gdn::userMetaModel()->getUserMeta($userID, 'Credits.Balance', 0);
+            $credits = (int)val('Credits.Balance', $creditsMeta, 0);
+            // Calculate level based on credits (simple formula)
+            $level = min(6, max(1, floor($credits / 100) + 1));
+        }
+        $sender->setData('Level', $level);
+        $sender->setData('Credits', $credits);
+
+        // Get discussion and comment counts
+        $sender->setData('DiscussionCount', val('CountDiscussions', $user, 0));
+        $sender->setData('CommentCount', val('CountComments', $user, 0));
+
+        // Get content based on tab
+        $offset = 0;
+        $limit = 20;
+        $page = Gdn::request()->get('page', 1);
+        $offset = ($page - 1) * $limit;
+
+        switch ($tab) {
+            case 'thread':
+                // User's discussions (topics)
+                $discussionModel = new DiscussionModel();
+                $discussions = $discussionModel->getByUser($userID, $limit, $offset, false, Gdn::session()->UserID);
+                $sender->setData('Discussions', $discussions);
+                $sender->setData('TotalCount', $user->CountDiscussions);
+                break;
+
+            case 'post':
+                // User's comments (replies)
+                $commentModel = new CommentModel();
+                $comments = $commentModel->getByUser($userID, $limit, $offset);
+                $sender->setData('Comments', $comments);
+                $sender->setData('TotalCount', $user->CountComments);
+                break;
+
+            case 'favorite':
+                // User's bookmarks (if viewing own profile and logged in)
+                if (Gdn::session()->UserID == $userID) {
+                    $discussionModel = new DiscussionModel();
+                    $bookmarks = $discussionModel->get($offset, $limit, ['w.Bookmarked' => 1]);
+                    $sender->setData('Bookmarks', $bookmarks);
+                } else {
+                    $sender->setData('Bookmarks', []);
+                }
+                break;
+
+            case 'general':
+            default:
+                // General overview - get recent activity
+                $discussionModel = new DiscussionModel();
+                $recentDiscussions = $discussionModel->getByUser($userID, 5, 0, false, Gdn::session()->UserID);
+                $sender->setData('RecentDiscussions', $recentDiscussions);
+
+                $commentModel = new CommentModel();
+                $recentComments = $commentModel->getByUser($userID, 5, 0);
+                $sender->setData('RecentComments', $recentComments);
+                break;
+        }
+
+        // Build pagination
+        $totalCount = $sender->data('TotalCount', 0);
+        if ($totalCount > 0) {
+            $sender->setData('CurrentPage', $page);
+            $sender->setData('TotalPages', ceil($totalCount / $limit));
+        }
+
+        // Render
+        $sender->render('space', '', 'themes/bitsmesh');
     }
 }

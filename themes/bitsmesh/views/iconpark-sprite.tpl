@@ -157,4 +157,54 @@
 
   {* back - 回复 *}
   <symbol id="back" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M44 40.836c-4.893-5.973-9.238-9.362-13.036-10.168-3.797-.805-7.412-.927-10.846-.365V41L4 23.545 20.118 7v10.167c6.349.05 11.746 2.328 16.192 6.833 4.445 4.505 7.009 10.117 7.69 16.836Z" clip-rule="evenodd" data-follow-stroke="currentColor"/></symbol>
+
+  {* ============================================
+     User Space Page Icons
+     ============================================ *}
+
+  {* home - 概览 Tab *}
+  <symbol id="home" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 44V20L24 4 4 20v24h12V26h16v18h12Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* edit - 主题帖 Tab & 统计卡片 *}
+  <symbol id="edit" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M42 26v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 26.72V34h7.317L42 13.308 34.695 6 14 26.72Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* comments-6ncdh3ka - 回复 Tab & 统计卡片 *}
+  <symbol id="comments-6ncdh3ka" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 6H4v30h9v8l10-8h21V6Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 19.5h20m-20 8h14" data-follow-stroke="currentColor"/></symbol>
+
+  {* stopwatch-start - 加入天数统计卡片 *}
+  <symbol id="stopwatch-start" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c9.941 0 18-8.059 18-18S33.941 8 24 8 6 16.059 6 26s8.059 18 18 18Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 4v4m-6-4h12" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 18v9h7" data-follow-stroke="currentColor"/></symbol>
+
+  {* left - 分页左箭头 *}
+  <symbol id="left" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M31 36 19 24l12-12" data-follow-stroke="currentColor"/></symbol>
+
+  {* right - 分页右箭头 *}
+  <symbol id="right" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m19 12 12 12-12 12" data-follow-stroke="currentColor"/></symbol>
+
+  {* ============================================
+     Check-in Page Icons
+     ============================================ *}
+
+  {* fire - 连续签到 *}
+  <symbol id="fire" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c8.284 0 15-6.716 15-15 0-4.165-2.156-8.335-4.593-11.913a47.38 47.38 0 0 0-3.857-4.737L24 6l-1.514 1.59a31.3 31.3 0 0 0-1.214 1.37c-2.31 2.717-4.727 5.794-6.679 8.954C12.64 21.073 11 24.777 11 29c0 7.18 5.82 13 13 13Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44a7 7 0 0 0 7-7c0-2.79-1.125-5.166-2.372-7.056a18.695 18.695 0 0 0-1.779-2.328L24 24.5l-.803.89c-.27.299-.59.67-.941 1.1-.834.993-1.779 2.272-2.607 3.679C18.522 32.065 17 34.383 17 37a7 7 0 0 0 7 7Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* protect - 稳定签到 *}
+  <symbol id="protect" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 9s4-3 18-3 18 3 18 3v16.571c0 2.813-.622 5.593-1.852 8.141-1.975 4.1-5.468 7.62-12.148 10.86l-4 1.428-4-1.429c-6.68-3.24-10.173-6.76-12.148-10.859A18.992 18.992 0 0 1 6 25.571V9Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m16 24 6 6 12-12" data-follow-stroke="currentColor"/></symbol>
+
+  {* game-three - 随机签到 *}
+  <symbol id="game-three" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 6v8M10.452 10.452l5.656 5.656m21.44-5.656-5.656 5.656M8 28h8m24 0h-8m-8-4v4h-4m4-4V14m0 10h4" data-follow-stroke="currentColor"/><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="18" cy="28" cx="24" data-follow-stroke="currentColor"/></symbol>
+
+  {* check - 已签到 *}
+  <symbol id="check" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m4 24 14 12L44 10" data-follow-stroke="currentColor"/></symbol>
+
+  {* check-small - 日历签到标记 *}
+  <symbol id="check-small" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m10 24 10 10 18-18" data-follow-stroke="currentColor"/></symbol>
+
+  {* tips - 签到提示 *}
+  <symbol id="tips" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44a20 20 0 1 0 0-40 20 20 0 0 0 0 40Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 32V24m0-8h.022" data-follow-stroke="currentColor"/></symbol>
+
+  {* calendar-thirty - 签到日历 *}
+  <symbol id="calendar-thirty" viewBox="0 0 48 48" fill="none"><rect stroke-linejoin="round" stroke-width="4" stroke="currentColor" rx="2" height="36" width="40" y="8" x="4" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M16 4v8m16-8v8M4 20h40" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M22 35V26h-3m0 9h6m6-9v4a5 5 0 0 1-5 5v0" data-follow-stroke="currentColor"/></symbol>
+
+  {* chart-line - 社区统计 *}
+  <symbol id="chart-line" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 6v36h36" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m14 30 8-8 6 6 12-12" data-follow-stroke="currentColor"/></symbol>
 </svg>

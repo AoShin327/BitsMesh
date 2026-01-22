@@ -32,8 +32,10 @@ class CreditsPlugin extends Gdn_Plugin {
     /** Credit amounts */
     const CREDIT_POST = 5;
     const CREDIT_COMMENT = 1;
+    // Note: Check-in amounts now use binomial distribution configured in BitsMesh settings
+    // Legacy constants kept for reference only
     const CREDIT_CHECKIN_MIN = 1;
-    const CREDIT_CHECKIN_MAX = 20;
+    const CREDIT_CHECKIN_MAX = 50;
 
     /** Daily limits */
     const DAILY_LIMIT_POST = 20;
@@ -419,12 +421,34 @@ class CreditsPlugin extends Gdn_Plugin {
     }
 
     /**
+     * Generate a random number following binomial distribution B(n, p).
+     *
+     * Uses the trial method: perform n independent Bernoulli trials,
+     * each with success probability p, and count the successes.
+     *
+     * @param int $n Number of trials (maximum possible value).
+     * @param float $p Probability of success on each trial.
+     * @return int Number of successes (0 to n).
+     */
+    protected function binomialRandom($n, $p) {
+        $successes = 0;
+        for ($i = 0; $i < $n; $i++) {
+            // mt_rand() / mt_getrandmax() generates uniform [0, 1)
+            if (mt_rand() / mt_getrandmax() < $p) {
+                $successes++;
+            }
+        }
+        return $successes;
+    }
+
+    /**
      * Perform check-in.
      *
      * @param int $userID
+     * @param string $type 'fixed' for fixed 5 credits, 'random' for binomial distribution
      * @return array ['success', 'amount', 'consecutive', 'message']
      */
-    public function doCheckIn($userID) {
+    public function doCheckIn($userID, $type = 'random') {
         if (!$this->canCheckIn($userID)) {
             return [
                 'success' => false,
@@ -445,8 +469,24 @@ class CreditsPlugin extends Gdn_Plugin {
             $consecutive = 1;
         }
 
-        // Random credits
-        $amount = rand(self::CREDIT_CHECKIN_MIN, self::CREDIT_CHECKIN_MAX);
+        // Determine credits based on check-in type
+        if ($type === 'fixed') {
+            // Fixed check-in: always 5 credits
+            $amount = 5;
+        } else {
+            // Random check-in: use binomial distribution B(n, p)
+            $n = (int)c('BitsMesh.CheckIn.DistributionN', 50);
+            $p = (float)c('BitsMesh.CheckIn.DistributionP', 0.1);
+            $minAmount = (int)c('BitsMesh.CheckIn.MinAmount', 1);
+
+            // Ensure valid configuration values
+            $n = max(10, min(200, $n));
+            $p = max(0.01, min(0.5, $p));
+            $minAmount = max(1, min(10, $minAmount));
+
+            // Generate binomial random and apply minimum guarantee
+            $amount = max($minAmount, $this->binomialRandom($n, $p));
+        }
 
         // Award credits
         $this->awardCredits($userID, $amount, 'checkin', null, null, sprintf(t('Credits.CheckInNote', '连续签到第 %d 天'), $consecutive));
@@ -662,6 +702,12 @@ class CreditsPlugin extends Gdn_Plugin {
         $sender->setData('LevelThresholds', self::LEVEL_THRESHOLDS);
 
         // Credit rules
+        // Get check-in distribution parameters for display
+        $checkInN = (int)c('BitsMesh.CheckIn.DistributionN', 50);
+        $checkInP = (float)c('BitsMesh.CheckIn.DistributionP', 0.1);
+        $checkInMin = (int)c('BitsMesh.CheckIn.MinAmount', 1);
+        $checkInExpected = round($checkInN * $checkInP);
+
         $sender->setData('CreditRules', [
             'post' => [
                 'name' => t('Credits.PostRule', '发帖'),
@@ -677,9 +723,9 @@ class CreditsPlugin extends Gdn_Plugin {
             ],
             'checkin' => [
                 'name' => t('Credits.CheckInRule', '签到'),
-                'amount' => '+' . self::CREDIT_CHECKIN_MIN . '~' . self::CREDIT_CHECKIN_MAX,
-                'limit' => self::CREDIT_CHECKIN_MAX,
-                'note' => t('Credits.CheckInRuleNote', '随机获得')
+                'amount' => sprintf(t('Credits.CheckInRuleAmount', '约 %d (保底 %d)'), $checkInExpected, $checkInMin),
+                'limit' => $checkInN,
+                'note' => t('Credits.CheckInRuleNote', '二项分布随机')
             ],
             'feed' => [
                 'name' => t('Credits.FeedRule', '被投喂'),
@@ -792,7 +838,14 @@ class CreditsPlugin extends Gdn_Plugin {
         }
 
         $userID = Gdn::session()->UserID;
-        $result = $this->doCheckIn($userID);
+
+        // Get check-in type: 'fixed' or 'random' (default)
+        $checkInType = $sender->Form->getFormValue('CheckInType', 'random');
+        if (!in_array($checkInType, ['fixed', 'random'])) {
+            $checkInType = 'random';
+        }
+
+        $result = $this->doCheckIn($userID, $checkInType);
 
         $sender->setData('Success', $result['success']);
         $sender->setData('Amount', $result['amount']);

@@ -579,6 +579,91 @@
     margin-bottom: 20px;
 }
 
+/* Check-in Options - Two choices: Fixed vs Random */
+.credits-checkin-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.credits-checkin-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--credits-bg-elevated);
+    border: 1px solid var(--credits-border);
+    border-radius: var(--credits-radius-lg);
+    transition: all 0.2s ease;
+}
+
+.credits-checkin-option:hover {
+    border-color: var(--credits-primary-border);
+    background: var(--credits-primary-light);
+}
+
+.credits-option-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--credits-bg);
+    border-radius: var(--credits-radius);
+    flex-shrink: 0;
+}
+
+.credits-option-icon .iconpark-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--credits-text-secondary);
+}
+
+.credits-checkin-option[data-type="fixed"] .credits-option-icon .iconpark-icon {
+    color: #3b82f6;
+}
+
+.credits-checkin-option[data-type="random"] .credits-option-icon .iconpark-icon {
+    color: #f59e0b;
+}
+
+.credits-option-info {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+.credits-option-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--credits-text);
+    margin-bottom: 2px;
+}
+
+.credits-option-desc {
+    display: block;
+    font-size: 12px;
+    color: var(--credits-text-secondary);
+}
+
+.credits-checkin-option .credits-btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    min-width: 60px;
+}
+
+.credits-btn-secondary {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.credits-btn-secondary:hover:not(:disabled) {
+    background: #2563eb;
+}
+
 /* Check-in Button */
 .credits-btn {
     display: inline-flex;

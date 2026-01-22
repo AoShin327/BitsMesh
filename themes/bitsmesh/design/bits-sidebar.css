@@ -367,7 +367,7 @@ body.dark-layout .bits-btn:hover {
 }
 
 .bits-user-card .bits-username:hover {
-    color: var(--bits-link-hover-color, #2563EB);
+    color: rgb(51, 51, 51) !important;
 }
 
 /* User action icons row (pixel-perfect replica) */

@@ -14,6 +14,12 @@ $checkedDays = $this->data('CheckedDays');
 $year = $this->data('CalendarYear');
 $month = $this->data('CalendarMonth');
 
+// Get distribution parameters for display
+$checkInN = (int)c('BitsMesh.CheckIn.DistributionN', 50);
+$checkInP = (float)c('BitsMesh.CheckIn.DistributionP', 0.1);
+$checkInMin = (int)c('BitsMesh.CheckIn.MinAmount', 1);
+$checkInExpected = round($checkInN * $checkInP);
+
 // Calendar calculations
 $firstDayOfMonth = mktime(0, 0, 0, $month, 1, $year);
 $daysInMonth = date('t', $firstDayOfMonth);
@@ -44,10 +50,32 @@ $isCurrentMonth = ($year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT)) === $cur
 
                     <div class="credits-checkin-action">
                         <?php if ($canCheckIn): ?>
-                        <button type="button" id="credits-checkin-btn" class="credits-btn credits-btn-primary credits-btn-checkin">
-                            <svg class="iconpark-icon"><use href="#plan"></use></svg>
-                            <span><?php echo t('Credits.DoCheckIn', '立即签到'); ?></span>
-                        </button>
+                        <div class="credits-checkin-options">
+                            <div class="credits-checkin-option" data-type="fixed">
+                                <div class="credits-option-icon">
+                                    <svg class="iconpark-icon"><use href="#protect"></use></svg>
+                                </div>
+                                <div class="credits-option-info">
+                                    <span class="credits-option-title"><?php echo t('Credits.FixedCheckIn', '稳定签到'); ?></span>
+                                    <span class="credits-option-desc"><?php echo t('Credits.FixedCheckInDesc', '固定获得 5 鸡腿'); ?></span>
+                                </div>
+                                <button type="button" class="credits-btn credits-btn-secondary credits-btn-checkin" data-type="fixed">
+                                    <span>+5</span>
+                                </button>
+                            </div>
+                            <div class="credits-checkin-option" data-type="random">
+                                <div class="credits-option-icon">
+                                    <svg class="iconpark-icon"><use href="#game-three"></use></svg>
+                                </div>
+                                <div class="credits-option-info">
+                                    <span class="credits-option-title"><?php echo t('Credits.RandomCheckIn', '随机签到'); ?></span>
+                                    <span class="credits-option-desc"><?php echo sprintf(t('Credits.RandomCheckInDesc', '约 %d（保底 %d，最高 %d）'), $checkInExpected, $checkInMin, $checkInN); ?></span>
+                                </div>
+                                <button type="button" class="credits-btn credits-btn-primary credits-btn-checkin" data-type="random">
+                                    <span>?</span>
+                                </button>
+                            </div>
+                        </div>
                         <?php else: ?>
                         <div class="credits-checkin-done">
                             <svg class="iconpark-icon"><use href="#check"></use></svg>
@@ -69,7 +97,7 @@ $isCurrentMonth = ($year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT)) === $cur
 
                 <div class="credits-checkin-tip">
                     <svg class="iconpark-icon"><use href="#tips"></use></svg>
-                    <?php echo sprintf(t('Credits.CheckInTip', '每日签到可随机获得 %d~%d 鸡腿'), CreditsPlugin::CREDIT_CHECKIN_MIN, CreditsPlugin::CREDIT_CHECKIN_MAX); ?>
+                    <?php echo t('Credits.CheckInTipChoice', '稳定签到固定获得 5 鸡腿；随机签到使用二项分布算法，期望值约为 5 但有机会获得更多！'); ?>
                 </div>
             </div>
         </div>
@@ -147,47 +175,102 @@ $isCurrentMonth = ($year . '-' . str_pad($month, 2, '0', STR_PAD_LEFT)) === $cur
 <script>
 jQuery(document).ready(function($) {
     var checkInUrl = gdn.definition('Credits.CheckInUrl', '/credits/checkin');
+    var maxAmount = <?php echo $checkInN; ?>;
 
-    $('#credits-checkin-btn').on('click', function() {
+    /**
+     * Number rolling animation for check-in result.
+     */
+    function animateNumber($element, finalValue, duration) {
+        duration = duration || 1500;
+        var startTime = Date.now();
+        var interval = 1000 / 60;
+
+        function update() {
+            var elapsed = Date.now() - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+
+            if (progress < 1) {
+                var randomNum = Math.floor(Math.random() * maxAmount) + 1;
+                $element.text('+' + randomNum);
+                setTimeout(update, interval);
+            } else {
+                $element.text('+' + finalValue);
+                $element.addClass('final');
+            }
+        }
+
+        $element.removeClass('final');
+        update();
+    }
+
+    // Handle check-in button clicks
+    $('.credits-btn-checkin').on('click', function() {
         var $btn = $(this);
-        $btn.prop('disabled', true).addClass('loading');
+        var checkInType = $btn.data('type'); // 'fixed' or 'random'
+        var $options = $('.credits-checkin-options');
+        var $result = $('#credits-checkin-result');
+        var $amount = $result.find('.credits-result-amount');
+
+        // Disable all buttons
+        $('.credits-btn-checkin').prop('disabled', true).addClass('loading');
+        $btn.find('span').text('...');
+
+        // For random type, show animation
+        if (checkInType === 'random') {
+            $result.fadeIn();
+            animateNumber($amount, 0, 2000);
+        }
 
         $.ajax({
             url: checkInUrl,
             type: 'POST',
             dataType: 'json',
             data: {
-                TransientKey: gdn.definition('TransientKey')
+                TransientKey: gdn.definition('TransientKey'),
+                CheckInType: checkInType
             },
             success: function(response) {
                 if (response.Success) {
-                    // Show result
-                    $('#credits-checkin-result')
-                        .find('.credits-result-amount').text('+' + response.Amount).end()
-                        .fadeIn();
+                    var showResult = function() {
+                        // Show result
+                        $amount.text('+' + response.Amount).addClass('final success');
+                        $result.addClass('success').fadeIn();
 
-                    // Update button
-                    $btn.replaceWith(
-                        '<div class="credits-checkin-done">' +
-                        '<svg class="iconpark-icon"><use href="#check"></use></svg>' +
-                        '<span>' + response.Message + '</span>' +
-                        '</div>'
-                    );
+                        // Replace options with done message
+                        $options.replaceWith(
+                            '<div class="credits-checkin-done">' +
+                            '<svg class="iconpark-icon"><use href="#check"></use></svg>' +
+                            '<span>' + response.Message + '</span>' +
+                            '</div>'
+                        );
 
-                    // Mark today as checked in calendar
-                    $('.credits-calendar-day.today').addClass('checked')
-                        .append('<span class="credits-day-check"><svg class="iconpark-icon"><use href="#check-small"></use></svg></span>');
+                        // Mark today in calendar
+                        $('.credits-calendar-day.today').addClass('checked')
+                            .append('<span class="credits-day-check"><svg class="iconpark-icon"><use href="#check-small"></use></svg></span>');
 
-                    // Update consecutive days display
-                    $('.credits-consecutive span').text('已连续签到 ' + response.Consecutive + ' 天');
+                        // Update consecutive days
+                        $('.credits-consecutive span').text('<?php echo t('Credits.ConsecutiveDaysPrefix', '已连续签到 '); ?>' + response.Consecutive + '<?php echo t('Credits.ConsecutiveDaysSuffix', ' 天'); ?>');
+                    };
+
+                    if (checkInType === 'random') {
+                        // Wait for animation then show result
+                        setTimeout(showResult, 1500);
+                    } else {
+                        // Fixed type - show immediately
+                        showResult();
+                    }
                 } else {
+                    $result.fadeOut();
                     gdn.informError(response.Message);
-                    $btn.prop('disabled', false).removeClass('loading');
+                    $('.credits-btn-checkin').prop('disabled', false).removeClass('loading');
+                    $btn.find('span').text(checkInType === 'fixed' ? '+5' : '?');
                 }
             },
             error: function() {
+                $result.fadeOut();
                 gdn.informError('<?php echo t('Credits.CheckInError', '签到失败，请稍后重试'); ?>');
-                $btn.prop('disabled', false).removeClass('loading');
+                $('.credits-btn-checkin').prop('disabled', false).removeClass('loading');
+                $btn.find('span').text(checkInType === 'fixed' ? '+5' : '?');
             }
         });
     });
