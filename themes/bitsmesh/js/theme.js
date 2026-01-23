@@ -1583,6 +1583,15 @@
                         dislikeBtn.classList.remove('active');
                     }
                 }
+
+                // Update chicken leg count
+                const chickenLegBtn = menu.querySelector('.menu-credit');
+                if (chickenLegBtn) {
+                    const countSpan = chickenLegBtn.querySelector('span');
+                    if (countSpan) {
+                        countSpan.textContent = counts.chickenLegCount || 0;
+                    }
+                }
             });
         }
 

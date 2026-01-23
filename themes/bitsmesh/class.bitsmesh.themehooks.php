@@ -2959,26 +2959,35 @@ body.dark-layout {
         }
 
         // Load model and give chicken leg
-        require_once PATH_THEMES . '/bitsmesh/models/class.chickenlegmodel.php';
-        $chickenLegModel = ChickenLegModel::instance();
-        $result = $chickenLegModel->giveChickenLeg(Gdn::session()->UserID, $recordType, $recordID);
+        try {
+            require_once PATH_THEMES . '/bitsmesh/models/class.chickenlegmodel.php';
+            $chickenLegModel = ChickenLegModel::instance();
+            $result = $chickenLegModel->giveChickenLeg(Gdn::session()->UserID, $recordType, $recordID);
 
-        // Return response
-        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
-        $sender->deliveryType(DELIVERY_TYPE_DATA);
-        $sender->setData('Success', $result['success']);
-        if ($result['success']) {
-            $sender->setData('NewCount', $result['newCount']);
-            $sender->setData('RemainingQuota', $result['remainingQuota']);
-            $sender->setData('Message', $result['message']);
-        } else {
-            $sender->setData('Error', $result['error']);
-            $sender->setData('Message', $result['message'] ?? t('Failed to give chicken leg.'));
-            if (isset($result['remainingQuota'])) {
+            // Return response
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', $result['success']);
+            if ($result['success']) {
+                $sender->setData('NewCount', $result['newCount']);
                 $sender->setData('RemainingQuota', $result['remainingQuota']);
+                $sender->setData('Message', $result['message']);
+            } else {
+                $sender->setData('Error', $result['error']);
+                $sender->setData('Message', $result['message'] ?? t('Failed to give chicken leg.'));
+                if (isset($result['remainingQuota'])) {
+                    $sender->setData('RemainingQuota', $result['remainingQuota']);
+                }
             }
+            $sender->render('blank', 'utility', 'dashboard');
+        } catch (Exception $e) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'Exception');
+            $sender->setData('Message', t('An error occurred. Please try again.'));
+            $sender->render('blank', 'utility', 'dashboard');
         }
-        $sender->render('blank', 'utility', 'dashboard');
     }
 
     /**
@@ -3036,11 +3045,32 @@ body.dark-layout {
         }
 
         require_once PATH_THEMES . '/bitsmesh/models/class.userreactionmodel.php';
+        require_once PATH_THEMES . '/bitsmesh/models/class.chickenlegmodel.php';
         $userReactionModel = UserReactionModel::instance();
+        $chickenLegModel = ChickenLegModel::instance();
 
         // Get reactions for discussion page (includes discussion + all comments)
         $userID = Gdn::session()->isValid() ? Gdn::session()->UserID : null;
         $reactions = $userReactionModel->getDiscussionPageReactions($discussionID, $userID);
+
+        // Add chicken leg counts to reactions
+        // Get discussion chicken leg count
+        $discussionChickenCount = $chickenLegModel->getChickenLegCount('Discussion', $discussionID);
+        $reactions['discussion']['chickenLegCount'] = $discussionChickenCount;
+
+        // Get comment IDs and their chicken leg counts
+        $commentIDs = array_keys($reactions);
+        $commentIDs = array_filter($commentIDs, function($key) {
+            return $key !== 'discussion';
+        });
+        if (!empty($commentIDs)) {
+            $chickenCounts = $chickenLegModel->getChickenLegCounts('Comment', $commentIDs);
+            foreach ($chickenCounts as $commentID => $count) {
+                if (isset($reactions[$commentID])) {
+                    $reactions[$commentID]['chickenLegCount'] = $count;
+                }
+            }
+        }
 
         $sender->setData('Success', true);
         $sender->setData('Reactions', $reactions);
