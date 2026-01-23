@@ -1798,15 +1798,13 @@ body.dark-layout {
         $joinDays = floor((time() - strtotime($user->DateInserted)) / 86400);
         $sender->setData('JoinDays', $joinDays);
 
-        // Get user level from Credits plugin if available
-        $level = 1;
-        $credits = 0;
-        if (class_exists('CreditsPlugin')) {
-            $creditsMeta = Gdn::userMetaModel()->getUserMeta($userID, 'Credits.Balance', 0);
-            $credits = (int)val('Credits.Balance', $creditsMeta, 0);
-            // Calculate level based on credits (simple formula)
-            $level = min(6, max(1, floor($credits / 100) + 1));
-        }
+        // Get user credits (鸡腿) from User.Points field
+        // Note: User.Points is the primary source, updated by moderation actions
+        $credits = (int)val('Points', $user, 0);
+
+        // Calculate level based on credits (simple formula: 1-6)
+        $level = min(6, max(1, floor($credits / 100) + 1));
+
         $sender->setData('Level', $level);
         $sender->setData('Credits', $credits);
 
