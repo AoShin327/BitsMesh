@@ -3985,4 +3985,135 @@ body.dark-layout {
         // Render view
         $sender->render('ruling', 'pages', 'themes/bitsmesh');
     }
+
+    // =========================================================================
+    // Moderation Log Auto-Recording Hooks
+    // =========================================================================
+
+    /**
+     * Log discussion deletion to ModerationLog.
+     *
+     * @param DiscussionModel $sender
+     * @return void
+     */
+    public function discussionModel_deleteDiscussion_handler($sender) {
+        $this->logModerationAction(
+            'Delete',
+            'Discussion',
+            $sender->EventArguments['DiscussionID'],
+            $sender->EventArguments['Discussion'] ?? null
+        );
+    }
+
+    /**
+     * Log comment deletion to ModerationLog.
+     *
+     * @param CommentModel $sender
+     * @return void
+     */
+    public function commentModel_deleteComment_handler($sender) {
+        $comment = $sender->EventArguments['Comment'] ?? null;
+        $commentID = $sender->EventArguments['CommentID'] ?? ($comment['CommentID'] ?? null);
+
+        $this->logModerationAction(
+            'Delete',
+            'Comment',
+            $commentID,
+            $comment
+        );
+    }
+
+    /**
+     * Log discussion field changes (e.g., move to different category).
+     *
+     * @param DiscussionModel $sender
+     * @return void
+     */
+    public function discussionModel_afterSetField_handler($sender) {
+        $setFields = $sender->EventArguments['SetField'] ?? [];
+        $discussionID = $sender->EventArguments['DiscussionID'] ?? null;
+
+        // Check if CategoryID was changed (move operation)
+        if (isset($setFields['CategoryID']) && $discussionID) {
+            $newCategoryID = $setFields['CategoryID'];
+            $category = CategoryModel::categories($newCategoryID);
+            $categoryName = $category['Name'] ?? '';
+
+            // Get discussion info
+            $discussionModel = new DiscussionModel();
+            $discussion = $discussionModel->getID($discussionID, DATASET_TYPE_ARRAY);
+
+            if ($discussion) {
+                require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
+                $model = new ModerationLogModel();
+                $model->addLog([
+                    'ActionType' => ModerationLogModel::ACTION_MOVE,
+                    'RecordType' => ModerationLogModel::RECORD_DISCUSSION,
+                    'RecordID' => $discussionID,
+                    'RecordUserID' => $discussion['InsertUserID'] ?? null,
+                    'RecordTitle' => $discussion['Name'] ?? null,
+                    'RecordUrl' => discussionUrl($discussion),
+                    'CategoryID' => $newCategoryID,
+                    'CategoryName' => $categoryName,
+                    'IsPublic' => 1, // Default to public
+                    'InsertUserID' => Gdn::session()->UserID
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Helper method to log moderation actions.
+     *
+     * @param string $actionType Action type constant
+     * @param string $recordType Record type constant
+     * @param int $recordID Record ID
+     * @param array|object|null $record Full record data if available
+     * @return void
+     */
+    private function logModerationAction($actionType, $recordType, $recordID, $record = null) {
+        if (!$recordID) {
+            return;
+        }
+
+        // Only log if user is logged in (admin action)
+        if (!Gdn::session()->isValid()) {
+            return;
+        }
+
+        require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
+
+        $logData = [
+            'ActionType' => $actionType,
+            'RecordType' => $recordType,
+            'RecordID' => $recordID,
+            'IsPublic' => 1, // Default to public
+            'InsertUserID' => Gdn::session()->UserID
+        ];
+
+        // Extract record info if available
+        if ($record) {
+            $record = (array)$record;
+
+            if ($recordType === ModerationLogModel::RECORD_DISCUSSION) {
+                $logData['RecordUserID'] = $record['InsertUserID'] ?? null;
+                $logData['RecordTitle'] = $record['Name'] ?? null;
+                $logData['RecordUrl'] = isset($record['DiscussionID']) ? discussionUrl($record) : null;
+            } elseif ($recordType === ModerationLogModel::RECORD_COMMENT) {
+                $logData['RecordUserID'] = $record['InsertUserID'] ?? null;
+                // Comments don't have titles, use discussion info
+                if (isset($record['DiscussionID'])) {
+                    $discussionModel = new DiscussionModel();
+                    $discussion = $discussionModel->getID($record['DiscussionID'], DATASET_TYPE_ARRAY);
+                    if ($discussion) {
+                        $logData['RecordTitle'] = $discussion['Name'] ?? null;
+                        $logData['RecordUrl'] = commentUrl($record);
+                    }
+                }
+            }
+        }
+
+        $model = new ModerationLogModel();
+        $model->addLog($logData);
+    }
 }
