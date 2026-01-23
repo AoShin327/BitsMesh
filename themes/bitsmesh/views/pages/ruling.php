@@ -59,7 +59,7 @@ $perPage = $this->data('PerPage', 20);
                     <td class="bits-col-target">
                         <div class="bits-target-info">
                             <?php if (!empty($log['RecordUserName'])): ?>
-                            <a href="/member/<?php echo $log['RecordUserID']; ?>" class="bits-target-user">
+                            <a href="/space/<?php echo $log['RecordUserID']; ?>" class="bits-target-user">
                                 <?php echo htmlspecialchars($log['RecordUserName']); ?>
                             </a>
                             <?php echo t('of', '的'); ?>
@@ -81,7 +81,7 @@ $perPage = $this->data('PerPage', 20);
                         </div>
                     </td>
                     <td class="bits-col-admin">
-                        <a href="/member/<?php echo $log['InsertUserID']; ?>" class="bits-admin-link">
+                        <a href="/space/<?php echo $log['InsertUserID']; ?>" class="bits-admin-link">
                             <?php echo htmlspecialchars($log['AdminName'] ?? t('Unknown', '未知')); ?>
                         </a>
                     </td>
