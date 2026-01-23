@@ -126,11 +126,9 @@ $tabs = [
     <!-- Content Area -->
     <div class="bits-space-content">
         <?php if ($tab === 'general'): ?>
-        <!-- General Overview -->
-
-        <?php if (!empty($readme)): ?>
-        <!-- User Readme Section -->
-        <div class="bits-space-section bits-readme-section">
+        <!-- General Overview: Readme Only -->
+        <div class="bits-space-section bits-readme-section bits-readme-fullwidth">
+            <?php if (!empty($readme)): ?>
             <h3 class="bits-section-title">
                 <svg class="iconpark-icon"><use href="#book-open"></use></svg>
                 <?php echo t('About Me', '关于我'); ?>
@@ -138,62 +136,11 @@ $tabs = [
             <div class="bits-readme-content UserContent">
                 <?php echo Gdn_Format::to($readme, 'Markdown'); ?>
             </div>
-        </div>
-        <?php endif; ?>
-
-        <div class="bits-space-section">
-            <h3 class="bits-section-title">
-                <svg class="iconpark-icon"><use href="#edit"></use></svg>
-                <?php echo t('Recent Topics', '最近发布的主题'); ?>
-            </h3>
-            <?php
-            $discussions = $this->data('RecentDiscussions');
-            if ($discussions && $discussions->numRows() > 0):
-            ?>
-            <div class="bits-space-list">
-                <?php foreach ($discussions as $discussion): ?>
-                <a href="<?php echo discussionUrl($discussion); ?>" class="bits-space-list-item">
-                    <span class="bits-list-title"><?php echo htmlspecialchars($discussion->Name); ?></span>
-                    <span class="bits-list-meta"><?php echo Gdn_Format::date($discussion->DateInserted, 'html'); ?></span>
-                </a>
-                <?php endforeach; ?>
-            </div>
-            <?php if ($discussionCount > 5): ?>
-            <a href="<?php echo url($baseUrl . '/thread'); ?>" class="bits-view-more"><?php echo t('View All', '查看全部'); ?> →</a>
-            <?php endif; ?>
             <?php else: ?>
-            <p class="bits-empty-message"><?php echo t('No topics yet', '暂无主题帖'); ?></p>
-            <?php endif; ?>
-        </div>
-
-        <div class="bits-space-section">
-            <h3 class="bits-section-title">
-                <svg class="iconpark-icon"><use href="#comments-6ncdh3ka"></use></svg>
-                <?php echo t('Recent Replies', '最近发布的回复'); ?>
-            </h3>
-            <?php
-            $comments = $this->data('RecentComments');
-            if ($comments && $comments->numRows() > 0):
-            ?>
-            <div class="bits-space-list">
-                <?php foreach ($comments as $comment): ?>
-                <a href="<?php echo commentUrl($comment); ?>" class="bits-space-list-item">
-                    <span class="bits-list-title"><?php
-                        // Strip HTML tags and decode entities for clean display
-                        $bodyText = strip_tags(Gdn_Format::to($comment->Body, $comment->Format));
-                        $bodyText = html_entity_decode($bodyText, ENT_QUOTES, 'UTF-8');
-                        $bodyText = preg_replace('/\s+/', ' ', trim($bodyText)); // Normalize whitespace
-                        echo htmlspecialchars(sliceString($bodyText, 80), ENT_QUOTES, 'UTF-8');
-                    ?></span>
-                    <span class="bits-list-meta"><?php echo Gdn_Format::date($comment->DateInserted, 'html'); ?></span>
-                </a>
-                <?php endforeach; ?>
+            <div class="bits-readme-empty">
+                <svg class="iconpark-icon"><use href="#book-open"></use></svg>
+                <p><?php echo t('No readme yet', '这位用户还没有填写 Readme'); ?></p>
             </div>
-            <?php if ($commentCount > 5): ?>
-            <a href="<?php echo url($baseUrl . '/post'); ?>" class="bits-view-more"><?php echo t('View All', '查看全部'); ?> →</a>
-            <?php endif; ?>
-            <?php else: ?>
-            <p class="bits-empty-message"><?php echo t('No replies yet', '暂无评论'); ?></p>
             <?php endif; ?>
         </div>
 
