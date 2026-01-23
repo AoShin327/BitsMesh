@@ -4102,7 +4102,7 @@ body.dark-layout {
     }
 
     /**
-     * Log discussion field changes (e.g., move to different category).
+     * Log discussion field changes (e.g., move to different category, sink, close).
      *
      * @param DiscussionModel $sender
      * @return void
@@ -4111,65 +4111,106 @@ body.dark-layout {
         $setFields = $sender->EventArguments['SetField'] ?? [];
         $discussionID = $sender->EventArguments['DiscussionID'] ?? null;
 
+        if (!$discussionID || empty($setFields)) {
+            return;
+        }
+
+        // Get discussion info
+        $discussionModel = new DiscussionModel();
+        $discussion = $discussionModel->getID($discussionID, DATASET_TYPE_ARRAY);
+
+        if (!$discussion) {
+            return;
+        }
+
         // Check if CategoryID was changed (move operation)
-        if (isset($setFields['CategoryID']) && $discussionID) {
+        if (isset($setFields['CategoryID'])) {
             $newCategoryID = $setFields['CategoryID'];
             $category = CategoryModel::categories($newCategoryID);
             $categoryName = $category['Name'] ?? '';
 
-            // Get discussion info
-            $discussionModel = new DiscussionModel();
-            $discussion = $discussionModel->getID($discussionID, DATASET_TYPE_ARRAY);
+            // Get captured form data
+            $formData = $this->getModerationFormData();
 
-            if ($discussion) {
-                // Get captured form data
-                $formData = $this->getModerationFormData();
+            require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
 
-                require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
-
-                // Process credits change if requested
-                $pointsChange = 0;
-                $creditsReason = '';
-                if ($formData && !empty($formData['CreditsAction']) && !empty($formData['CreditsAmount'])) {
-                    $targetUserID = $discussion['InsertUserID'] ?? null;
-                    if ($targetUserID) {
-                        $pointsChange = $this->processCreditsChange(
-                            $targetUserID,
-                            $formData['CreditsAction'],
-                            $formData['CreditsAmount'],
-                            $formData['CreditsReason'] ?? ''
-                        );
-                        $creditsReason = $formData['CreditsReason'] ?? '';
-                    }
+            // Process credits change if requested
+            $pointsChange = 0;
+            $creditsReason = '';
+            if ($formData && !empty($formData['CreditsAction']) && !empty($formData['CreditsAmount'])) {
+                $targetUserID = $discussion['InsertUserID'] ?? null;
+                if ($targetUserID) {
+                    $pointsChange = $this->processCreditsChange(
+                        $targetUserID,
+                        $formData['CreditsAction'],
+                        $formData['CreditsAmount'],
+                        $formData['CreditsReason'] ?? ''
+                    );
+                    $creditsReason = $formData['CreditsReason'] ?? '';
                 }
-
-                // Determine reason text
-                $reason = '';
-                if ($formData && !empty($formData['Reason'])) {
-                    $reason = $formData['Reason'];
-                }
-
-                // Note: Actions array is empty because buildActionSummary() automatically
-                // generates "移动到 XX 版块" text from CategoryName field
-                $actions = [];
-
-                $model = new ModerationLogModel();
-                $model->addLog([
-                    'ActionType' => 'Move',
-                    'RecordType' => 'Discussion',
-                    'RecordID' => $discussionID,
-                    'RecordUserID' => $discussion['InsertUserID'] ?? null,
-                    'RecordTitle' => $discussion['Name'] ?? null,
-                    'RecordUrl' => discussionUrl($discussion),
-                    'Reason' => $reason,
-                    'Actions' => $actions,
-                    'PointsChange' => $pointsChange,
-                    'CategoryID' => $newCategoryID,
-                    'CategoryName' => $categoryName,
-                    'IsPublic' => $formData ? ($formData['IsPublic'] ?? 1) : 1,
-                    'InsertUserID' => Gdn::session()->UserID
-                ]);
             }
+
+            // Determine reason text
+            $reason = '';
+            if ($formData && !empty($formData['Reason'])) {
+                $reason = $formData['Reason'];
+            }
+
+            // Note: Actions array is empty because buildActionSummary() automatically
+            // generates "移动到 XX 版块" text from CategoryName field
+            $actions = [];
+
+            $model = new ModerationLogModel();
+            $model->addLog([
+                'ActionType' => 'Move',
+                'RecordType' => 'Discussion',
+                'RecordID' => $discussionID,
+                'RecordUserID' => $discussion['InsertUserID'] ?? null,
+                'RecordTitle' => $discussion['Name'] ?? null,
+                'RecordUrl' => discussionUrl($discussion),
+                'Reason' => $reason,
+                'Actions' => $actions,
+                'PointsChange' => $pointsChange,
+                'CategoryID' => $newCategoryID,
+                'CategoryName' => $categoryName,
+                'IsPublic' => $formData ? ($formData['IsPublic'] ?? 1) : 1,
+                'InsertUserID' => Gdn::session()->UserID
+            ]);
+            return; // Only log one action per call
+        }
+
+        // Check if Sink was changed (sink/unsink operation)
+        if (isset($setFields['Sink'])) {
+            $sinkValue = (int)$setFields['Sink'];
+            $actionType = $sinkValue ? 'Sink' : 'Unsink';
+
+            // Note: Sink/Unsink are toggle actions without popup dialogs,
+            // so no formData is captured. Log with default IsPublic=1.
+            $this->logModerationActionWithFormData(
+                $actionType,
+                'Discussion',
+                $discussionID,
+                $discussion,
+                null // No form data for toggle actions
+            );
+            return;
+        }
+
+        // Check if Closed was changed (close/reopen operation)
+        if (isset($setFields['Closed'])) {
+            $closedValue = (int)$setFields['Closed'];
+            $actionType = $closedValue ? 'Close' : 'Reopen';
+
+            // Note: Close/Reopen are toggle actions without popup dialogs,
+            // so no formData is captured. Log with default IsPublic=1.
+            $this->logModerationActionWithFormData(
+                $actionType,
+                'Discussion',
+                $discussionID,
+                $discussion,
+                null // No form data for toggle actions
+            );
+            return;
         }
     }
 
@@ -4241,5 +4282,46 @@ body.dark-layout {
 
         $model = new ModerationLogModel();
         $model->addLog($logData);
+    }
+
+    /**
+     * Log discussion property changes (e.g., Announce).
+     *
+     * @param DiscussionModel $sender
+     * @return void
+     */
+    public function discussionModel_afterSetProperty_handler($sender) {
+        $setProperty = $sender->EventArguments['SetProperty'] ?? [];
+        $discussionID = $sender->EventArguments['DiscussionID'] ?? null;
+
+        if (!$discussionID || empty($setProperty)) {
+            return;
+        }
+
+        // Get discussion info
+        $discussionModel = new DiscussionModel();
+        $discussion = $discussionModel->getID($discussionID, DATASET_TYPE_ARRAY);
+
+        if (!$discussion) {
+            return;
+        }
+
+        // Check for Announce property change
+        if (isset($setProperty['Announce'])) {
+            $announceValue = (int)$setProperty['Announce'];
+            $formData = $this->getModerationFormData();
+
+            // Determine action type based on announce value
+            // 0 = Not announced, 1 = Announced in category + recent, 2 = Announced in category only
+            $actionType = $announceValue > 0 ? 'Announce' : 'Unannounce';
+
+            $this->logModerationActionWithFormData(
+                $actionType,
+                'Discussion',
+                $discussionID,
+                $discussion,
+                $formData
+            );
+        }
     }
 }

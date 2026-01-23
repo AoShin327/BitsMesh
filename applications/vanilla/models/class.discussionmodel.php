@@ -2558,6 +2558,12 @@ class DiscussionModel extends Gdn_Model {
             ->where('DiscussionID', $discussionID)
             ->put();
 
+        // Fire event for property changes (e.g., Announce)
+        // BitsMesh Theme: Added for moderation logging
+        $this->EventArguments['DiscussionID'] = $discussionID;
+        $this->EventArguments['SetProperty'] = [$property => $value];
+        $this->fireEvent('AfterSetProperty');
+
         return $value;
     }
 
