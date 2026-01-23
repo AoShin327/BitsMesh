@@ -4149,10 +4149,9 @@ body.dark-layout {
                     $reason = $formData['Reason'];
                 }
 
-                // Build actions array
+                // Note: Actions array is empty because buildActionSummary() automatically
+                // generates "移动到 XX 版块" text from CategoryName field
                 $actions = [];
-                $actions[] = t('CategoryAdjustment', 'Category moved');
-                $actions[] = sprintf(t('MovedToCategory', 'Moved to %s category'), $categoryName);
 
                 $model = new ModerationLogModel();
                 $model->addLog([
