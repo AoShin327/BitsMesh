@@ -103,6 +103,8 @@ $activeTab = $this->data('ActiveTab', 'checkin');
 <div class="bits-settings-tabs">
     <a href="?tab=checkin" class="<?php echo $activeTab === 'checkin' ? 'active' : ''; ?>">签到设置</a>
     <a href="?tab=invite" class="<?php echo $activeTab === 'invite' ? 'active' : ''; ?>">邀请码管理</a>
+    <a href="?tab=partners" class="<?php echo $activeTab === 'partners' ? 'active' : ''; ?>">合作商家</a>
+    <a href="?tab=links" class="<?php echo $activeTab === 'links' ? 'active' : ''; ?>">友站链接</a>
 </div>
 
 <div class="padded">
@@ -416,6 +418,228 @@ $activeTab = $this->data('ActiveTab', 'checkin');
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <?php endif; ?>
+        </section>
+    </div>
+
+    <!-- 合作商家 Tab -->
+    <div class="bits-tab-content <?php echo $activeTab === 'partners' ? 'active' : ''; ?>" id="tab-partners">
+        <?php
+        $partners = $this->data('Partners', []);
+        $editPartnerIndex = $this->data('EditPartnerIndex', -1);
+        $editPartner = $editPartnerIndex >= 0 && isset($partners[$editPartnerIndex]) ? $partners[$editPartnerIndex] : null;
+        ?>
+
+        <!-- 已有商家列表 -->
+        <section>
+            <h2 class="subheading"><?php echo t('商家列表'); ?></h2>
+
+            <?php if (empty($partners)): ?>
+            <p class="info"><?php echo t('暂无合作商家，请添加'); ?></p>
+            <?php else: ?>
+            <table class="invite-codes-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Logo</th>
+                        <th>名称</th>
+                        <th>描述</th>
+                        <th>链接</th>
+                        <th style="width:120px">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($partners as $index => $partner): ?>
+                    <tr>
+                        <td>
+                            <?php if (!empty($partner['Logo'])): ?>
+                            <img src="<?php echo htmlspecialchars($partner['Logo']); ?>" width="40" height="40" style="object-fit:contain;border-radius:4px;" />
+                            <?php else: ?>
+                            <span style="color:#999;">无</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($partner['Name']); ?></td>
+                        <td><?php echo htmlspecialchars(mb_substr($partner['Description'] ?? '', 0, 30)); ?><?php echo mb_strlen($partner['Description'] ?? '') > 30 ? '...' : ''; ?></td>
+                        <td><a href="<?php echo htmlspecialchars($partner['Url']); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars(mb_substr($partner['Url'], 0, 30)); ?></a></td>
+                        <td>
+                            <a href="?tab=partners&action=edit&index=<?php echo $index; ?>"><?php echo t('编辑'); ?></a>
+                            &nbsp;|&nbsp;
+                            <a href="?tab=partners&action=delete&index=<?php echo $index; ?>&tk=<?php echo Gdn::session()->transientKey(); ?>" onclick="return confirm('确定删除？');"><?php echo t('删除'); ?></a>
+                            <?php if ($index > 0): ?>
+                            &nbsp;|&nbsp;
+                            <a href="?tab=partners&action=moveup&index=<?php echo $index; ?>&tk=<?php echo Gdn::session()->transientKey(); ?>">↑</a>
+                            <?php endif; ?>
+                            <?php if ($index < count($partners) - 1): ?>
+                            &nbsp;|&nbsp;
+                            <a href="?tab=partners&action=movedown&index=<?php echo $index; ?>&tk=<?php echo Gdn::session()->transientKey(); ?>">↓</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+        </section>
+
+        <!-- 添加/编辑表单 -->
+        <section>
+            <h2 class="subheading"><?php echo $editPartner ? t('编辑商家') : t('添加商家'); ?></h2>
+            <?php echo $this->Form->open(['action' => url('/dashboard/settings/bitsmesh?tab=partners&action=save' . ($editPartnerIndex >= 0 ? '&index=' . $editPartnerIndex : ''))]); ?>
+            <?php echo $this->Form->errors(); ?>
+
+            <ul>
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('名称 *', 'Partner_Name'); ?>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Partner_Name', ['value' => $editPartner['Name'] ?? '']); ?>
+                    </div>
+                </li>
+
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('Logo URL', 'Partner_Logo'); ?>
+                        <div class="info"><?php echo t('留空使用默认图标'); ?></div>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Partner_Logo', ['value' => $editPartner['Logo'] ?? '']); ?>
+                    </div>
+                </li>
+
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('描述', 'Partner_Description'); ?>
+                        <div class="info"><?php echo t('简短描述，最多 200 字'); ?></div>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Partner_Description', ['MultiLine' => true, 'value' => $editPartner['Description'] ?? '']); ?>
+                    </div>
+                </li>
+
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('链接地址 *', 'Partner_Url'); ?>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Partner_Url', ['value' => $editPartner['Url'] ?? '']); ?>
+                    </div>
+                </li>
+            </ul>
+
+            <?php echo $this->Form->close($editPartner ? '保存修改' : '添加商家'); ?>
+            <?php if ($editPartner): ?>
+            <p><a href="?tab=partners"><?php echo t('取消编辑'); ?></a></p>
+            <?php endif; ?>
+        </section>
+    </div>
+
+    <!-- 友站链接 Tab -->
+    <div class="bits-tab-content <?php echo $activeTab === 'links' ? 'active' : ''; ?>" id="tab-links">
+        <?php
+        $friendLinks = $this->data('FriendLinks', []);
+        $editLinkIndex = $this->data('EditLinkIndex', -1);
+        $editLink = $editLinkIndex >= 0 && isset($friendLinks[$editLinkIndex]) ? $friendLinks[$editLinkIndex] : null;
+        ?>
+
+        <!-- 已有链接列表 -->
+        <section>
+            <h2 class="subheading"><?php echo t('链接列表'); ?></h2>
+
+            <?php if (empty($friendLinks)): ?>
+            <p class="info"><?php echo t('暂无友站链接，请添加'); ?></p>
+            <?php else: ?>
+            <table class="invite-codes-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">Logo</th>
+                        <th>名称</th>
+                        <th>描述</th>
+                        <th>链接</th>
+                        <th style="width:120px">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($friendLinks as $index => $link): ?>
+                    <tr>
+                        <td>
+                            <?php if (!empty($link['Logo'])): ?>
+                            <img src="<?php echo htmlspecialchars($link['Logo']); ?>" width="40" height="40" style="object-fit:contain;border-radius:4px;" />
+                            <?php else: ?>
+                            <span style="color:#999;">无</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($link['Name']); ?></td>
+                        <td><?php echo htmlspecialchars(mb_substr($link['Description'] ?? '', 0, 30)); ?><?php echo mb_strlen($link['Description'] ?? '') > 30 ? '...' : ''; ?></td>
+                        <td><a href="<?php echo htmlspecialchars($link['Url']); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars(mb_substr($link['Url'], 0, 30)); ?></a></td>
+                        <td>
+                            <a href="?tab=links&action=edit&index=<?php echo $index; ?>"><?php echo t('编辑'); ?></a>
+                            &nbsp;|&nbsp;
+                            <a href="?tab=links&action=delete&index=<?php echo $index; ?>&tk=<?php echo Gdn::session()->transientKey(); ?>" onclick="return confirm('确定删除？');"><?php echo t('删除'); ?></a>
+                            <?php if ($index > 0): ?>
+                            &nbsp;|&nbsp;
+                            <a href="?tab=links&action=moveup&index=<?php echo $index; ?>&tk=<?php echo Gdn::session()->transientKey(); ?>">↑</a>
+                            <?php endif; ?>
+                            <?php if ($index < count($friendLinks) - 1): ?>
+                            &nbsp;|&nbsp;
+                            <a href="?tab=links&action=movedown&index=<?php echo $index; ?>&tk=<?php echo Gdn::session()->transientKey(); ?>">↓</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+        </section>
+
+        <!-- 添加/编辑表单 -->
+        <section>
+            <h2 class="subheading"><?php echo $editLink ? t('编辑链接') : t('添加链接'); ?></h2>
+            <?php echo $this->Form->open(['action' => url('/dashboard/settings/bitsmesh?tab=links&action=save' . ($editLinkIndex >= 0 ? '&index=' . $editLinkIndex : ''))]); ?>
+            <?php echo $this->Form->errors(); ?>
+
+            <ul>
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('名称 *', 'Link_Name'); ?>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Link_Name', ['value' => $editLink['Name'] ?? '']); ?>
+                    </div>
+                </li>
+
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('Logo URL', 'Link_Logo'); ?>
+                        <div class="info"><?php echo t('留空使用默认图标'); ?></div>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Link_Logo', ['value' => $editLink['Logo'] ?? '']); ?>
+                    </div>
+                </li>
+
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('描述', 'Link_Description'); ?>
+                        <div class="info"><?php echo t('简短描述，最多 200 字'); ?></div>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Link_Description', ['MultiLine' => true, 'value' => $editLink['Description'] ?? '']); ?>
+                    </div>
+                </li>
+
+                <li class="form-group">
+                    <div class="label-wrap">
+                        <?php echo $this->Form->label('链接地址 *', 'Link_Url'); ?>
+                    </div>
+                    <div class="input-wrap">
+                        <?php echo $this->Form->textBox('Link_Url', ['value' => $editLink['Url'] ?? '']); ?>
+                    </div>
+                </li>
+            </ul>
+
+            <?php echo $this->Form->close($editLink ? '保存修改' : '添加链接'); ?>
+            <?php if ($editLink): ?>
+            <p><a href="?tab=links"><?php echo t('取消编辑'); ?></a></p>
             <?php endif; ?>
         </section>
     </div>

@@ -196,13 +196,13 @@
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/partners">
                 <svg class="iconpark-icon"><use href="#cooperative-handshake"></use></svg>
                 <span>{t c="Partners" d="合作商家"}</span>
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/links">
                 <svg class="iconpark-icon"><use href="#link"></use></svg>
                 <span>{t c="Friend Links" d="友站链接"}</span>
             </a>

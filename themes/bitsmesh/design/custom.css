@@ -326,4 +326,171 @@ body.dark-layout .bits-toast {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* ========================================
+   Partners & Friend Links Page Styles
+   ======================================== */
+
+.bits-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.bits-page-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--bits-border);
+}
+
+.bits-page-header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0 0 10px 0;
+}
+
+.bits-page-header h1 .iconpark-icon {
+    color: var(--bits-primary);
+    fill: var(--bits-primary);
+}
+
+.bits-page-description {
+    color: var(--bits-text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Empty State */
+.bits-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--bits-text-secondary);
+}
+
+.bits-empty-state .iconpark-icon {
+    color: var(--bits-border);
+    fill: var(--bits-border);
+    margin-bottom: 15px;
+}
+
+.bits-empty-state p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Cards Grid */
+.bits-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 640px) {
+    .bits-cards-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card */
+.bits-card {
+    background: var(--bits-bg-card);
+    border: 1px solid var(--bits-border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bits-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-layout .bits-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.bits-card-logo {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.bits-card-logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.bits-card-logo .iconpark-icon {
+    color: var(--bits-text-secondary);
+    fill: var(--bits-text-secondary);
+}
+
+.bits-card-content {
+    flex: 1;
+    margin-bottom: 16px;
+}
+
+.bits-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0 0 8px 0;
+}
+
+.bits-card-description {
+    font-size: 0.875rem;
+    color: var(--bits-text-secondary);
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bits-card-footer {
+    width: 100%;
+}
+
+.bits-card-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 20px;
+    background: var(--bits-primary);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.bits-card-button:hover {
+    background: var(--bits-primary-dark, #16a34a);
+    color: #fff;
+    text-decoration: none;
+}
+
+.bits-card-button .iconpark-icon {
+    color: #fff;
+    fill: #fff;
+}
+
+
 

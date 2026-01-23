@@ -298,6 +298,18 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $request->path($newPath);
             return;
         }
+
+        // === 13. Partners page: /partners → /plugin/partners ===
+        if (preg_match('#^partners(?:\?.*)?$#i', $path)) {
+            $request->path('plugin/partners');
+            return;
+        }
+
+        // === 14. Friend Links page: /links → /plugin/links ===
+        if (preg_match('#^links(?:\?.*)?$#i', $path)) {
+            $request->path('plugin/links');
+            return;
+        }
     }
 
     /**
@@ -1326,7 +1338,7 @@ body.dark-layout {
 
         // Get active tab
         $activeTab = Gdn::request()->get('tab', 'checkin');
-        if (!in_array($activeTab, ['checkin', 'invite'])) {
+        if (!in_array($activeTab, ['checkin', 'invite', 'partners', 'links'])) {
             $activeTab = 'checkin';
         }
         $sender->setData('ActiveTab', $activeTab);
@@ -1456,6 +1468,200 @@ body.dark-layout {
                 'Invite_DefaultExpiryDays' => $sender->data('Invite_DefaultExpiryDays'),
                 'Invite_InviterBonus' => $sender->data('Invite_InviterBonus'),
             ]);
+        }
+
+        // =====================================================
+        // PARTNERS TAB LOGIC
+        // =====================================================
+        if ($activeTab === 'partners') {
+            $partners = c('BitsMesh.Partners', []);
+            $index = (int)Gdn::request()->get('index', -1);
+
+            // Handle delete action
+            if ($action === 'delete' && Gdn::session()->validateTransientKey(Gdn::request()->get('tk', ''))) {
+                if (isset($partners[$index])) {
+                    array_splice($partners, $index, 1);
+                    saveToConfig('BitsMesh.Partners', $partners);
+                    $sender->informMessage(t('已删除'));
+                }
+                redirectTo('/dashboard/settings/bitsmesh?tab=partners');
+            }
+
+            // Handle move up action
+            if ($action === 'moveup' && Gdn::session()->validateTransientKey(Gdn::request()->get('tk', ''))) {
+                if ($index > 0 && isset($partners[$index])) {
+                    $temp = $partners[$index - 1];
+                    $partners[$index - 1] = $partners[$index];
+                    $partners[$index] = $temp;
+                    saveToConfig('BitsMesh.Partners', $partners);
+                }
+                redirectTo('/dashboard/settings/bitsmesh?tab=partners');
+            }
+
+            // Handle move down action
+            if ($action === 'movedown' && Gdn::session()->validateTransientKey(Gdn::request()->get('tk', ''))) {
+                if ($index < count($partners) - 1 && isset($partners[$index])) {
+                    $temp = $partners[$index + 1];
+                    $partners[$index + 1] = $partners[$index];
+                    $partners[$index] = $temp;
+                    saveToConfig('BitsMesh.Partners', $partners);
+                }
+                redirectTo('/dashboard/settings/bitsmesh?tab=partners');
+            }
+
+            // Handle edit action (just set index for form)
+            if ($action === 'edit' && $index >= 0) {
+                $sender->setData('EditPartnerIndex', $index);
+            }
+
+            // Handle save action
+            if ($action === 'save' && $sender->Form->authenticatedPostBack()) {
+                $name = trim($sender->Form->getFormValue('Partner_Name', ''));
+                $logo = trim($sender->Form->getFormValue('Partner_Logo', ''));
+                $description = trim($sender->Form->getFormValue('Partner_Description', ''));
+                $url = trim($sender->Form->getFormValue('Partner_Url', ''));
+
+                // Validate
+                $errors = [];
+                if (empty($name)) {
+                    $errors[] = t('名称不能为空');
+                }
+                if (empty($url)) {
+                    $errors[] = t('链接地址不能为空');
+                } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
+                    $errors[] = t('链接地址格式不正确');
+                }
+                if (mb_strlen($description) > 200) {
+                    $errors[] = t('描述不能超过 200 字');
+                }
+
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $sender->Form->addError($error);
+                    }
+                    if ($index >= 0) {
+                        $sender->setData('EditPartnerIndex', $index);
+                    }
+                } else {
+                    $partnerData = [
+                        'Name' => $name,
+                        'Logo' => $logo,
+                        'Description' => $description,
+                        'Url' => $url,
+                    ];
+
+                    if ($index >= 0 && isset($partners[$index])) {
+                        // Update existing
+                        $partners[$index] = $partnerData;
+                    } else {
+                        // Add new
+                        $partners[] = $partnerData;
+                    }
+
+                    saveToConfig('BitsMesh.Partners', $partners);
+                    $sender->informMessage(t('已保存'));
+                    redirectTo('/dashboard/settings/bitsmesh?tab=partners');
+                }
+            }
+
+            $sender->setData('Partners', c('BitsMesh.Partners', []));
+        }
+
+        // =====================================================
+        // LINKS TAB LOGIC
+        // =====================================================
+        if ($activeTab === 'links') {
+            $links = c('BitsMesh.FriendLinks', []);
+            $index = (int)Gdn::request()->get('index', -1);
+
+            // Handle delete action
+            if ($action === 'delete' && Gdn::session()->validateTransientKey(Gdn::request()->get('tk', ''))) {
+                if (isset($links[$index])) {
+                    array_splice($links, $index, 1);
+                    saveToConfig('BitsMesh.FriendLinks', $links);
+                    $sender->informMessage(t('已删除'));
+                }
+                redirectTo('/dashboard/settings/bitsmesh?tab=links');
+            }
+
+            // Handle move up action
+            if ($action === 'moveup' && Gdn::session()->validateTransientKey(Gdn::request()->get('tk', ''))) {
+                if ($index > 0 && isset($links[$index])) {
+                    $temp = $links[$index - 1];
+                    $links[$index - 1] = $links[$index];
+                    $links[$index] = $temp;
+                    saveToConfig('BitsMesh.FriendLinks', $links);
+                }
+                redirectTo('/dashboard/settings/bitsmesh?tab=links');
+            }
+
+            // Handle move down action
+            if ($action === 'movedown' && Gdn::session()->validateTransientKey(Gdn::request()->get('tk', ''))) {
+                if ($index < count($links) - 1 && isset($links[$index])) {
+                    $temp = $links[$index + 1];
+                    $links[$index + 1] = $links[$index];
+                    $links[$index] = $temp;
+                    saveToConfig('BitsMesh.FriendLinks', $links);
+                }
+                redirectTo('/dashboard/settings/bitsmesh?tab=links');
+            }
+
+            // Handle edit action (just set index for form)
+            if ($action === 'edit' && $index >= 0) {
+                $sender->setData('EditLinkIndex', $index);
+            }
+
+            // Handle save action
+            if ($action === 'save' && $sender->Form->authenticatedPostBack()) {
+                $name = trim($sender->Form->getFormValue('Link_Name', ''));
+                $logo = trim($sender->Form->getFormValue('Link_Logo', ''));
+                $description = trim($sender->Form->getFormValue('Link_Description', ''));
+                $url = trim($sender->Form->getFormValue('Link_Url', ''));
+
+                // Validate
+                $errors = [];
+                if (empty($name)) {
+                    $errors[] = t('名称不能为空');
+                }
+                if (empty($url)) {
+                    $errors[] = t('链接地址不能为空');
+                } elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
+                    $errors[] = t('链接地址格式不正确');
+                }
+                if (mb_strlen($description) > 200) {
+                    $errors[] = t('描述不能超过 200 字');
+                }
+
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $sender->Form->addError($error);
+                    }
+                    if ($index >= 0) {
+                        $sender->setData('EditLinkIndex', $index);
+                    }
+                } else {
+                    $linkData = [
+                        'Name' => $name,
+                        'Logo' => $logo,
+                        'Description' => $description,
+                        'Url' => $url,
+                    ];
+
+                    if ($index >= 0 && isset($links[$index])) {
+                        // Update existing
+                        $links[$index] = $linkData;
+                    } else {
+                        // Add new
+                        $links[] = $linkData;
+                    }
+
+                    saveToConfig('BitsMesh.FriendLinks', $links);
+                    $sender->informMessage(t('已保存'));
+                    redirectTo('/dashboard/settings/bitsmesh?tab=links');
+                }
+            }
+
+            $sender->setData('FriendLinks', c('BitsMesh.FriendLinks', []));
         }
 
         // =====================================================
@@ -3661,6 +3867,54 @@ body.dark-layout {
 
         // Use the code (increment count and link to user)
         $inviteModel->useCode($inviteCode, $userID);
+    }
+
+    /**
+     * Partners page controller.
+     *
+     * Route: /partners
+     * Displays partner cards from configuration.
+     *
+     * @param PluginController $sender
+     * @return void
+     */
+    public function pluginController_partners_create($sender) {
+        $sender->permission('Garden.SignIn.Allow');
+        $sender->title(t('Partners', '合作商家'));
+        $sender->setData('Breadcrumbs', [
+            ['Name' => t('Partners', '合作商家'), 'Url' => '/partners']
+        ]);
+
+        // Get partners from config
+        $partners = c('BitsMesh.Partners', []);
+        $sender->setData('Partners', $partners);
+
+        // Render view
+        $sender->render('partners', 'pages', 'themes/bitsmesh');
+    }
+
+    /**
+     * Friend Links page controller.
+     *
+     * Route: /links
+     * Displays friend link cards from configuration.
+     *
+     * @param PluginController $sender
+     * @return void
+     */
+    public function pluginController_links_create($sender) {
+        $sender->permission('Garden.SignIn.Allow');
+        $sender->title(t('FriendLinks', '友站链接'));
+        $sender->setData('Breadcrumbs', [
+            ['Name' => t('FriendLinks', '友站链接'), 'Url' => '/links']
+        ]);
+
+        // Get friend links from config
+        $links = c('BitsMesh.FriendLinks', []);
+        $sender->setData('FriendLinks', $links);
+
+        // Render view
+        $sender->render('links', 'pages', 'themes/bitsmesh');
     }
 
     // Note: Award page functionality is in DiscussionsController::award()
