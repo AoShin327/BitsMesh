@@ -348,37 +348,4 @@ body.dark-layout .bits-toast {
     fill: #d97706;
 }
 
-/* Award Page Styles */
-.award-page-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--bits-border);
-}
-
-.award-page-header h1 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--bits-text);
-    margin: 0;
-}
-
-.award-page-header .iconpark-icon {
-    color: #f59e0b;
-    fill: #f59e0b;
-    width: 24px;
-    height: 24px;
-}
-
-.award-page-description {
-    color: var(--bits-text-secondary);
-    font-size: 0.9rem;
-    margin-top: 4px;
-}
-
 

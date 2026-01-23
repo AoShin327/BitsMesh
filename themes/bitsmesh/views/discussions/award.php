@@ -20,17 +20,6 @@ $session = Gdn::session();
 ?>
 
 <div class="award-page">
-    <!-- Page Header -->
-    <div class="award-page-header">
-        <h1>
-            <svg class="iconpark-icon" width="24" height="24"><use href="#diamonds"></use></svg>
-            <?php echo t('Featured', '推荐阅读'); ?>
-        </h1>
-        <span class="award-page-description">
-            <?php echo t('Featured.Description', '精选优质内容，值得一读'); ?>
-        </span>
-    </div>
-
     <!-- Discussions List -->
     <ul class="DataList Discussions">
         <?php
