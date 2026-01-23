@@ -69,13 +69,13 @@
             <div>
                 <a href="{$SidebarFollowingUrl}">
                     <svg class="iconpark-icon"><use href="#star"></use></svg>
-                    <span>{t c='Following' d='关注'} {$SidebarUserFollowingCount}</span>
+                    <span>{t c='Following' d='关注'} {$SidebarUserFollowingCount|default:0}</span>
                 </a>
             </div>
             <div>
-                <a href="{$SidebarActivityUrl}">
+                <a href="/notification">
                     <svg class="iconpark-icon"><use href="#remind"></use></svg>
-                    <span>{t c='Notifications' d='通知'} 0</span>
+                    <span>{t c='Notifications' d='通知'} {$SidebarUnreadNotifications|default:0}</span>
                 </a>
             </div>
         </div>
@@ -83,25 +83,25 @@
             <div>
                 <a href="{$SidebarUserSpaceUrl}/thread">
                     <svg class="iconpark-icon"><use href="#write"></use></svg>
-                    <span>{t c='Topics' d='主题帖'} {$SidebarUserDiscussionCount}</span>
+                    <span>{t c='Topics' d='主题帖'} {$SidebarUserDiscussionCount|default:0}</span>
                 </a>
             </div>
             <div>
                 <a href="{$SidebarUserSpaceUrl}/post">
                     <svg class="iconpark-icon"><use href="#comments"></use></svg>
-                    <span>{t c='Comments' d='评论数'} {$SidebarUserCommentCount}</span>
+                    <span>{t c='Comments' d='评论数'} {$SidebarUserCommentCount|default:0}</span>
                 </a>
             </div>
             <div>
                 <a href="{$SidebarFollowersUrl}">
                     <svg class="iconpark-icon"><use href="#concern"></use></svg>
-                    <span>{t c='Followers' d='粉丝'} {$SidebarUserFollowersCount}</span>
+                    <span>{t c='Followers' d='粉丝'} {$SidebarUserFollowersCount|default:0}</span>
                 </a>
             </div>
             <div>
                 <a href="{$SidebarBookmarksUrl}">
                     <svg class="iconpark-icon"><use href="#folder-focus"></use></svg>
-                    <span>{t c='Bookmarks' d='收藏'} {$SidebarUserBookmarkCount}</span>
+                    <span>{t c='Bookmarks' d='收藏'} {$SidebarUserBookmarkCount|default:0}</span>
                 </a>
             </div>
         </div>

@@ -675,6 +675,670 @@
     }
 
     /**
+     * NotificationPage - Handle notification page interactions
+     * Tab switching, AJAX loading, mark as read, conversation handling
+     */
+    class NotificationPage {
+        constructor() {
+            this.page = null;
+            this.tabs = null;
+            this.panels = null;
+            this.currentConversationID = null;
+            this.handleTabClick = null;
+            this.handleConversationClick = null;
+            this.handleHashChange = null;
+        }
+
+        init() {
+            this.page = document.querySelector('.notification-page');
+            if (!this.page) return;
+
+            this.tabs = this.page.querySelectorAll('.notification-tabs .tab-item');
+            this.panels = this.page.querySelectorAll('.tab-panel');
+
+            this.bindEvents();
+            this.handleInitialHash();
+        }
+
+        bindEvents() {
+            // Tab click handling
+            this.handleTabClick = (e) => {
+                const tab = e.target.closest('.tab-item');
+                if (!tab) return;
+
+                e.preventDefault();
+                const targetId = tab.getAttribute('data-tab');
+                this.switchTab(targetId);
+
+                // Update URL hash
+                history.pushState(null, '', '#' + targetId);
+            };
+            this.tabs.forEach(tab => tab.addEventListener('click', this.handleTabClick));
+
+            // Hash change handling
+            this.handleHashChange = () => {
+                const hash = window.location.hash.slice(1) || 'atMe';
+                this.switchTab(hash);
+            };
+            window.addEventListener('hashchange', this.handleHashChange);
+
+            // Mark all read button
+            const markAllBtn = document.getElementById('MarkAllReadBtn');
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', () => this.markAllRead());
+            }
+
+            // Conversation item click
+            this.handleConversationClick = (e) => {
+                const convItem = e.target.closest('.conversation-item');
+                if (!convItem) return;
+
+                // Don't interfere with avatar link clicks
+                if (e.target.closest('.conversation-avatar')) return;
+
+                const conversationID = convItem.dataset.conversationId;
+                if (conversationID) {
+                    this.loadConversation(conversationID, convItem);
+                }
+            };
+            const convList = this.page.querySelector('.conversation-list');
+            if (convList) {
+                convList.addEventListener('click', this.handleConversationClick);
+            }
+
+            // Back/Close button for chat panel (delegated)
+            this.page.addEventListener('click', (e) => {
+                if (e.target.closest('#BackToListBtn') || e.target.closest('#CloseChatBtn')) {
+                    this.closeChat();
+                }
+            });
+
+            // Send message form (delegated)
+            this.page.addEventListener('submit', (e) => {
+                if (e.target.matches('#SendMessageForm')) {
+                    e.preventDefault();
+                    this.sendMessage(e.target);
+                }
+                // Handle new conversation form
+                if (e.target.matches('#NewMessageForm')) {
+                    e.preventDefault();
+                    this.sendNewConversation(e.target);
+                }
+            });
+        }
+
+        handleInitialHash() {
+            const hash = window.location.hash.slice(1);
+            if (hash && ['atMe', 'reply', 'message'].includes(hash)) {
+                this.switchTab(hash);
+            }
+        }
+
+        switchTab(tabId) {
+            // Normalize tab ID
+            tabId = tabId.toLowerCase();
+
+            // Update tab active state
+            this.tabs.forEach(tab => {
+                const isActive = tab.getAttribute('data-tab').toLowerCase() === tabId;
+                tab.classList.toggle('active', isActive);
+            });
+
+            // Update panel active state
+            this.panels.forEach(panel => {
+                const isActive = panel.id.toLowerCase() === tabId;
+                panel.classList.toggle('active', isActive);
+            });
+        }
+
+        async markAllRead() {
+            const btn = document.getElementById('MarkAllReadBtn');
+            if (!btn) return;
+
+            const transientKey = btn.dataset.transientKey || this.getTransientKey();
+            if (!transientKey) {
+                console.error('NotificationPage: TransientKey not found');
+                return;
+            }
+
+            // Disable button and show loading
+            btn.disabled = true;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<span class="loading-spinner"></span>';
+
+            try {
+                const response = await fetch('/profile/marknotificationsread', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `type=all&TransientKey=${encodeURIComponent(transientKey)}`
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.Success) {
+                    // Update UI - remove unread states and badges
+                    this.page.querySelectorAll('.notification-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                        const dot = item.querySelector('.unread-dot');
+                        if (dot) dot.remove();
+                    });
+
+                    this.page.querySelectorAll('.notification-tabs .badge').forEach(badge => {
+                        badge.remove();
+                    });
+
+                    // Update sidebar badge if exists
+                    const sidebarBadge = document.querySelector('.sidebar-nav-item[href*="notification"] .unread-badge');
+                    if (sidebarBadge) {
+                        sidebarBadge.remove();
+                    }
+
+                    this.showToast('已将所有通知标记为已读', 'success');
+                } else {
+                    this.showToast(data.Error || '操作失败', 'error');
+                }
+            } catch (error) {
+                console.error('NotificationPage: Mark all read failed', error);
+                this.showToast('网络错误，请重试', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+
+        async loadConversation(conversationID, listItem) {
+            const chatPanel = document.getElementById('ChatPanel');
+            const conversationList = document.getElementById('ConversationList');
+            if (!chatPanel) return;
+
+            // Mark current conversation as active
+            this.page.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (listItem) {
+                listItem.classList.add('active');
+                listItem.classList.remove('has-unread');
+
+                // Remove unread count
+                const unreadCount = listItem.querySelector('.unread-count');
+                if (unreadCount) unreadCount.remove();
+            }
+
+            // Store current conversation ID
+            this.currentConversationID = conversationID;
+
+            // Hide conversation list, show chat panel
+            if (conversationList) conversationList.style.display = 'none';
+            chatPanel.style.display = 'flex';
+
+            // Show loading state
+            chatPanel.innerHTML = '<div class="chat-placeholder"><span class="loading-spinner"></span></div>';
+
+            try {
+                const response = await fetch(`/profile/conversationmessages/${conversationID}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const html = await response.text();
+                chatPanel.innerHTML = html;
+
+                // Scroll to bottom of messages
+                const messagesArea = chatPanel.querySelector('#ChatMessages');
+                if (messagesArea) {
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }
+
+                // Auto-resize textarea
+                const textarea = chatPanel.querySelector('#MessageBody');
+                if (textarea) {
+                    this.setupAutoResize(textarea);
+                }
+
+                // Setup back button event
+                const backBtn = chatPanel.querySelector('#BackToListBtn');
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => this.closeChat());
+                }
+            } catch (error) {
+                console.error('NotificationPage: Load conversation failed', error);
+                chatPanel.innerHTML = `
+                    <div class="chat-header">
+                        <button type="button" class="back-btn" id="BackToListBtn">
+                            <svg class="iconpark-icon" width="16" height="16"><use href="#left"></use></svg>
+                            <span>返回</span>
+                        </button>
+                    </div>
+                    <div class="chat-placeholder">
+                        <p>加载失败，请重试</p>
+                    </div>
+                `;
+                // Setup back button on error state
+                const backBtn = chatPanel.querySelector('#BackToListBtn');
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => this.closeChat());
+                }
+            }
+        }
+
+        closeChat() {
+            const chatPanel = document.getElementById('ChatPanel');
+            const conversationList = document.getElementById('ConversationList');
+            if (!chatPanel) return;
+
+            this.currentConversationID = null;
+
+            // Remove active state from conversation list
+            this.page.querySelectorAll('.conversation-item.active').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Hide chat panel, show conversation list
+            chatPanel.style.display = 'none';
+            chatPanel.innerHTML = '';
+            if (conversationList) conversationList.style.display = 'block';
+        }
+
+        async sendMessage(form) {
+            const body = form.querySelector('#MessageBody');
+            const submitBtn = form.querySelector('.send-btn');
+            const conversationID = form.querySelector('input[name="ConversationID"]')?.value;
+            const transientKey = form.querySelector('input[name="TransientKey"]')?.value;
+
+            if (!body || !body.value.trim()) {
+                body?.focus();
+                return;
+            }
+
+            if (!conversationID || !transientKey) {
+                console.error('NotificationPage: Missing form data');
+                return;
+            }
+
+            // Disable form
+            body.disabled = true;
+            submitBtn.disabled = true;
+            const messageText = body.value.trim();
+
+            try {
+                const response = await fetch('/profile/sendmessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `ConversationID=${encodeURIComponent(conversationID)}&Body=${encodeURIComponent(messageText)}&TransientKey=${encodeURIComponent(transientKey)}`
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.Success) {
+                    // Clear input
+                    body.value = '';
+
+                    // Add message to chat
+                    this.appendSentMessage(messageText);
+
+                    // Update conversation list item preview
+                    this.updateConversationPreview(conversationID, messageText);
+                } else {
+                    this.showToast(data.Error || '发送失败', 'error');
+                }
+            } catch (error) {
+                console.error('NotificationPage: Send message failed', error);
+                this.showToast('网络错误，请重试', 'error');
+            } finally {
+                body.disabled = false;
+                submitBtn.disabled = false;
+                body.focus();
+            }
+        }
+
+        appendSentMessage(text) {
+            const messagesArea = document.getElementById('ChatMessages');
+            if (!messagesArea) return;
+
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Get current user photo from sidebar or session
+            const userPhoto = document.querySelector('.bits-user-head img.bits-avatar-normal')?.src ||
+                             document.querySelector('.sidebar-user-avatar img')?.src ||
+                             document.querySelector('.Profile .PhotoWrap img')?.src ||
+                             '/applications/dashboard/design/images/defaulticon.png';
+
+            const messageHtml = `
+                <div class="message-row sent">
+                    <div class="message-content">
+                        <div class="message-bubble sent">
+                            <div class="message-text">${this.escapeHtml(text)}</div>
+                        </div>
+                        <div class="message-time">${timeStr}</div>
+                    </div>
+                    <a href="#" class="message-avatar">
+                        <img src="${userPhoto}" alt="" class="avatar">
+                    </a>
+                </div>
+            `;
+
+            messagesArea.insertAdjacentHTML('beforeend', messageHtml);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        updateConversationPreview(conversationID, text) {
+            const convItem = this.page.querySelector(`.conversation-item[data-conversation-id="${conversationID}"]`);
+            if (!convItem) return;
+
+            const excerpt = convItem.querySelector('.conversation-excerpt');
+            if (excerpt) {
+                const truncated = text.length > 50 ? text.substring(0, 50) + '...' : text;
+                excerpt.textContent = truncated;
+            }
+
+            const time = convItem.querySelector('.conversation-time');
+            if (time) {
+                time.textContent = '刚刚';
+            }
+        }
+
+        /**
+         * Send a new conversation (first message to a user)
+         * @param {HTMLFormElement} form - The form element
+         */
+        async sendNewConversation(form) {
+            const body = form.querySelector('#MessageBody');
+            const submitBtn = form.querySelector('.send-btn');
+            const toUsername = form.dataset.toUsername; // Use username, not UserID
+            const transientKey = form.querySelector('input[name="TransientKey"]')?.value || this.getTransientKey();
+
+            if (!body || !body.value.trim()) {
+                body?.focus();
+                return;
+            }
+
+            if (!toUsername || !transientKey) {
+                console.error('NotificationPage: Missing username or transient key');
+                return;
+            }
+
+            // Disable form
+            body.disabled = true;
+            submitBtn.disabled = true;
+            const messageText = body.value.trim();
+
+            try {
+                // Use Vanilla's built-in messages/add endpoint
+                // IMPORTANT: 'To' parameter must be username, not UserID (see MessagesController::add)
+                const response = await fetch('/messages/add.json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `To=${encodeURIComponent(toUsername)}&Body=${encodeURIComponent(messageText)}&TransientKey=${encodeURIComponent(transientKey)}`
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Check for success: Vanilla returns RedirectTo on success, or no error fields
+                // If FormSaved is explicitly false with StatusMessage, it's an error
+                if (data.FormSaved === false && data.StatusMessage) {
+                    this.showToast(data.StatusMessage, 'error');
+                } else if (data.FormSaved === false && data.ErrorMessages) {
+                    // Handle validation errors
+                    const errorMsg = Array.isArray(data.ErrorMessages)
+                        ? data.ErrorMessages.join(', ')
+                        : '发送失败，请检查输入';
+                    this.showToast(errorMsg, 'error');
+                } else {
+                    // Success - HTTP 200 without error indicators means the message was sent
+                    this.showToast('消息已发送', 'success');
+
+                    // Reload to update conversation list
+                    setTimeout(() => {
+                        window.location.href = '/notification#message';
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('NotificationPage: Send new conversation failed', error);
+                this.showToast('网络错误，请重试', 'error');
+            } finally {
+                body.disabled = false;
+                submitBtn.disabled = false;
+                body.focus();
+            }
+        }
+
+        /**
+         * Show the new conversation user search panel
+         */
+        showNewConversationSearch() {
+            const chatPanel = document.getElementById('ChatPanel');
+            if (!chatPanel) return;
+
+            // Clear active conversation
+            this.page.querySelectorAll('.conversation-item.active').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show user search interface
+            chatPanel.innerHTML = `
+                <div class="new-conversation-panel" id="NewConversationPanel">
+                    <div class="chat-header">
+                        <span class="chat-username">新建私信</span>
+                    </div>
+                    <div class="chat-messages" id="ChatMessages">
+                        <div class="user-search-panel">
+                            <div class="search-input-wrapper">
+                                <input type="text" id="UserSearchInput" placeholder="输入用户名搜索..." autocomplete="off">
+                            </div>
+                            <div class="user-search-results" id="UserSearchResults">
+                                <p class="search-hint">输入用户名开始搜索</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Setup user search
+            const searchInput = document.getElementById('UserSearchInput');
+            const resultsContainer = document.getElementById('UserSearchResults');
+            let searchTimeout;
+
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    const query = searchInput.value.trim();
+
+                    if (query.length < 2) {
+                        resultsContainer.innerHTML = '<p class="search-hint">输入至少2个字符</p>';
+                        return;
+                    }
+
+                    resultsContainer.innerHTML = '<p class="search-hint">搜索中...</p>';
+
+                    searchTimeout = setTimeout(() => {
+                        this.searchUsers(query, resultsContainer);
+                    }, 300);
+                });
+            }
+        }
+
+        /**
+         * Search for users by name
+         * @param {string} query - Search query
+         * @param {HTMLElement} container - Results container
+         */
+        async searchUsers(query, container) {
+            try {
+                const response = await fetch(`/api/v2/users?query=${encodeURIComponent(query)}&limit=10`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const users = await response.json();
+
+                if (!users || users.length === 0) {
+                    container.innerHTML = '<p class="search-hint">未找到用户</p>';
+                    return;
+                }
+
+                const resultsHtml = users.map(user => `
+                    <div class="user-search-item" data-user-id="${user.userID}" data-user-name="${this.escapeHtml(user.name)}" data-user-photo="${user.photoUrl || ''}">
+                        <img src="${user.photoUrl || '/applications/dashboard/design/images/defaulticon.png'}" alt="" class="avatar">
+                        <span class="user-name">${this.escapeHtml(user.name)}</span>
+                    </div>
+                `).join('');
+
+                container.innerHTML = resultsHtml;
+
+                // Bind click events on results
+                container.querySelectorAll('.user-search-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.selectUserForNewConversation(
+                            item.dataset.userId,
+                            item.dataset.userName,
+                            item.dataset.userPhoto
+                        );
+                    });
+                });
+            } catch (error) {
+                console.error('NotificationPage: User search failed', error);
+                container.innerHTML = '<p class="search-hint">搜索失败，请重试</p>';
+            }
+        }
+
+        /**
+         * Select a user and show the message input
+         * @param {string} userID - User ID
+         * @param {string} userName - User name
+         * @param {string} userPhoto - User photo URL
+         */
+        selectUserForNewConversation(userID, userName, userPhoto) {
+            const chatPanel = document.getElementById('ChatPanel');
+            if (!chatPanel) return;
+
+            const transientKey = this.getTransientKey();
+            const defaultPhoto = '/applications/dashboard/design/images/defaulticon.png';
+
+            chatPanel.innerHTML = `
+                <div class="new-conversation-panel" id="NewConversationPanel">
+                    <div class="chat-header">
+                        <img src="${userPhoto || defaultPhoto}" alt="" class="avatar">
+                        <span class="chat-username">${this.escapeHtml(userName)}</span>
+                    </div>
+                    <div class="chat-messages" id="ChatMessages">
+                        <div class="chat-welcome">
+                            <p>开始与 ${this.escapeHtml(userName)} 的对话</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <form id="NewMessageForm" data-to-user-id="${userID}" data-to-username="${this.escapeHtml(userName)}">
+                            <input type="hidden" name="TransientKey" value="${transientKey}">
+                            <textarea name="Body" id="MessageBody" placeholder="输入消息..." rows="2"></textarea>
+                            <button type="submit" class="send-btn">
+                                <svg class="iconpark-icon" width="18" height="18"><use href="#send"></use></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            // Auto-resize textarea
+            const textarea = chatPanel.querySelector('#MessageBody');
+            if (textarea) {
+                this.setupAutoResize(textarea);
+                textarea.focus();
+            }
+        }
+
+        setupAutoResize(textarea) {
+            const resize = () => {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            };
+
+            textarea.addEventListener('input', resize);
+            resize();
+        }
+
+        showToast(message, type = 'info') {
+            // Remove existing toast
+            const existing = document.querySelector('.notification-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `notification-toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        getTransientKey() {
+            // Try multiple sources
+            if (typeof gdn !== 'undefined' && gdn.definition) {
+                const tk = gdn.definition('TransientKey');
+                if (tk) return tk;
+            }
+
+            const tkInput = document.querySelector('input[name="TransientKey"]');
+            if (tkInput) return tkInput.value;
+
+            if (window.BitsNotification && window.BitsNotification.transientKey) {
+                return window.BitsNotification.transientKey;
+            }
+
+            return null;
+        }
+
+        destroy() {
+            if (this.handleHashChange) {
+                window.removeEventListener('hashchange', this.handleHashChange);
+            }
+        }
+    }
+
+    /**
      * Initialize all theme components
      */
     function initTheme() {
@@ -705,6 +1369,10 @@
         // Initialize FollowButton (handle follow/unfollow interactions)
         bitsTheme.followButton = new FollowButton();
         bitsTheme.followButton.init();
+
+        // Initialize NotificationPage (notification center functionality)
+        bitsTheme.notificationPage = new NotificationPage();
+        bitsTheme.notificationPage.init();
 
         // Initialize DarkMode if available
         if (typeof DarkModeToggle !== 'undefined') {

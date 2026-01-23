@@ -256,6 +256,12 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $request->path('profile/setting');
             return;
         }
+
+        // === 7. Notification page: /notification → /profile/notification ===
+        if (preg_match('#^notification(?:/.*)?$#i', $path) || $path === 'notification') {
+            $request->path('profile/notification');
+            return;
+        }
     }
 
     /**
@@ -470,6 +476,7 @@ body.dark-layout {
         $userBookmarkCount = 0;
         $userFollowingCount = 0;
         $userFollowersCount = 0;
+        $unreadNotifications = 0;
 
         if ($isLoggedIn && $session->User) {
             $userDiscussionCount = val('CountDiscussions', $session->User, 0);
@@ -497,6 +504,56 @@ body.dark-layout {
                 $followModel = UserFollowModel::instance();
                 $userFollowingCount = $followModel->getFollowingCount($session->UserID);
                 $userFollowersCount = $followModel->getFollowersCount($session->UserID);
+            } catch (Exception $e) {
+                // Silently fail
+            }
+
+            // Get unread notification count
+            // Count actual pending Activity records (same as notification page)
+            $unreadNotifications = 0;
+            try {
+                $activityModel = new ActivityModel();
+
+                // Get activity types for notifications
+                $commentType = ActivityModel::getActivityType('Comment');
+                $discussionType = ActivityModel::getActivityType('Discussion');
+                $discCommentType = ActivityModel::getActivityType('DiscussionComment');
+                $discMentionType = ActivityModel::getActivityType('DiscussionMention');
+                $commentMentionType = ActivityModel::getActivityType('CommentMention');
+
+                $notificationTypeIDs = [];
+                if ($commentType) {
+                    $notificationTypeIDs[] = val('ActivityTypeID', $commentType);
+                }
+                if ($discussionType) {
+                    $notificationTypeIDs[] = val('ActivityTypeID', $discussionType);
+                }
+                if ($discCommentType) {
+                    $notificationTypeIDs[] = val('ActivityTypeID', $discCommentType);
+                }
+                if ($discMentionType) {
+                    $notificationTypeIDs[] = val('ActivityTypeID', $discMentionType);
+                }
+                if ($commentMentionType) {
+                    $notificationTypeIDs[] = val('ActivityTypeID', $commentMentionType);
+                }
+
+                // Count pending notifications (Notified = SENT_PENDING = 3)
+                if (!empty($notificationTypeIDs)) {
+                    $unreadNotifications = Gdn::sql()
+                        ->select('ActivityID', 'count', 'Count')
+                        ->from('Activity')
+                        ->where('NotifyUserID', $session->UserID)
+                        ->whereIn('ActivityTypeID', $notificationTypeIDs)
+                        ->where('Notified', ActivityModel::SENT_PENDING)
+                        ->get()
+                        ->firstRow(DATASET_TYPE_ARRAY);
+                    $unreadNotifications = $unreadNotifications ? (int)val('Count', $unreadNotifications, 0) : 0;
+                }
+
+                // Add unread conversations count
+                $unreadConversations = (int)val('CountUnreadConversations', $session->User, 0);
+                $unreadNotifications += $unreadConversations;
             } catch (Exception $e) {
                 // Silently fail
             }
@@ -542,6 +599,7 @@ body.dark-layout {
         $sender->setData('SidebarUserBookmarkCount', $userBookmarkCount);
         $sender->setData('SidebarUserFollowingCount', $userFollowingCount);
         $sender->setData('SidebarUserFollowersCount', $userFollowersCount);
+        $sender->setData('SidebarUnreadNotifications', $unreadNotifications);
         $sender->setData('SidebarUserName', $userName);
         $sender->setData('SidebarUserPhoto', $userPhoto);
         $sender->setData('SidebarUserProfileUrl', $userProfileUrl);
@@ -1846,5 +1904,723 @@ body.dark-layout {
         }
 
         return $ipRecords;
+    }
+
+    /**
+     * Notification center page - /notification
+     *
+     * Modern forum style notification page with tabs:
+     * - @Me (mentions)
+     * - Reply (topic replies)
+     * - Message (private messages)
+     *
+     * @param ProfileController $sender The controller instance.
+     * @param string $tab Current tab (atMe, reply, message).
+     * @return void
+     */
+    public function profileController_notification_create($sender, $tab = '') {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            redirectTo('/entry/signin?Target=' . urlencode('/notification'));
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        $userID = Gdn::session()->UserID;
+
+        // Determine current tab from hash or parameter
+        // Default to 'atMe'
+        $tab = strtolower($tab) ?: 'atme';
+        if (!in_array($tab, ['atme', 'reply', 'message'])) {
+            $tab = 'atme';
+        }
+
+        // Get Activity data
+        $activityModel = new ActivityModel();
+
+        // Vanilla stores @mentions in Comment/Discussion ActivityTypes
+        // The actual reason is stored in Data JSON field as "Reason":["mention"]
+        // So we need to get all notifications and filter by Reason
+
+        // Get Comment and Discussion activity types
+        $commentType = ActivityModel::getActivityType('Comment');
+        $discussionType = ActivityModel::getActivityType('Discussion');
+        $discCommentType = ActivityModel::getActivityType('DiscussionComment');
+
+        $notificationTypeIDs = [];
+        if ($commentType) {
+            $notificationTypeIDs[] = val('ActivityTypeID', $commentType);
+        }
+        if ($discussionType) {
+            $notificationTypeIDs[] = val('ActivityTypeID', $discussionType);
+        }
+        if ($discCommentType) {
+            $notificationTypeIDs[] = val('ActivityTypeID', $discCommentType);
+        }
+
+        // Also include legacy mention types
+        $discMentionType = ActivityModel::getActivityType('DiscussionMention');
+        $commentMentionType = ActivityModel::getActivityType('CommentMention');
+        if ($discMentionType) {
+            $notificationTypeIDs[] = val('ActivityTypeID', $discMentionType);
+        }
+        if ($commentMentionType) {
+            $notificationTypeIDs[] = val('ActivityTypeID', $commentMentionType);
+        }
+
+        // Get all notifications for the user
+        $allActivities = [];
+        if (!empty($notificationTypeIDs)) {
+            $allActivities = $activityModel->getWhere([
+                'NotifyUserID' => $userID,
+                'ActivityTypeID' => $notificationTypeIDs
+            ], '', '', 100)->resultArray();
+        }
+
+        // Separate @mentions and replies based on Data.Reason field
+        $mentions = [];
+        $replies = [];
+
+        foreach ($allActivities as $activity) {
+            $data = val('Data', $activity);
+
+            if (is_string($data)) {
+                $data = json_decode($data, true);
+            }
+            $reasons = is_array($data) ? val('Reason', $data, []) : [];
+            if (!is_array($reasons)) {
+                $reasons = [$reasons];
+            }
+
+            // Check if this is a mention notification
+            if (in_array('mention', $reasons)) {
+                $mentions[] = $activity;
+            }
+            // Check if this is a reply to my topic (mine = someone replied to my discussion)
+            elseif (in_array('mine', $reasons) || val('ActivityTypeID', $activity) == val('ActivityTypeID', $discCommentType)) {
+                $replies[] = $activity;
+            }
+        }
+
+        // Process activities: add user info, format dates, check read status
+        $userModel = new UserModel();
+        $userCache = [];
+
+        foreach ($mentions as &$activity) {
+            $activity = $this->processActivity($activity, $userModel, $userCache);
+        }
+        foreach ($replies as &$activity) {
+            $activity = $this->processActivity($activity, $userModel, $userCache);
+        }
+
+        // Get Conversations
+        $conversations = [];
+        $unreadConversations = 0;
+
+        // Check if Conversations application is enabled
+        if (Gdn::applicationManager()->checkApplication('Conversations')) {
+            // Ensure ConversationModel class is loaded
+            if (!class_exists('ConversationModel')) {
+                require_once PATH_APPLICATIONS . '/conversations/models/class.conversationmodel.php';
+            }
+            $conversationModel = new ConversationModel();
+            $inboxResult = $conversationModel->getInbox($userID, 50);
+            // Handle both DataSet and array returns
+            $conversations = is_object($inboxResult) && method_exists($inboxResult, 'resultArray')
+                ? $inboxResult->resultArray()
+                : (is_array($inboxResult) ? $inboxResult : []);
+
+            // Join participants to get other user info
+            if (!empty($conversations)) {
+                $conversationModel->joinParticipants($conversations, 10, ['Name', 'Photo']);
+            }
+
+            // Process conversations: add user info
+            foreach ($conversations as &$conv) {
+                $conv = $this->processConversation($conv, $userModel, $userCache);
+            }
+
+            // Get unread conversation count
+            $unreadConversations = (int)val('CountUnreadConversations', Gdn::session()->User, 0);
+        }
+
+        // Calculate unread counts
+        $unreadMentions = 0;
+        $unreadReplies = 0;
+
+        // Notified = 3 (SENT_PENDING) means unread
+        foreach ($mentions as $m) {
+            if (val('Notified', $m) == ActivityModel::SENT_PENDING) {
+                $unreadMentions++;
+            }
+        }
+        foreach ($replies as $r) {
+            if (val('Notified', $r) == ActivityModel::SENT_PENDING) {
+                $unreadReplies++;
+            }
+        }
+
+        // Set data for view
+        $sender->setData('Tab', $tab);
+        $sender->setData('Mentions', $mentions);
+        $sender->setData('Replies', $replies);
+        $sender->setData('Conversations', $conversations);
+        $sender->setData('UnreadMentions', $unreadMentions);
+        $sender->setData('UnreadReplies', $unreadReplies);
+        $sender->setData('UnreadConversations', $unreadConversations);
+
+        // Handle ?to=username parameter for starting new conversation
+        $toUsername = Gdn::request()->get('to', '');
+        $toUser = null;
+        if (!empty($toUsername)) {
+            $toUser = $userModel->getByUsername($toUsername);
+            if ($toUser) {
+                $sender->setData('ToUser', [
+                    'UserID' => val('UserID', $toUser),
+                    'Name' => val('Name', $toUser),
+                    'Photo' => $this->getUserPhoto($toUser)
+                ]);
+                // Force message tab when ?to= is provided
+                $tab = 'message';
+                $sender->setData('Tab', $tab);
+            }
+        }
+
+        // Page title
+        $sender->title(t('Notifications'));
+
+        // Add CSS
+        $sender->addCssFile('bits-notification.css', 'themes/bitsmesh');
+
+        // Render
+        $sender->render('notification', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * Process activity for display.
+     *
+     * @param array $activity Activity data.
+     * @param UserModel $userModel User model instance.
+     * @param array &$userCache User cache array.
+     * @return array Processed activity.
+     */
+    private function processActivity($activity, $userModel, &$userCache) {
+        // Get activity user info
+        $activityUserID = val('ActivityUserID', $activity, 0);
+        if ($activityUserID && !isset($userCache[$activityUserID])) {
+            $userCache[$activityUserID] = $userModel->getID($activityUserID, DATASET_TYPE_ARRAY);
+        }
+
+        $activityUser = isset($userCache[$activityUserID]) ? $userCache[$activityUserID] : null;
+
+        if ($activityUser) {
+            $activity['ActivityUserName'] = val('Name', $activityUser, '');
+            $activity['ActivityUserPhoto'] = $this->getUserPhoto($activityUser);
+            $activity['ActivityUserUrl'] = userUrl($activityUser);
+        } else {
+            $activity['ActivityUserName'] = t('Unknown');
+            $activity['ActivityUserPhoto'] = UserModel::getDefaultAvatarUrl();
+            $activity['ActivityUserUrl'] = '#';
+        }
+
+        // Format date
+        $activity['DateInsertedFormatted'] = Gdn_Format::date(val('DateInserted', $activity), 'html');
+
+        // Check if unread (Notified = SENT_PENDING = 3)
+        $activity['IsUnread'] = (val('Notified', $activity) == ActivityModel::SENT_PENDING);
+
+        // Parse headline for link and text
+        $activity['HeadlineHtml'] = $this->formatActivityHeadline($activity);
+
+        return $activity;
+    }
+
+    /**
+     * Get user photo URL.
+     *
+     * @param array $user User data.
+     * @return string Photo URL.
+     */
+    private function getUserPhoto($user) {
+        $photo = val('Photo', $user, '');
+        if ($photo) {
+            if (!isUrl($photo)) {
+                $photo = Gdn_Upload::url(changeBasename($photo, 'n%s'));
+            }
+        } else {
+            $photo = UserModel::getDefaultAvatarUrl($user);
+        }
+        return $photo;
+    }
+
+    /**
+     * Format activity headline for display.
+     *
+     * @param array $activity Activity data.
+     * @return string HTML headline.
+     */
+    private function formatActivityHeadline($activity) {
+        $headline = val('Headline', $activity, '');
+
+        // If headline contains HTML, return as-is (sanitized)
+        if (strpos($headline, '<') !== false) {
+            return Gdn_Format::html($headline);
+        }
+
+        // Build basic headline
+        $activityType = val('ActivityType', $activity, '');
+        $userName = htmlspecialchars(val('ActivityUserName', $activity, ''));
+        $userUrl = htmlspecialchars(val('ActivityUserUrl', $activity, '#'));
+
+        $recordType = val('RecordType', $activity, '');
+        $recordID = val('RecordID', $activity, 0);
+
+        // Get story excerpt if available
+        $story = val('Story', $activity, '');
+        if (empty($story)) {
+            $story = val('Route', $activity, '');
+        }
+
+        $excerpt = '';
+        if ($story) {
+            $excerpt = '<span class="notification-excerpt">' . htmlspecialchars(Gdn_Format::plainText(mb_substr($story, 0, 100))) . '</span>';
+        }
+
+        // Build action text based on type
+        switch ($activityType) {
+            case 'DiscussionMention':
+                $actionText = t('mentioned you in a discussion');
+                break;
+            case 'CommentMention':
+                $actionText = t('mentioned you in a comment');
+                break;
+            case 'DiscussionComment':
+                $actionText = t('replied to your discussion');
+                break;
+            default:
+                $actionText = t('sent you a notification');
+        }
+
+        return sprintf(
+            '<a href="%s" class="notification-user">%s</a> <span class="notification-action">%s</span>%s',
+            $userUrl,
+            $userName,
+            $actionText,
+            $excerpt ? '<br>' . $excerpt : ''
+        );
+    }
+
+    /**
+     * Process conversation for display.
+     *
+     * @param array $conv Conversation data.
+     * @param UserModel $userModel User model instance.
+     * @param array &$userCache User cache array.
+     * @return array Processed conversation.
+     */
+    private function processConversation($conv, $userModel, &$userCache) {
+        // Get the participants (joined by ConversationModel->joinParticipants)
+        $participants = val('Participants', $conv, []);
+        $currentUserID = Gdn::session()->UserID;
+
+        // Find the other user (not current user)
+        $otherUser = null;
+        foreach ($participants as $participant) {
+            $uid = val('UserID', $participant);
+            if ($uid && $uid != $currentUserID) {
+                $otherUser = $participant;
+                break;
+            }
+        }
+
+        if ($otherUser) {
+            $conv['OtherUserName'] = val('Name', $otherUser, '');
+            $conv['OtherUserPhoto'] = $this->getUserPhoto($otherUser);
+            $conv['OtherUserUrl'] = userUrl($otherUser);
+        } else {
+            $conv['OtherUserName'] = t('Unknown');
+            $conv['OtherUserPhoto'] = UserModel::getDefaultAvatarUrl();
+            $conv['OtherUserUrl'] = '#';
+        }
+
+        // Check for multiple participants (more than 2 means group chat)
+        $conv['IsGroup'] = count($participants) > 2;
+
+        // Get last message info
+        $conv['LastMessageFormatted'] = Gdn_Format::date(val('DateLastMessage', $conv), 'html');
+
+        // Get last message body for preview
+        $conv['LastBody'] = val('LastMessage', $conv, '');
+
+        // Check if has unread
+        $conv['HasUnread'] = (val('CountNewMessages', $conv, 0) > 0);
+
+        return $conv;
+    }
+
+    /**
+     * Mark notifications as read - POST /profile/marknotificationsread
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_markNotificationsRead_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('You must be signed in.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        // CSRF protection
+        if (!Gdn::session()->validateTransientKey(Gdn::request()->post('TransientKey'))) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid request.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $userID = Gdn::session()->UserID;
+        $type = Gdn::request()->post('type', 'all');
+
+        // Determine which activity types to mark as read
+        $activityTypes = [];
+        if ($type === 'mentions' || $type === 'all') {
+            $activityTypes = array_merge($activityTypes, ['DiscussionMention', 'CommentMention']);
+        }
+        if ($type === 'replies' || $type === 'all') {
+            $activityTypes[] = 'DiscussionComment';
+        }
+
+        if (!empty($activityTypes)) {
+            // Get unread activities and mark them as read
+            $activityModel = new ActivityModel();
+
+            // Get activity IDs to mark as read
+            $activities = Gdn::sql()
+                ->select('ActivityID')
+                ->from('Activity')
+                ->where('NotifyUserID', $userID)
+                ->whereIn('ActivityType', $activityTypes)
+                ->where('Notified', ActivityModel::SENT_PENDING)
+                ->get()
+                ->resultArray();
+
+            $activityIDs = array_column($activities, 'ActivityID');
+
+            if (!empty($activityIDs)) {
+                // Mark as read (Notified = SENT_OK = 2)
+                Gdn::sql()
+                    ->update('Activity')
+                    ->set('Notified', ActivityModel::SENT_OK)
+                    ->whereIn('ActivityID', $activityIDs)
+                    ->put();
+            }
+        }
+
+        // Update user's notification count
+        $this->updateUserNotificationCount($userID);
+
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->setData('Success', true);
+        $sender->setData('Message', t('Notifications marked as read.'));
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Update user's notification count.
+     *
+     * @param int $userID User ID.
+     * @return void
+     */
+    private function updateUserNotificationCount($userID) {
+        // Count remaining unread notifications
+        $count = Gdn::sql()
+            ->select('ActivityID', 'COUNT', 'Count')
+            ->from('Activity')
+            ->where('NotifyUserID', $userID)
+            ->where('Notified', ActivityModel::SENT_PENDING)
+            ->get()
+            ->firstRow(DATASET_TYPE_ARRAY);
+
+        $unreadCount = val('Count', $count, 0);
+
+        // Update user record
+        Gdn::sql()
+            ->update('User')
+            ->set('CountNotifications', $unreadCount)
+            ->where('UserID', $userID)
+            ->put();
+
+        // Update session
+        if (Gdn::session()->User) {
+            Gdn::session()->User->CountNotifications = $unreadCount;
+        }
+    }
+
+    /**
+     * Get conversation messages - GET /profile/conversationmessages/{ConversationID}
+     *
+     * Returns HTML fragment for chat panel.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @param int $conversationID Conversation ID.
+     * @return void
+     */
+    public function profileController_conversationMessages_create($sender, $conversationID = 0) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('You must be signed in.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        // Check if Conversations application is enabled
+        if (!Gdn::applicationManager()->checkApplication('Conversations')) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Conversations are not enabled.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $conversationID = (int)$conversationID;
+        $userID = Gdn::session()->UserID;
+
+        if ($conversationID <= 0) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid conversation.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Verify user is participant
+        $conversationModel = new ConversationModel();
+        $conversation = $conversationModel->getID($conversationID, DATASET_TYPE_ARRAY);
+
+        if (!$conversation) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Conversation not found.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Check if user is a participant
+        $isParticipant = Gdn::sql()
+            ->select('UserID')
+            ->from('UserConversation')
+            ->where('ConversationID', $conversationID)
+            ->where('UserID', $userID)
+            ->get()
+            ->firstRow();
+
+        if (!$isParticipant) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('You are not a participant in this conversation.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Get messages
+        $messageModel = new ConversationMessageModel();
+        $messages = $messageModel->getRecent($conversationID, $userID, 0, 50)->resultArray();
+
+        // Process messages
+        $userModel = new UserModel();
+        $userCache = [];
+
+        foreach ($messages as &$msg) {
+            $insertUserID = val('InsertUserID', $msg, 0);
+            if ($insertUserID && !isset($userCache[$insertUserID])) {
+                $userCache[$insertUserID] = $userModel->getID($insertUserID, DATASET_TYPE_ARRAY);
+            }
+
+            $msgUser = isset($userCache[$insertUserID]) ? $userCache[$insertUserID] : null;
+
+            if ($msgUser) {
+                $msg['InsertUserName'] = val('Name', $msgUser, '');
+                $msg['InsertUserPhoto'] = $this->getUserPhoto($msgUser);
+                $msg['InsertUserUrl'] = userUrl($msgUser);
+            } else {
+                $msg['InsertUserName'] = t('Unknown');
+                $msg['InsertUserPhoto'] = UserModel::getDefaultAvatarUrl();
+                $msg['InsertUserUrl'] = '#';
+            }
+
+            // Check if sent by current user
+            $msg['IsSent'] = ($insertUserID == $userID);
+
+            // Format message body
+            $msg['BodyFormatted'] = Gdn_Format::to(val('Body', $msg, ''), val('Format', $msg, 'Text'));
+
+            // Format date
+            $msg['DateInsertedFormatted'] = Gdn_Format::date(val('DateInserted', $msg), 'html');
+        }
+
+        // Mark conversation as read
+        $conversationModel->markRead($conversationID, $userID);
+
+        // Get all participants to find the other user's name
+        $participants = Gdn::sql()
+            ->select('uc.UserID')
+            ->from('UserConversation uc')
+            ->where('uc.ConversationID', $conversationID)
+            ->get()
+            ->resultArray();
+
+        $otherUserName = '';
+        foreach ($participants as $participant) {
+            $participantUserID = val('UserID', $participant, 0);
+            if ($participantUserID != $userID) {
+                // Get the other user's info
+                if (isset($userCache[$participantUserID])) {
+                    $otherUser = $userCache[$participantUserID];
+                } else {
+                    $otherUser = $userModel->getID($participantUserID, DATASET_TYPE_ARRAY);
+                }
+                if ($otherUser) {
+                    $otherUserName = val('Name', $otherUser, '');
+                }
+                break;
+            }
+        }
+
+        // Add other user name to conversation data
+        $conversation['OtherUserName'] = $otherUserName;
+
+        // Set data
+        $sender->setData('Conversation', $conversation);
+        $sender->setData('Messages', $messages);
+
+        // Render only the view content (no master template) for AJAX requests
+        $sender->deliveryType(DELIVERY_TYPE_VIEW);
+        $sender->render('conversation_messages', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * Send message to conversation - POST /profile/sendmessage
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_sendMessage_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('You must be signed in.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        // CSRF protection
+        if (!Gdn::session()->validateTransientKey(Gdn::request()->post('TransientKey'))) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid request.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Check if Conversations application is enabled
+        if (!Gdn::applicationManager()->checkApplication('Conversations')) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Conversations are not enabled.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $conversationID = (int)Gdn::request()->post('ConversationID', 0);
+        $body = trim(Gdn::request()->post('Body', ''));
+        $userID = Gdn::session()->UserID;
+
+        if ($conversationID <= 0) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid conversation.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        if (empty($body)) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Message cannot be empty.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Verify user is participant
+        $isParticipant = Gdn::sql()
+            ->select('UserID')
+            ->from('UserConversation')
+            ->where('ConversationID', $conversationID)
+            ->where('UserID', $userID)
+            ->get()
+            ->firstRow();
+
+        if (!$isParticipant) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('You are not a participant in this conversation.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Add message
+        $messageModel = new ConversationMessageModel();
+        $messageID = $messageModel->save([
+            'ConversationID' => $conversationID,
+            'Body' => $body,
+            'Format' => 'Text'
+        ]);
+
+        if ($messageID) {
+            // Get the new message for display
+            $message = $messageModel->getID($messageID, DATASET_TYPE_ARRAY);
+
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', true);
+            $sender->setData('MessageID', $messageID);
+            $sender->setData('Message', $message);
+        } else {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Failed to send message.'));
+        }
+
+        $sender->render('blank', 'utility', 'dashboard');
     }
 }

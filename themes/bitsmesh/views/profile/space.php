@@ -77,7 +77,7 @@ $tabs = [
                     data-following="<?php echo $isFollowing ? '1' : '0'; ?>">
                 <?php echo $isFollowing ? t('Following', '已关注') : t('Follow', '关注'); ?>
             </button>
-            <a href="<?php echo url('/messages/add?to=' . urlencode($user->Name)); ?>" class="bits-btn bits-btn-message">
+            <a href="<?php echo url('/notification?to=' . urlencode($user->Name) . '#message'); ?>" class="bits-btn bits-btn-message">
                 <?php echo t('Message', '私信'); ?>
             </a>
         </div>
