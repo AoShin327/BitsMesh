@@ -272,4 +272,38 @@
 
   {* lock - 密码锁图标 *}
   <symbol id="lock" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M8 22h32v20H8V22Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 22v-6a10 10 0 1 1 20 0v6" data-follow-stroke="currentColor"/><circle fill="currentColor" r="3" cy="32" cx="24" data-follow-fill="currentColor"/></symbol>
+
+  {* ============================================
+     Lottery Page Icons
+     ============================================ *}
+
+  {* gift - 礼物/抽奖 *}
+  <symbol id="gift" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M24 14H8v10h32V14H24Zm0 0v30m10-30s4-8 0-11-10 2-10 2m0 9s-4-8 0-11 10 2 10 2M8 44h32V24H8v20Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* link-one - 链接 *}
+  <symbol id="link-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18.263 13.877 24.071 8.07a10 10 0 1 1 14.142 14.142l-5.807 5.808m-14.143 0-5.808 5.807A10 10 0 1 0 26.6 47.97l5.807-5.808m-4.243-14.142-7.07 7.07" data-follow-stroke="currentColor"/></symbol>
+
+  {* copy - 复制 *}
+  <symbol id="copy" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M13 12.432v-4.62A2.813 2.813 0 0 1 15.813 5h24.374A2.813 2.813 0 0 1 43 7.813v24.375A2.813 2.813 0 0 1 40.187 35h-4.619" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M32.187 13H7.813A2.813 2.813 0 0 0 5 15.813v24.374A2.813 2.813 0 0 0 7.813 43h24.374A2.813 2.813 0 0 0 35 40.187V15.813A2.813 2.813 0 0 0 32.187 13Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* preview-open - 预览/打开 *}
+  <symbol id="preview-open" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 36c11.046 0 20-12 20-12s-8.954-12-20-12S4 24 4 24s8.954 12 20 12Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 29a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* attention - 警告/注意 *}
+  <symbol id="attention" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4 4 12.954 4 24s8.954 20 20 20Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 28V14" data-follow-stroke="currentColor"/><circle fill="currentColor" r="3" cy="36" cx="24" data-follow-fill="currentColor"/></symbol>
+
+  {* refresh - 刷新/重试 *}
+  <symbol id="refresh" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M42 8v12H30" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M39.6 28c-1.8 7.8-8.8 13.6-17.2 13.2-9.6-.4-17.2-8.4-17-18C5.8 13.6 14 5.6 23.6 6c4 .2 7.6 1.6 10.4 4l8 7.2" data-follow-stroke="currentColor"/></symbol>
+
+  {* time - 时间/倒计时 *}
+  <symbol id="time" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4 4 12.954 4 24s8.954 20 20 20Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 12v12h9" data-follow-stroke="currentColor"/></symbol>
+
+  {* trophy - 奖杯/结果 *}
+  <symbol id="trophy" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 34c-6.627 0-12-5.373-12-12V6h24v16c0 6.627-5.373 12-12 12Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M36 16h6v4a6 6 0 0 1-6 6M12 16H6v4a6 6 0 0 0 6 6" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 34v8m-8 0h16" data-follow-stroke="currentColor"/></symbol>
+
+  {* crown - 皇冠/中奖者 *}
+  <symbol id="crown" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M6 38h36V20L31 28l-7-14-7 14L6 20v18Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M6 38c0 2.21 8.059 4 18 4s18-1.79 18-4" data-follow-stroke="currentColor"/></symbol>
+
+  {* info - 信息 *}
+  <symbol id="info" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4 4 12.954 4 24s8.954 20 20 20Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 20v16" data-follow-stroke="currentColor"/><circle fill="currentColor" r="3" cy="12" cx="24" data-follow-fill="currentColor"/></symbol>
 </svg>
