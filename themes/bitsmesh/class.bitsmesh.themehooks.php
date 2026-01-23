@@ -310,6 +310,18 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $request->path('profile/links');
             return;
         }
+
+        // === 15. Moderation Log (管理记录): /ruling → /profile/ruling ===
+        if (preg_match('#^ruling(?:/p(\d+))?(?:\?.*)?$#i', $path, $matches)) {
+            if (isset($matches[1])) {
+                // /ruling/p2 -> /profile/ruling/p/2
+                $request->path('profile/ruling/p/' . $matches[1]);
+            } else {
+                // /ruling -> /profile/ruling
+                $request->path('profile/ruling');
+            }
+            return;
+        }
     }
 
     /**
@@ -412,6 +424,10 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         // Create InviteCode table for invitation system
         require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
         InviteCodeModel::structure();
+
+        // Create ModerationLog table for public moderation records
+        require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
+        ModerationLogModel::structure();
     }
 
     /**
@@ -3921,4 +3937,52 @@ body.dark-layout {
 
     // Note: Award page functionality is in DiscussionsController::award()
     // Route rewrite: /award -> /discussions/award (handled in gdn_dispatcher_beforeDispatch_handler above)
+
+    /**
+     * Moderation Log (管理记录) page controller.
+     *
+     * Route: /ruling, /ruling/p1, /ruling/p2, etc.
+     * Displays public moderation logs with pagination.
+     *
+     * @param ProfileController $sender
+     * @param array $args Route arguments
+     * @return void
+     */
+    public function profileController_ruling_create($sender, $args = []) {
+        // Public page - no login required
+        $sender->title(t('ModerationLog', '管理记录'));
+        $sender->setData('Breadcrumbs', [
+            ['Name' => t('Home'), 'Url' => '/'],
+            ['Name' => t('ModerationLog', '管理记录'), 'Url' => '/ruling']
+        ]);
+
+        // Get page number from args
+        $page = 1;
+        if (isset($args[0]) && $args[0] === 'p' && isset($args[1])) {
+            $page = max(1, (int)$args[1]);
+        }
+
+        // Load model and get logs
+        try {
+            require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
+            $model = new ModerationLogModel();
+            $data = $model->getPublicLogs($page);
+
+            $sender->setData('Logs', $data['logs']);
+            $sender->setData('TotalCount', $data['total']);
+            $sender->setData('PageCount', $data['pageCount']);
+            $sender->setData('CurrentPage', $data['currentPage']);
+            $sender->setData('PerPage', $data['perPage']);
+        } catch (Exception $e) {
+            // Fallback to empty data if model fails
+            $sender->setData('Logs', []);
+            $sender->setData('TotalCount', 0);
+            $sender->setData('PageCount', 1);
+            $sender->setData('CurrentPage', 1);
+            $sender->setData('PerPage', 20);
+        }
+
+        // Render view
+        $sender->render('ruling', 'pages', 'themes/bitsmesh');
+    }
 }

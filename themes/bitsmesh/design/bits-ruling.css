@@ -1,0 +1,281 @@
+/* ============================================
+   Moderation Log (管理记录) Page Styles
+   Modern table design for public moderation records
+   ============================================ */
+
+/* Container */
+.bits-ruling-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 0;
+}
+
+/* Header */
+.bits-ruling-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px auto;
+    padding: 0 10px;
+}
+
+.bits-ruling-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0;
+}
+
+.bits-ruling-title .iconpark-icon {
+    color: var(--bits-primary);
+    fill: var(--bits-primary);
+}
+
+.bits-ruling-stats {
+    color: var(--bits-text-secondary);
+    font-size: 0.875rem;
+}
+
+.bits-ruling-stats strong {
+    color: var(--bits-primary);
+    font-weight: 600;
+}
+
+/* Table Wrapper */
+.bits-ruling-table-wrapper {
+    overflow-x: auto;
+    background: var(--bits-bg-main);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Table */
+.bits-ruling-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.bits-ruling-table thead {
+    background: var(--bits-bg-sub);
+    border-bottom: 1px solid var(--bits-border);
+}
+
+.bits-ruling-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--bits-text-secondary);
+    white-space: nowrap;
+}
+
+.bits-ruling-table tbody tr {
+    border-bottom: 1px solid var(--bits-border-light);
+    transition: background-color 0.15s ease;
+}
+
+.bits-ruling-table tbody tr:hover {
+    background: var(--bits-bg-hover);
+}
+
+.bits-ruling-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.bits-ruling-table td {
+    padding: 14px 16px;
+    vertical-align: top;
+    color: var(--bits-text);
+}
+
+/* Column widths */
+.bits-col-id {
+    width: 80px;
+}
+
+.bits-col-target {
+    width: 180px;
+}
+
+.bits-col-action {
+    min-width: 250px;
+}
+
+.bits-col-admin {
+    width: 100px;
+}
+
+.bits-col-time {
+    width: 150px;
+    white-space: nowrap;
+}
+
+/* Log ID link */
+.bits-log-id {
+    color: var(--bits-text-secondary);
+    text-decoration: none;
+    font-family: monospace;
+}
+
+.bits-log-id:hover {
+    color: var(--bits-primary);
+}
+
+/* Target info */
+.bits-target-info {
+    line-height: 1.5;
+}
+
+.bits-target-user {
+    color: var(--bits-link);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.bits-target-user:hover {
+    color: var(--bits-link-hover);
+}
+
+.bits-target-record {
+    color: var(--bits-primary);
+    text-decoration: none;
+}
+
+.bits-target-record:hover {
+    text-decoration: underline;
+}
+
+/* Action detail */
+.bits-action-detail {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: var(--bits-text);
+}
+
+/* Admin link */
+.bits-admin-link {
+    color: var(--bits-link);
+    text-decoration: none;
+}
+
+.bits-admin-link:hover {
+    color: var(--bits-link-hover);
+}
+
+/* Empty state */
+.bits-ruling-empty {
+    background: var(--bits-bg-main);
+    border-radius: 8px;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.bits-ruling-empty .iconpark-icon {
+    color: var(--bits-border);
+    fill: var(--bits-border);
+    margin-bottom: 16px;
+}
+
+.bits-ruling-empty p {
+    color: var(--bits-text-secondary);
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Pagination */
+.bits-ruling-pager {
+    margin-top: 20px;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.bits-ruling-pager .pager-pos {
+    display: inline-block;
+    min-width: 32px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    text-align: center;
+    color: var(--bits-text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.15s ease;
+}
+
+.bits-ruling-pager a.pager-pos:hover {
+    background: var(--bits-bg-hover);
+    color: var(--bits-primary);
+}
+
+.bits-ruling-pager .pager-cur {
+    background: var(--bits-primary);
+    color: #fff;
+    cursor: default;
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 768px) {
+    .bits-ruling-container {
+        padding: 10px;
+    }
+
+    .bits-ruling-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 0;
+    }
+
+    .bits-ruling-table th,
+    .bits-ruling-table td {
+        padding: 10px 12px;
+    }
+
+    .bits-col-id {
+        width: 60px;
+    }
+
+    .bits-col-time {
+        width: auto;
+        font-size: 0.75rem;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .bits-ruling-table {
+        font-size: 0.8125rem;
+    }
+
+    /* Hide some columns on very small screens */
+    .bits-col-id,
+    .bits-col-admin {
+        display: none;
+    }
+
+    .bits-ruling-table th,
+    .bits-ruling-table td {
+        padding: 8px 10px;
+    }
+
+    .bits-ruling-pager .pager-pos {
+        min-width: 28px;
+        height: 28px;
+        line-height: 28px;
+        font-size: 12px;
+    }
+}
+
+/* Dark mode */
+body.dark-layout .bits-ruling-table-wrapper {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-layout .bits-ruling-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}

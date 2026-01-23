@@ -178,7 +178,7 @@
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/ruling">
                 <svg class="iconpark-icon"><use href="#balance-two"></use></svg>
                 <span>{t c="Moderation Log" d="管理记录"}</span>
             </a>

@@ -1,19 +1,20 @@
 /* BitsMesh Theme - Main Stylesheet */
-/* Version: 1.4.14 - Updated 2026-01-22 */
+/* Version: 1.4.15 - Updated 2026-01-24 */
 
-/* Import all component stylesheets - v1.4.14 cache bust */
-@import url('variables.css?v=1.4.14');
-@import url('bits-base.css?v=1.4.14');
-@import url('bits-layout.css?v=1.4.14');
-@import url('bits-header.css?v=1.4.14');
-@import url('bits-icons.css?v=1.4.14');
-@import url('bits-sidebar.css?v=1.4.14');
-@import url('bits-post-list.css?v=1.4.14');
-@import url('bits-post-content.css?v=1.4.14');
-@import url('bits-comments.css?v=1.4.14');
-@import url('bits-discussion-detail.css?v=1.4.14');
-@import url('bits-vanilla-compat.css?v=1.4.14');
-@import url('bits-meta-discussion.css?v=1.4.14');
+/* Import all component stylesheets - v1.4.15 cache bust */
+@import url('variables.css?v=1.4.15');
+@import url('bits-base.css?v=1.4.15');
+@import url('bits-layout.css?v=1.4.15');
+@import url('bits-header.css?v=1.4.15');
+@import url('bits-icons.css?v=1.4.15');
+@import url('bits-sidebar.css?v=1.4.15');
+@import url('bits-post-list.css?v=1.4.15');
+@import url('bits-post-content.css?v=1.4.15');
+@import url('bits-comments.css?v=1.4.15');
+@import url('bits-discussion-detail.css?v=1.4.15');
+@import url('bits-vanilla-compat.css?v=1.4.15');
+@import url('bits-meta-discussion.css?v=1.4.15');
+@import url('bits-ruling.css?v=1.4.15');
 
 /* Additional utilities and overrides */
 
