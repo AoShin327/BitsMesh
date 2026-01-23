@@ -354,14 +354,17 @@
     }
 
     /**
-     * BookmarkButton - Handle bookmark button UI updates
+     * BookmarkButton - Custom bookmark handling with debounce and proper UI updates
      *
-     * Vanilla's Hijack class handles AJAX requests, this class updates
-     * the UI (icon and class) after bookmark state changes.
+     * Problem: Vanilla's Hijack system replaces DOM elements, losing our custom classes.
+     * Solution: Completely take over bookmark handling with our own AJAX requests.
      */
     class BookmarkButton {
         constructor() {
             this.handleClick = null;
+            this.debounceTimers = {};
+            this.pendingRequests = new Set();
+            this.DEBOUNCE_MS = 500;
         }
 
         init() {
@@ -369,127 +372,235 @@
         }
 
         bindEvents() {
-            // Listen for clicks on bookmark buttons with Hijack class
+            // Intercept ALL clicks on bookmark buttons/links
             this.handleClick = (e) => {
-                const bookmarkBtn = e.target.closest('.menu-bookmark.Hijack, a.Hijack[href*="/bookmark/"]');
+                // Match our custom bookmark button OR Vanilla's replaced bookmark link
+                const bookmarkBtn = e.target.closest('.menu-bookmark, a[href*="/bookmark/"], .Bookmarked, .Bookmark');
                 if (!bookmarkBtn) return;
 
-                // Store reference to button for AJAX callback
-                const discussionID = bookmarkBtn.dataset.discussionId;
-                if (!discussionID) return;
+                // Only handle if it's a bookmark URL
+                const href = bookmarkBtn.getAttribute('href');
+                if (!href || !href.includes('/bookmark/')) return;
 
-                // Use jQuery ajaxComplete to detect when Vanilla's Hijack finishes
-                // This is more reliable than trying to intercept the click
-                this.setupAjaxCallback(bookmarkBtn, discussionID);
+                // Prevent default navigation and Vanilla's Hijack
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+
+                // Extract discussion ID from URL
+                const match = href.match(/\/bookmark\/(\d+)/);
+                if (!match) return;
+                const discussionID = match[1];
+
+                // Check button-level lock (synchronous, immediate)
+                if (bookmarkBtn.dataset.bitsProcessing === 'true') {
+                    return;
+                }
+
+                // Debounce: prevent rapid clicks
+                if (this.debounceTimers[discussionID]) {
+                    return;
+                }
+
+                // Prevent if already processing
+                if (this.pendingRequests.has(discussionID)) {
+                    return;
+                }
+
+                // Set immediate lock on button element
+                bookmarkBtn.dataset.bitsProcessing = 'true';
+
+                // Make AJAX request ourselves
+                this.toggleBookmark(bookmarkBtn, discussionID, href);
             };
 
-            document.addEventListener('click', this.handleClick);
-
-            // Also listen for Vanilla's AJAX complete events
-            this.setupGlobalAjaxHandler();
+            // Use capture phase to intercept before Vanilla's handler
+            document.addEventListener('click', this.handleClick, true);
         }
 
         /**
-         * Setup callback to handle UI update after AJAX completes
+         * Toggle bookmark state via AJAX
          */
-        setupAjaxCallback(button, discussionID) {
-            // Mark button as pending
+        toggleBookmark(button, discussionID, url) {
+            // Mark as processing
+            this.pendingRequests.add(discussionID);
             button.classList.add('bits-loading');
 
-            // Store the button reference for the AJAX handler
-            if (!window._bitsBookmarkPending) {
-                window._bitsBookmarkPending = {};
-            }
-            window._bitsBookmarkPending[discussionID] = button;
-        }
+            // Set debounce timer
+            this.debounceTimers[discussionID] = setTimeout(() => {
+                delete this.debounceTimers[discussionID];
+            }, this.DEBOUNCE_MS);
 
-        /**
-         * Setup global AJAX handler to catch bookmark responses
-         */
-        setupGlobalAjaxHandler() {
-            // Check if jQuery is available (Vanilla uses jQuery)
-            if (typeof jQuery !== 'undefined') {
-                jQuery(document).ajaxComplete((event, xhr, settings) => {
-                    // Check if this is a bookmark request
-                    if (settings.url && settings.url.includes('/bookmark/')) {
-                        try {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response && typeof response.Bookmarked !== 'undefined') {
-                                this.handleBookmarkResponse(response);
-                            }
-                        } catch (e) {
-                            // Not JSON or parsing error
-                        }
-                    }
-                });
-            }
+            // Determine current state
+            const wasBookmarked = button.classList.contains('bookmarked') ||
+                                  button.classList.contains('Bookmarked') ||
+                                  button.title === 'Unbookmark' ||
+                                  button.title === '取消收藏';
 
-            // Also listen for Vanilla's custom events
-            jQuery(document).on('ajaxComplete', '.Hijack', (e) => {
-                // Remove loading state from any pending buttons
-                document.querySelectorAll('.menu-bookmark.bits-loading').forEach(btn => {
-                    btn.classList.remove('bits-loading');
-                });
+            // Store original parent for restoring structure
+            const parent = button.closest('.comment-menu');
+
+            // Extract TransientKey from URL or get from gdn meta
+            const transientKey = url.split('/').pop() || (window.gdn && gdn.meta && gdn.meta.TransientKey) || '';
+
+            // Use fetch for AJAX - MUST be POST with DeliveryType/DeliveryMethod for JSON response
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                credentials: 'same-origin',
+                body: `DeliveryType=VIEW&DeliveryMethod=JSON&TransientKey=${encodeURIComponent(transientKey)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.handleResponse(button, discussionID, data, wasBookmarked, parent);
+            })
+            .catch(error => {
+                console.error('Bookmark error:', error);
+                this.cleanupPending(discussionID, button);
             });
         }
 
         /**
          * Handle bookmark response and update UI
          */
-        handleBookmarkResponse(response) {
-            const discussionID = response.DiscussionID;
-            const isBookmarked = response.Bookmarked;
+        handleResponse(button, discussionID, response, wasBookmarked, parent) {
+            // Determine new state from response
+            let isBookmarked = !wasBookmarked; // Toggle by default
+            let newHref = null;
 
-            // Find the button by discussion ID
-            const button = document.querySelector(`.menu-bookmark[data-discussion-id="${discussionID}"]`);
-            if (!button) return;
+            if (response.Targets) {
+                const elementTarget = response.Targets.find(t => t.Target === '!element');
+                if (elementTarget && elementTarget.Data) {
+                    // Check the replacement HTML for state
+                    isBookmarked = !elementTarget.Data.includes('title="Bookmark"');
+                    // Extract new href with updated transient key
+                    const hrefMatch = elementTarget.Data.match(/href="([^"]+)"/);
+                    if (hrefMatch) {
+                        newHref = hrefMatch[1];
+                    }
+                }
+            }
 
-            // Update button state
+            // Remove loading state
             button.classList.remove('bits-loading');
 
-            if (isBookmarked) {
-                button.classList.add('bookmarked');
-                button.title = '取消收藏';
-                // Update icon to filled star
+            // Update or restore button UI
+            this.updateButtonUI(button, discussionID, isBookmarked, newHref, wasBookmarked, parent);
+
+            this.cleanupPending(discussionID, button);
+        }
+
+        /**
+         * Update button UI - restore proper structure if Vanilla replaced it
+         */
+        updateButtonUI(button, discussionID, isBookmarked, newHref, wasBookmarked, parent) {
+            // Check if this is our custom menu-bookmark or Vanilla's replaced link
+            const isCustomButton = button.classList.contains('menu-bookmark') &&
+                                   button.classList.contains('menu-item');
+
+            if (isCustomButton) {
+                // Our custom button - update directly
+                if (isBookmarked) {
+                    button.classList.add('bookmarked');
+                    button.title = '取消收藏';
+                } else {
+                    button.classList.remove('bookmarked');
+                    button.title = '收藏';
+                }
+
+                // Update SVG icon
                 const svgUse = button.querySelector('use');
                 if (svgUse) {
-                    svgUse.setAttribute('href', '#star-one');
+                    svgUse.setAttribute('href', isBookmarked ? '#star-one' : '#star');
                 }
-            } else {
-                button.classList.remove('bookmarked');
-                button.title = '收藏';
-                // Update icon to outline star
-                const svgUse = button.querySelector('use');
-                if (svgUse) {
-                    svgUse.setAttribute('href', '#star');
-                }
+
+                // Update href
+                if (newHref) button.setAttribute('href', newHref);
+
+                // Update count
+                this.updateBookmarkCount(button, isBookmarked, wasBookmarked);
+            } else if (parent) {
+                // Vanilla replaced the DOM - need to restore our structure
+                this.restoreButtonStructure(button, parent, discussionID, isBookmarked, newHref, wasBookmarked);
+            }
+        }
+
+        /**
+         * Restore our custom button structure when Vanilla replaces it
+         */
+        restoreButtonStructure(oldButton, parent, discussionID, isBookmarked, newHref, wasBookmarked) {
+            // Get existing bookmark count from data attribute or estimate
+            let bookmarkCount = parseInt(parent.dataset.bookmarkCount) || 0;
+
+            // Adjust count based on state change
+            if (isBookmarked && !wasBookmarked) {
+                bookmarkCount++;
+            } else if (!isBookmarked && wasBookmarked) {
+                bookmarkCount = Math.max(0, bookmarkCount - 1);
             }
 
-            // Update bookmark count display
+            // Store updated count
+            parent.dataset.bookmarkCount = bookmarkCount;
+
+            // Create new button with proper structure
+            const newButton = document.createElement('a');
+            newButton.href = newHref || oldButton.getAttribute('href');
+            newButton.className = `menu-item menu-bookmark Hijack${isBookmarked ? ' bookmarked' : ''}`;
+            newButton.dataset.discussionId = discussionID;
+            newButton.title = isBookmarked ? '取消收藏' : '收藏';
+            newButton.innerHTML = `
+                <svg class="iconpark-icon" width="12" height="12">
+                    <use href="#${isBookmarked ? 'star-one' : 'star'}"></use>
+                </svg>
+                <span class="bookmark-count">${bookmarkCount > 0 ? bookmarkCount : ''}</span>
+            `;
+
+            // Replace old button
+            if (oldButton.parentNode) {
+                oldButton.parentNode.replaceChild(newButton, oldButton);
+            }
+        }
+
+        /**
+         * Update bookmark count display
+         */
+        updateBookmarkCount(button, isBookmarked, wasBookmarked) {
             const countSpan = button.querySelector('.bookmark-count');
-            if (countSpan) {
-                // Count changed - we need to refresh or estimate
-                // For now, just toggle the visual state
+            if (!countSpan) return;
+
+            const currentCount = parseInt(countSpan.textContent) || 0;
+            let newCount = currentCount;
+
+            if (isBookmarked && !wasBookmarked) {
+                newCount = currentCount + 1;
+            } else if (!isBookmarked && wasBookmarked) {
+                newCount = Math.max(0, currentCount - 1);
             }
 
-            // Update URL with new transient key if provided
-            if (response.TransientKey) {
-                const href = button.getAttribute('href');
-                if (href) {
-                    const newHref = href.replace(/\/[^\/]+$/, '/' + response.TransientKey);
-                    button.setAttribute('href', newHref);
-                }
-            }
+            countSpan.textContent = newCount > 0 ? newCount : '';
 
-            // Clean up pending reference
-            if (window._bitsBookmarkPending && window._bitsBookmarkPending[discussionID]) {
-                delete window._bitsBookmarkPending[discussionID];
+            // Also store in parent for restoration
+            const parent = button.closest('.comment-menu');
+            if (parent) {
+                parent.dataset.bookmarkCount = newCount;
+            }
+        }
+
+        cleanupPending(discussionID, button) {
+            this.pendingRequests.delete(discussionID);
+            if (button) {
+                button.classList.remove('bits-loading');
+                delete button.dataset.bitsProcessing;
             }
         }
 
         destroy() {
             if (this.handleClick) {
-                document.removeEventListener('click', this.handleClick);
+                document.removeEventListener('click', this.handleClick, true);
             }
         }
     }
@@ -1339,6 +1450,410 @@
     }
 
     /**
+     * CommentMenuHandler - Handle comment reactions (like/dislike) and chicken leg
+     *
+     * Features:
+     * - Like/Dislike buttons with toggle and switch functionality
+     * - Chicken leg (appreciation) with daily quota
+     * - Debounce to prevent rapid clicks
+     * - Loading state feedback
+     * - Error handling with toast messages
+     */
+    class CommentMenuHandler {
+        constructor() {
+            this.handleClick = null;
+            this.pendingRequests = new Set(); // Track pending requests by comment ID
+            this.debounceDelay = 300; // ms
+            this.lastClickTime = {};
+        }
+
+        init() {
+            this.bindEvents();
+            this.loadInitialReactionData();
+        }
+
+        bindEvents() {
+            this.handleClick = (e) => {
+                // Handle like button
+                const likeBtn = e.target.closest('.menu-like');
+                if (likeBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.handleReaction(likeBtn, 1);
+                    return;
+                }
+
+                // Handle dislike button
+                const dislikeBtn = e.target.closest('.menu-dislike');
+                if (dislikeBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.handleReaction(dislikeBtn, -1);
+                    return;
+                }
+
+                // Handle chicken leg button
+                const chickenBtn = e.target.closest('.menu-credit');
+                if (chickenBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.handleChickenLeg(chickenBtn);
+                    return;
+                }
+            };
+
+            document.addEventListener('click', this.handleClick);
+        }
+
+        /**
+         * Load initial reaction data for all comments on the page
+         */
+        async loadInitialReactionData() {
+            // Get discussion ID from page
+            const discussionMeta = document.querySelector('[data-discussion-id]');
+            if (!discussionMeta) return;
+
+            const discussionID = discussionMeta.dataset.discussionId;
+            if (!discussionID) return;
+
+            try {
+                const response = await fetch(`/discussion/commentreactions.json?DiscussionID=${discussionID}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                if (data.Success && data.Reactions) {
+                    this.updateAllReactionCounts(data.Reactions);
+                }
+            } catch (error) {
+                console.error('CommentMenuHandler: Failed to load reactions', error);
+            }
+        }
+
+        /**
+         * Update reaction counts for all comments
+         */
+        updateAllReactionCounts(reactions) {
+            Object.entries(reactions).forEach(([key, counts]) => {
+                let containerEl;
+
+                if (key === 'discussion') {
+                    // Main discussion (OP)
+                    containerEl = document.querySelector('.bits-discussion-content');
+                } else {
+                    // Comment
+                    containerEl = document.querySelector(`[data-comment-id="${key}"]`);
+                }
+
+                if (!containerEl) return;
+
+                const menu = containerEl.querySelector('.comment-menu');
+                if (!menu) return;
+
+                // Update like count
+                const likeBtn = menu.querySelector('.menu-like');
+                if (likeBtn) {
+                    const countSpan = likeBtn.querySelector('span');
+                    if (countSpan) {
+                        countSpan.textContent = counts.likeCount || 0;
+                    }
+                    // Update active state
+                    if (counts.userScore === 1) {
+                        likeBtn.classList.add('active');
+                    } else {
+                        likeBtn.classList.remove('active');
+                    }
+                }
+
+                // Update dislike count
+                const dislikeBtn = menu.querySelector('.menu-dislike');
+                if (dislikeBtn) {
+                    const countSpan = dislikeBtn.querySelector('span');
+                    if (countSpan) {
+                        countSpan.textContent = counts.dislikeCount || 0;
+                    }
+                    // Update active state
+                    if (counts.userScore === -1) {
+                        dislikeBtn.classList.add('active');
+                    } else {
+                        dislikeBtn.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        /**
+         * Handle like/dislike reaction
+         */
+        async handleReaction(button, score) {
+            // Determine record type and ID
+            let recordType, recordID, containerEl;
+
+            // Check if this is on the main discussion (OP)
+            const discussionEl = button.closest('.bits-discussion-content');
+            if (discussionEl) {
+                recordType = 'Discussion';
+                recordID = discussionEl.dataset.recordId || discussionEl.dataset.discussionId;
+                containerEl = discussionEl;
+            } else {
+                // It's a comment
+                const commentEl = button.closest('[data-comment-id]');
+                if (commentEl) {
+                    recordType = 'Comment';
+                    recordID = commentEl.dataset.commentId;
+                    containerEl = commentEl;
+                }
+            }
+
+            if (!recordType || !recordID || !containerEl) {
+                console.error('CommentMenuHandler: Cannot determine record type/ID');
+                return;
+            }
+
+            // Debounce check
+            const now = Date.now();
+            const key = `reaction_${recordType}_${recordID}_${score}`;
+            if (this.lastClickTime[key] && now - this.lastClickTime[key] < this.debounceDelay) {
+                return;
+            }
+            this.lastClickTime[key] = now;
+
+            // Prevent duplicate requests
+            const requestKey = `reaction_${recordType}_${recordID}`;
+            if (this.pendingRequests.has(requestKey)) {
+                return;
+            }
+            this.pendingRequests.add(requestKey);
+
+            // Get TransientKey
+            const transientKey = this.getTransientKey();
+            if (!transientKey) {
+                this.showToast('请先登录', 'error');
+                this.pendingRequests.delete(requestKey);
+                return;
+            }
+
+            // Show loading state
+            button.classList.add('bits-loading');
+
+            try {
+                const response = await fetch('/discussion/reactcontent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `RecordType=${recordType}&RecordID=${recordID}&Score=${score}&TransientKey=${encodeURIComponent(transientKey)}`
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.Success) {
+                    this.updateReactionUI(containerEl, data, score);
+                } else {
+                    if (data.Error === 'NotLoggedIn') {
+                        this.showToast('请先登录', 'error');
+                    } else {
+                        this.showToast(data.Message || '操作失败', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('CommentMenuHandler: Reaction failed', error);
+                this.showToast('网络错误，请重试', 'error');
+            } finally {
+                button.classList.remove('bits-loading');
+                this.pendingRequests.delete(requestKey);
+            }
+        }
+
+        /**
+         * Update reaction UI after successful action
+         */
+        updateReactionUI(commentEl, data, clickedScore) {
+            const menu = commentEl.querySelector('.comment-menu');
+            if (!menu) return;
+
+            const likeBtn = menu.querySelector('.menu-like');
+            const dislikeBtn = menu.querySelector('.menu-dislike');
+
+            // Update counts
+            if (likeBtn) {
+                const countSpan = likeBtn.querySelector('span');
+                if (countSpan) {
+                    countSpan.textContent = data.LikeCount || 0;
+                }
+            }
+
+            if (dislikeBtn) {
+                const countSpan = dislikeBtn.querySelector('span');
+                if (countSpan) {
+                    countSpan.textContent = data.DislikeCount || 0;
+                }
+            }
+
+            // Update active states based on new score
+            const newScore = data.NewScore;
+
+            if (likeBtn) {
+                likeBtn.classList.toggle('active', newScore === 1);
+            }
+
+            if (dislikeBtn) {
+                dislikeBtn.classList.toggle('active', newScore === -1);
+            }
+        }
+
+        /**
+         * Handle chicken leg gift
+         */
+        async handleChickenLeg(button) {
+            // Determine record type and ID
+            let recordType, recordID;
+
+            // Check if this is on the main discussion (OP)
+            const discussionEl = button.closest('.bits-discussion-content');
+            if (discussionEl) {
+                recordType = 'Discussion';
+                const discussionMeta = document.querySelector('[data-discussion-id]');
+                recordID = discussionMeta ? discussionMeta.dataset.discussionId : null;
+            } else {
+                // It's a comment
+                const commentEl = button.closest('[data-comment-id]');
+                if (commentEl) {
+                    recordType = 'Comment';
+                    recordID = commentEl.dataset.commentId;
+                }
+            }
+
+            if (!recordType || !recordID) {
+                console.error('CommentMenuHandler: Cannot determine record type/ID');
+                return;
+            }
+
+            // Debounce check
+            const now = Date.now();
+            const key = `chicken_${recordType}_${recordID}`;
+            if (this.lastClickTime[key] && now - this.lastClickTime[key] < this.debounceDelay) {
+                return;
+            }
+            this.lastClickTime[key] = now;
+
+            // Prevent duplicate requests
+            const requestKey = `${recordType}_${recordID}`;
+            if (this.pendingRequests.has(requestKey)) {
+                return;
+            }
+            this.pendingRequests.add(requestKey);
+
+            // Get TransientKey
+            const transientKey = this.getTransientKey();
+            if (!transientKey) {
+                this.showToast('请先登录', 'error');
+                this.pendingRequests.delete(requestKey);
+                return;
+            }
+
+            // Show loading state
+            button.classList.add('bits-loading');
+
+            try {
+                const response = await fetch('/discussion/givechickenleg', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `RecordType=${recordType}&RecordID=${recordID}&TransientKey=${encodeURIComponent(transientKey)}`
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.Success) {
+                    // Update count display
+                    const countSpan = button.querySelector('span');
+                    if (countSpan) {
+                        countSpan.textContent = data.NewCount || 0;
+                    }
+                    // Add visual feedback
+                    button.classList.add('given');
+                    this.showToast(data.Message || '鸡腿已送出！', 'success');
+                } else {
+                    this.showToast(data.Message || '操作失败', 'error');
+                }
+            } catch (error) {
+                console.error('CommentMenuHandler: Chicken leg failed', error);
+                this.showToast('网络错误，请重试', 'error');
+            } finally {
+                button.classList.remove('bits-loading');
+                this.pendingRequests.delete(requestKey);
+            }
+        }
+
+        /**
+         * Show toast notification
+         */
+        showToast(message, type = 'info') {
+            // Remove existing toasts
+            document.querySelectorAll('.bits-toast').forEach(t => t.remove());
+
+            const toast = document.createElement('div');
+            toast.className = `bits-toast bits-toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /**
+         * Get TransientKey for CSRF protection
+         */
+        getTransientKey() {
+            if (typeof gdn !== 'undefined' && gdn.definition) {
+                const tk = gdn.definition('TransientKey');
+                if (tk) return tk;
+            }
+
+            const tkInput = document.querySelector('input[name="TransientKey"]');
+            if (tkInput) return tkInput.value;
+
+            // Try to find in sidebar signout link
+            const signoutLink = document.querySelector('a[href*="signout?TransientKey="]');
+            if (signoutLink) {
+                const match = signoutLink.href.match(/TransientKey=([^&]+)/);
+                if (match) return match[1];
+            }
+
+            return null;
+        }
+
+        destroy() {
+            if (this.handleClick) {
+                document.removeEventListener('click', this.handleClick);
+            }
+        }
+    }
+
+    /**
      * Initialize all theme components
      */
     function initTheme() {
@@ -1373,6 +1888,10 @@
         // Initialize NotificationPage (notification center functionality)
         bitsTheme.notificationPage = new NotificationPage();
         bitsTheme.notificationPage.init();
+
+        // Initialize CommentMenuHandler (like/dislike/chicken leg)
+        bitsTheme.commentMenuHandler = new CommentMenuHandler();
+        bitsTheme.commentMenuHandler.init();
 
         // Initialize DarkMode if available
         if (typeof DarkModeToggle !== 'undefined') {

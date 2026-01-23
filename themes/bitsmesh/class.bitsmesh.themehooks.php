@@ -302,6 +302,64 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         // Create UserFollow table
         require_once PATH_THEMES . '/bitsmesh/models/class.userfollowmodel.php';
         UserFollowModel::structure();
+
+        // Add CountChickenLegs column to Discussion table (for chicken leg count on discussions)
+        $construct->table('Discussion');
+        if (!$construct->columnExists('CountChickenLegs')) {
+            $construct->column('CountChickenLegs', 'int', '0');
+            $construct->set(false, false);
+        }
+
+        // Add CountChickenLegs column to Comment table (for chicken leg count on comments)
+        $construct->table('Comment');
+        if (!$construct->columnExists('CountChickenLegs')) {
+            $construct->column('CountChickenLegs', 'int', '0');
+            $construct->set(false, false);
+        }
+
+        // Create UserComment table for comment reactions (like/dislike)
+        $construct->table('UserComment')
+            ->primaryKey('UserCommentID')
+            ->column('UserID', 'int', false, 'index.UserID')
+            ->column('CommentID', 'int', false, 'index.CommentID')
+            ->column('Score', 'tinyint', '0') // 1 = like, -1 = dislike, 0 = neutral
+            ->column('DateInserted', 'datetime', false)
+            ->set(false, false);
+
+        // Add unique constraint for UserID + CommentID
+        $sql = Gdn::sql();
+        $indexName = 'UX_UserComment';
+        $existingIndex = $sql->query("SHOW INDEX FROM {$sql->Database->DatabasePrefix}UserComment WHERE Key_name = '$indexName'")->resultArray();
+        if (empty($existingIndex)) {
+            $sql->query("ALTER TABLE {$sql->Database->DatabasePrefix}UserComment ADD UNIQUE INDEX $indexName (UserID, CommentID)");
+        }
+
+        // Create ChickenLeg table for tracking daily chicken leg gifts
+        $construct->table('ChickenLeg')
+            ->primaryKey('ChickenLegID')
+            ->column('UserID', 'int', false, 'index.UserID') // Who gave the chicken leg
+            ->column('RecordType', 'varchar(20)', false, 'index.RecordType') // 'Discussion' or 'Comment'
+            ->column('RecordID', 'int', false, 'index.RecordID') // DiscussionID or CommentID
+            ->column('ReceiverUserID', 'int', false, 'index.ReceiverUserID') // Author who receives
+            ->column('DateInserted', 'datetime', false, 'index.Date')
+            ->set(false, false);
+
+        // Create UserReaction table for unified reactions (like/dislike on Discussion and Comment)
+        $construct->table('UserReaction')
+            ->primaryKey('UserReactionID')
+            ->column('UserID', 'int', false, 'index.UserID')
+            ->column('RecordType', 'varchar(20)', false, 'index.RecordType') // 'Discussion' or 'Comment'
+            ->column('RecordID', 'int', false, 'index.RecordID')
+            ->column('Score', 'tinyint', '0') // 1 = like, -1 = dislike
+            ->column('DateInserted', 'datetime', false)
+            ->set(false, false);
+
+        // Add unique constraint for UserID + RecordType + RecordID
+        $indexName = 'UX_UserReaction';
+        $existingIndex = $sql->query("SHOW INDEX FROM {$sql->Database->DatabasePrefix}UserReaction WHERE Key_name = '$indexName'")->resultArray();
+        if (empty($existingIndex)) {
+            $sql->query("ALTER TABLE {$sql->Database->DatabasePrefix}UserReaction ADD UNIQUE INDEX $indexName (UserID, RecordType, RecordID)");
+        }
     }
 
     /**
@@ -2622,5 +2680,405 @@ body.dark-layout {
         }
 
         $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    // ==========================================================================
+    // Comment Reactions & Chicken Leg API Endpoints
+    // ==========================================================================
+
+    /**
+     * React to a comment (like/dislike) - POST /discussion/reactcomment
+     *
+     * Request params:
+     * - CommentID: int (required)
+     * - Score: int (1 = like, -1 = dislike)
+     * - TransientKey: string (CSRF token)
+     *
+     * Response:
+     * - Success: bool
+     * - Action: string (added, removed, switched)
+     * - NewScore: int (user's new reaction score)
+     * - LikeCount: int
+     * - DislikeCount: int
+     *
+     * @param DiscussionController $sender The controller instance.
+     * @return void
+     */
+    public function discussionController_reactComment_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'NotLoggedIn');
+            $sender->setData('Message', t('You must be signed in to react.', '请先登录'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // CSRF protection
+        $transientKey = Gdn::request()->get('TransientKey', Gdn::request()->post('TransientKey'));
+        if (!Gdn::session()->validateTransientKey($transientKey)) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidToken');
+            $sender->setData('Message', t('Invalid request.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Get parameters
+        $commentID = (int)Gdn::request()->getValue('CommentID', 0);
+        $score = (int)Gdn::request()->getValue('Score', 0);
+
+        // Validate
+        if ($commentID <= 0) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidComment');
+            $sender->setData('Message', t('Invalid comment.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        if (!in_array($score, [1, -1])) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidScore');
+            $sender->setData('Message', t('Invalid reaction type.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Verify comment exists
+        $commentModel = new CommentModel();
+        $comment = $commentModel->getID($commentID);
+        if (!$comment) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'CommentNotFound');
+            $sender->setData('Message', t('Comment not found.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Load model and set reaction
+        require_once PATH_THEMES . '/bitsmesh/models/class.usercommentmodel.php';
+        $userCommentModel = UserCommentModel::instance();
+        $result = $userCommentModel->setReaction(Gdn::session()->UserID, $commentID, $score);
+
+        // Return response
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->setData('Success', $result['success']);
+        if ($result['success']) {
+            $sender->setData('Action', $result['action']);
+            $sender->setData('NewScore', $result['newScore']);
+            $sender->setData('LikeCount', $result['likeCount']);
+            $sender->setData('DislikeCount', $result['dislikeCount']);
+        } else {
+            $sender->setData('Error', $result['error']);
+        }
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * React to content (Discussion or Comment) - POST /discussion/reactcontent
+     *
+     * Unified API for handling like/dislike reactions on both discussions and comments.
+     *
+     * Request params:
+     * - RecordType: string ('Discussion' or 'Comment')
+     * - RecordID: int
+     * - Score: int (1 = like, -1 = dislike)
+     * - TransientKey: string (CSRF token)
+     *
+     * Response:
+     * - Success: bool
+     * - Action: string (added, removed, switched)
+     * - NewScore: int (user's new reaction score)
+     * - LikeCount: int
+     * - DislikeCount: int
+     *
+     * @param DiscussionController $sender The controller instance.
+     * @return void
+     */
+    public function discussionController_reactContent_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'NotLoggedIn');
+            $sender->setData('Message', t('You must be signed in to react.', '请先登录'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // CSRF protection
+        $transientKey = Gdn::request()->get('TransientKey', Gdn::request()->post('TransientKey'));
+        if (!Gdn::session()->validateTransientKey($transientKey)) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidToken');
+            $sender->setData('Message', t('Invalid request.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Get parameters
+        $recordType = trim(Gdn::request()->getValue('RecordType', ''));
+        $recordID = (int)Gdn::request()->getValue('RecordID', 0);
+        $score = (int)Gdn::request()->getValue('Score', 0);
+
+        // Validate record type
+        $recordType = ucfirst(strtolower($recordType));
+        if (!in_array($recordType, ['Discussion', 'Comment'])) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidRecordType');
+            $sender->setData('Message', t('Invalid record type.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Validate record ID
+        if ($recordID <= 0) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidRecordID');
+            $sender->setData('Message', t('Invalid record.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Validate score
+        if (!in_array($score, [1, -1])) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidScore');
+            $sender->setData('Message', t('Invalid reaction type.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Load model and set reaction
+        require_once PATH_THEMES . '/bitsmesh/models/class.userreactionmodel.php';
+        $userReactionModel = UserReactionModel::instance();
+        $result = $userReactionModel->setReaction(Gdn::session()->UserID, $recordType, $recordID, $score);
+
+        // Return response
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->setData('Success', $result['success']);
+        if ($result['success']) {
+            $sender->setData('Action', $result['action']);
+            $sender->setData('NewScore', $result['newScore']);
+            $sender->setData('LikeCount', $result['likeCount']);
+            $sender->setData('DislikeCount', $result['dislikeCount']);
+        } else {
+            $sender->setData('Error', $result['error']);
+            $sender->setData('Message', t('Failed to save reaction.'));
+        }
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     *
+     * Request params:
+     * - RecordType: string ('Discussion' or 'Comment')
+     * - RecordID: int
+     * - TransientKey: string (CSRF token)
+     *
+     * Response:
+     * - Success: bool
+     * - NewCount: int (new chicken leg count)
+     * - RemainingQuota: int (user's remaining daily quota)
+     * - Message: string
+     *
+     * @param DiscussionController $sender The controller instance.
+     * @return void
+     */
+    public function discussionController_giveChickenLeg_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'NotLoggedIn');
+            $sender->setData('Message', t('You must be signed in.', '请先登录'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // CSRF protection
+        $transientKey = Gdn::request()->get('TransientKey', Gdn::request()->post('TransientKey'));
+        if (!Gdn::session()->validateTransientKey($transientKey)) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidToken');
+            $sender->setData('Message', t('Invalid request.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Get parameters
+        $recordType = trim(Gdn::request()->getValue('RecordType', ''));
+        $recordID = (int)Gdn::request()->getValue('RecordID', 0);
+
+        // Validate record type
+        $recordType = ucfirst(strtolower($recordType));
+        if (!in_array($recordType, ['Discussion', 'Comment'])) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidRecordType');
+            $sender->setData('Message', t('Invalid record type.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Validate record ID
+        if ($recordID <= 0) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidRecordID');
+            $sender->setData('Message', t('Invalid record.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Load model and give chicken leg
+        require_once PATH_THEMES . '/bitsmesh/models/class.chickenlegmodel.php';
+        $chickenLegModel = ChickenLegModel::instance();
+        $result = $chickenLegModel->giveChickenLeg(Gdn::session()->UserID, $recordType, $recordID);
+
+        // Return response
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->setData('Success', $result['success']);
+        if ($result['success']) {
+            $sender->setData('NewCount', $result['newCount']);
+            $sender->setData('RemainingQuota', $result['remainingQuota']);
+            $sender->setData('Message', $result['message']);
+        } else {
+            $sender->setData('Error', $result['error']);
+            $sender->setData('Message', $result['message'] ?? t('Failed to give chicken leg.'));
+            if (isset($result['remainingQuota'])) {
+                $sender->setData('RemainingQuota', $result['remainingQuota']);
+            }
+        }
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Get user's remaining chicken leg quota - GET /discussion/chickenLegQuota.json
+     *
+     * Response:
+     * - RemainingQuota: int
+     * - DailyQuota: int (total daily quota)
+     *
+     * @param DiscussionController $sender The controller instance.
+     * @return void
+     */
+    public function discussionController_chickenLegQuota_create($sender) {
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+
+        if (!Gdn::session()->isValid()) {
+            $sender->setData('RemainingQuota', 0);
+            $sender->setData('DailyQuota', 1);
+            $sender->setData('LoggedIn', false);
+        } else {
+            require_once PATH_THEMES . '/bitsmesh/models/class.chickenlegmodel.php';
+            $chickenLegModel = ChickenLegModel::instance();
+            $sender->setData('RemainingQuota', $chickenLegModel->getRemainingQuota(Gdn::session()->UserID));
+            $sender->setData('DailyQuota', ChickenLegModel::DAILY_FREE_QUOTA);
+            $sender->setData('LoggedIn', true);
+        }
+
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Get comment reaction data for a discussion - GET /discussion/commentReactions.json
+     *
+     * Request params:
+     * - DiscussionID: int
+     *
+     * Response:
+     * - Reactions: array (CommentID => ['likeCount', 'dislikeCount', 'userScore'])
+     *
+     * @param DiscussionController $sender The controller instance.
+     * @return void
+     */
+    public function discussionController_commentReactions_create($sender) {
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+
+        $discussionID = (int)Gdn::request()->getValue('DiscussionID', 0);
+
+        if ($discussionID <= 0) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', 'InvalidDiscussion');
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        require_once PATH_THEMES . '/bitsmesh/models/class.userreactionmodel.php';
+        $userReactionModel = UserReactionModel::instance();
+
+        // Get reactions for discussion page (includes discussion + all comments)
+        $userID = Gdn::session()->isValid() ? Gdn::session()->UserID : null;
+        $reactions = $userReactionModel->getDiscussionPageReactions($discussionID, $userID);
+
+        $sender->setData('Success', true);
+        $sender->setData('Reactions', $reactions);
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Update CountBookmarks on Discussion table after bookmark operation.
+     *
+     * The Vanilla bookmark() method doesn't update the Discussion.CountBookmarks field,
+     * so we hook into AfterBookmark to do it ourselves.
+     *
+     * @param DiscussionModel $sender The model instance.
+     * @param array $args Event arguments containing DiscussionID, UserID, Bookmarked.
+     * @return void
+     */
+    public function discussionModel_afterBookmark_handler($sender, $args) {
+        $discussionID = (int)val('DiscussionID', $args, 0);
+        if ($discussionID <= 0) {
+            return;
+        }
+
+        // Count total bookmarks for this discussion
+        $bookmarkCount = Gdn::sql()
+            ->select('DiscussionID', 'count', 'Count')
+            ->from('UserDiscussion')
+            ->where('DiscussionID', $discussionID)
+            ->where('Bookmarked', 1)
+            ->get()
+            ->firstRow();
+
+        $count = $bookmarkCount ? (int)$bookmarkCount->Count : 0;
+
+        // Update Discussion.CountBookmarks
+        Gdn::sql()
+            ->update('Discussion')
+            ->set('CountBookmarks', $count)
+            ->where('DiscussionID', $discussionID)
+            ->put();
     }
 }
