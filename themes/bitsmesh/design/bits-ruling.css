@@ -73,6 +73,13 @@
     white-space: nowrap;
 }
 
+/* Center align ID, Admin and Time headers */
+.bits-ruling-table th.bits-col-id,
+.bits-ruling-table th.bits-col-admin,
+.bits-ruling-table th.bits-col-time {
+    text-align: center;
+}
+
 .bits-ruling-table tbody tr {
     border-bottom: 1px solid var(--bits-border-light);
     transition: background-color 0.15s ease;
@@ -88,30 +95,38 @@
 
 .bits-ruling-table td {
     padding: 14px 16px;
-    vertical-align: top;
+    vertical-align: middle;
     color: var(--bits-text);
+}
+
+/* Action column should align to top for multiline content */
+.bits-ruling-table td.bits-col-action {
+    vertical-align: top;
 }
 
 /* Column widths */
 .bits-col-id {
-    width: 80px;
+    width: 70px;
+    text-align: center;
 }
 
 .bits-col-target {
-    width: 180px;
+    width: 160px;
 }
 
 .bits-col-action {
-    min-width: 250px;
+    min-width: 200px;
 }
 
 .bits-col-admin {
-    width: 100px;
+    width: 90px;
+    text-align: center;
 }
 
 .bits-col-time {
-    width: 150px;
+    width: 140px;
     white-space: nowrap;
+    text-align: center;
 }
 
 /* Log ID link */
@@ -125,9 +140,10 @@
     color: var(--bits-primary);
 }
 
-/* Target info */
+/* Target info - inline display */
 .bits-target-info {
     line-height: 1.5;
+    white-space: nowrap;
 }
 
 .bits-target-user {
@@ -149,9 +165,10 @@
     text-decoration: underline;
 }
 
-/* Action detail */
+/* Action detail - pre-wrap for multiline */
 .bits-action-detail {
     white-space: pre-wrap;
+    word-break: break-word;
     line-height: 1.6;
     color: var(--bits-text);
 }

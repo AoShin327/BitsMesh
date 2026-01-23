@@ -57,28 +57,10 @@ $perPage = $this->data('PerPage', 20);
                         </a>
                     </td>
                     <td class="bits-col-target">
-                        <div class="bits-target-info">
-                            <?php if (!empty($log['RecordUserName'])): ?>
-                            <a href="/space/<?php echo $log['RecordUserID']; ?>" class="bits-target-user">
-                                <?php echo htmlspecialchars($log['RecordUserName']); ?>
-                            </a>
-                            <?php echo t('of', '的'); ?>
-                            <?php endif; ?>
-                            <?php if (!empty($log['RecordUrl'])): ?>
-                            <a href="<?php echo htmlspecialchars($log['RecordUrl']); ?>" class="bits-target-record">
-                                <?php echo ModerationLogModel::formatRecordType($log['RecordType']); ?>
-                            </a>
-                            <?php else: ?>
-                            <span class="bits-target-record">
-                                <?php echo ModerationLogModel::formatRecordType($log['RecordType']); ?>
-                            </span>
-                            <?php endif; ?>
-                        </div>
+                        <div class="bits-target-info"><?php if (!empty($log['RecordUserName'])): ?><a href="/space/<?php echo $log['RecordUserID']; ?>" class="bits-target-user"><?php echo htmlspecialchars($log['RecordUserName']); ?></a> <?php echo t('of', '的'); ?> <?php endif; ?><?php if (!empty($log['RecordUrl'])): ?><a href="<?php echo htmlspecialchars($log['RecordUrl']); ?>" class="bits-target-record"><?php echo ModerationLogModel::formatRecordType($log['RecordType']); ?></a><?php else: ?><span class="bits-target-record"><?php echo ModerationLogModel::formatRecordType($log['RecordType']); ?></span><?php endif; ?></div>
                     </td>
                     <td class="bits-col-action">
-                        <div class="bits-action-detail">
-                            <?php echo nl2br(htmlspecialchars(ModerationLogModel::buildActionSummary($log))); ?>
-                        </div>
+                        <div class="bits-action-detail"><?php echo htmlspecialchars(ModerationLogModel::buildActionSummary($log)); ?></div>
                     </td>
                     <td class="bits-col-admin">
                         <a href="/space/<?php echo $log['InsertUserID']; ?>" class="bits-admin-link">
