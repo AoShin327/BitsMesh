@@ -58,7 +58,7 @@ $this->title(t('Lucky Draw', '幸运抽奖'));
             <div class="form-row">
                 <div class="form-group form-group-half">
                     <label for="winner-count"><?php echo t('Winner Count', '中奖人数'); ?> <span class="required">*</span></label>
-                    <input type="number" id="winner-count" name="winnerCount" min="1" max="100" value="3" required>
+                    <input type="number" id="winner-count" name="winnerCount" min="1" max="100" value="1" required>
                 </div>
                 <div class="form-group form-group-half">
                     <label for="start-floor"><?php echo t('Start Floor', '起始楼层'); ?></label>
