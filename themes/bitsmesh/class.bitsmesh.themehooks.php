@@ -222,7 +222,7 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         if (preg_match('#^profile/([^/]+)/?$#i', $path, $matches)) {
             $userRef = $matches[1];
             // Allow action paths (edit, picture, preferences, etc.)
-            $allowedActions = ['space', 'edit', 'picture', 'preferences', 'connections', 'tokens', 'password', 'activity', 'notifications', 'invitations', 'count', 'nomobile'];
+            $allowedActions = ['space', 'edit', 'picture', 'preferences', 'connections', 'tokens', 'password', 'activity', 'notifications', 'invitations', 'count', 'nomobile', 'setting', 'follow'];
             if (!in_array(strtolower($userRef), $allowedActions)) {
                 // Try to get user ID and redirect to new format
                 $userModel = new UserModel();
@@ -248,6 +248,13 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         if (preg_match('#^page-(\d+)$#i', $path, $matches)) {
             $pageNum = (int)$matches[1];
             $request->path('discussions/p' . $pageNum);
+            return;
+        }
+
+        // === 6. User setting page: /setting → /profile/setting ===
+        if (preg_match('#^setting(?:/.*)?$#i', $path) || $path === 'setting') {
+            $request->path('profile/setting');
+            return;
         }
     }
 
@@ -264,6 +271,25 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         $construct->table('Category');
         if (!$construct->columnExists('IconID')) {
             $construct->column('IconID', 'varchar(50)', true);
+            $construct->set(false, false);
+        }
+
+        // Add Bio, Signature, Readme columns to User table
+        $construct->table('User');
+        $needsUpdate = false;
+        if (!$construct->columnExists('Bio')) {
+            $construct->column('Bio', 'varchar(255)', true);
+            $needsUpdate = true;
+        }
+        if (!$construct->columnExists('Signature')) {
+            $construct->column('Signature', 'text', true);
+            $needsUpdate = true;
+        }
+        if (!$construct->columnExists('Readme')) {
+            $construct->column('Readme', 'text', true);
+            $needsUpdate = true;
+        }
+        if ($needsUpdate) {
             $construct->set(false, false);
         }
 
@@ -533,7 +559,7 @@ body.dark-layout {
         $sender->setData('SidebarBookmarksUrl', $isLoggedIn && $session->User
             ? url('/space/' . val('UserID', $session->User) . '/favorite')
             : url('/discussions/bookmarked'));
-        $sender->setData('SidebarSettingsUrl', url('/profile/preferences'));
+        $sender->setData('SidebarSettingsUrl', url('/setting'));
         // Follow list URL
         $sender->setData('SidebarFollowingUrl', $isLoggedIn && $session->User
             ? url('/space/' . $session->UserID . '/follow/following')
@@ -1485,6 +1511,226 @@ body.dark-layout {
         $sender->setData('IsFollowing', $isFollowing);
         $sender->setData('FollowingCount', $followingCount);
         $sender->setData('FollowersCount', $followersCount);
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * User setting page - /setting
+     *
+     * Modern forum style user settings page with tab navigation.
+     * Requires login.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @param string $tab Current tab (introduction, security, contact, block, preference, homepage, extend).
+     * @return void
+     */
+    public function profileController_setting_create($sender, $tab = 'introduction') {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            // For API requests, return JSON error
+            if ($tab === 'save' || $tab === 'avatar') {
+                $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+                $sender->deliveryType(DELIVERY_TYPE_DATA);
+                $sender->setData('Success', false);
+                $sender->setData('Error', t('You must be signed in.'));
+                $sender->render('blank', 'utility', 'dashboard');
+                return;
+            }
+            redirectTo('/entry/signin?Target=' . urlencode('/setting'));
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        // Handle API endpoints
+        if ($tab === 'save') {
+            $this->handleProfileSave($sender);
+            return;
+        }
+
+        if ($tab === 'avatar') {
+            $this->handleAvatarUpload($sender);
+            return;
+        }
+
+        // Get current user
+        $userID = Gdn::session()->UserID;
+        $userModel = new UserModel();
+        $user = $userModel->getID($userID);
+
+        if (!$user) {
+            throw notFoundException('User');
+        }
+
+        // Tab definitions
+        $tabs = [
+            'introduction' => ['label' => t('Profile Info', '个人信息'), 'icon' => 'user'],
+            'security' => ['label' => t('Security', '安全'), 'icon' => 'protect'],
+            'contact' => ['label' => t('Contact', '联系方式'), 'icon' => 'phone-telephone'],
+            'block' => ['label' => t('Blocked Users', '屏蔽用户'), 'icon' => 'people-delete'],
+            'preference' => ['label' => t('Preferences', '常用偏好'), 'icon' => 'config'],
+            'homepage' => ['label' => t('Homepage Sections', '首页版块'), 'icon' => 'all-application'],
+            'extend' => ['label' => t('Extensions', '论坛扩展'), 'icon' => 'puzzle'],
+        ];
+
+        // Validate tab
+        if (!isset($tabs[$tab])) {
+            $tab = 'introduction';
+        }
+
+        // Set data for view
+        $sender->setData('User', $user);
+        $sender->setData('UserID', $userID);
+        $sender->setData('Tab', $tab);
+        $sender->setData('Tabs', $tabs);
+
+        // Page title
+        $sender->title(t('Settings', '设置'));
+
+        // Add CSS and JS
+        $sender->addCssFile('bits-setting.css', 'themes/bitsmesh');
+
+        // Add Cropper.js from CDN (only for introduction tab)
+        if ($tab === 'introduction') {
+            $sender->Head->addCss('https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css');
+            $sender->Head->addScript('https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js');
+        }
+
+        $sender->addJsFile('bits-setting.js', 'themes/bitsmesh');
+
+        // Render
+        $sender->render('setting', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * Handle profile save (Bio, Signature, Readme).
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    private function handleProfileSave($sender) {
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+
+        // Get current user
+        $userID = Gdn::session()->UserID;
+
+        // Get form values
+        $bio = Gdn::request()->post('Bio', '');
+        $signature = Gdn::request()->post('Signature', '');
+        $readme = Gdn::request()->post('Readme', '');
+
+        // Validate Bio length
+        if (strlen($bio) > 255) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Bio must be 255 characters or less.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Sanitize inputs
+        $bio = Gdn_Format::text($bio);
+        // Signature and Readme support Markdown, store as-is but sanitize
+        $signature = trim($signature);
+        $readme = trim($readme);
+
+        // Update user
+        $userModel = new UserModel();
+        $result = $userModel->save([
+            'UserID' => $userID,
+            'Bio' => $bio,
+            'Signature' => $signature,
+            'Readme' => $readme
+        ]);
+
+        if ($result) {
+            $sender->setData('Success', true);
+            $sender->setData('Message', t('Your profile has been updated.'));
+        } else {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Failed to update profile.'));
+        }
+
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Handle avatar upload with cropping.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    private function handleAvatarUpload($sender) {
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+
+        // Get current user
+        $userID = Gdn::session()->UserID;
+
+        // Get base64 image data
+        $avatarData = Gdn::request()->post('Avatar', '');
+
+        if (empty($avatarData)) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('No image data provided.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Parse base64 data
+        if (preg_match('/^data:image\/(png|jpe?g|gif);base64,(.+)$/i', $avatarData, $matches)) {
+            $imageType = strtolower($matches[1]);
+            $imageData = base64_decode($matches[2]);
+
+            if ($imageData === false) {
+                $sender->setData('Success', false);
+                $sender->setData('Error', t('Invalid image data.'));
+                $sender->render('blank', 'utility', 'dashboard');
+                return;
+            }
+
+            // Generate filename
+            $ext = ($imageType === 'jpeg' || $imageType === 'jpg') ? 'jpg' : $imageType;
+            $filename = 'userpics/np' . md5($userID . time() . rand()) . '.' . $ext;
+            $targetPath = PATH_UPLOADS . '/' . $filename;
+
+            // Ensure directory exists
+            $dir = dirname($targetPath);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            // Save image
+            if (file_put_contents($targetPath, $imageData) === false) {
+                $sender->setData('Success', false);
+                $sender->setData('Error', t('Failed to save image.'));
+                $sender->render('blank', 'utility', 'dashboard');
+                return;
+            }
+
+            // Update user photo
+            $userModel = new UserModel();
+            $result = $userModel->save([
+                'UserID' => $userID,
+                'Photo' => $filename
+            ]);
+
+            if ($result) {
+                $photoUrl = Gdn_Upload::url($filename);
+                $sender->setData('Success', true);
+                $sender->setData('PhotoUrl', $photoUrl);
+                $sender->setData('Message', t('Avatar updated successfully.'));
+            } else {
+                // Clean up file on failure
+                @unlink($targetPath);
+                $sender->setData('Success', false);
+                $sender->setData('Error', t('Failed to update avatar.'));
+            }
+        } else {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid image format.'));
+        }
+
         $sender->render('blank', 'utility', 'dashboard');
     }
 }

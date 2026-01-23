@@ -112,6 +112,19 @@ $FloorUrl = $Discussion->Url.'#0';
             </article>
 
             <?php
+            // BitsMesh: User Signature Display
+            $signature = val('Signature', $Author, '');
+            if (!empty($signature)):
+            ?>
+            <div class="bits-user-signature">
+                <div class="bits-signature-divider"></div>
+                <div class="bits-signature-content UserContent">
+                    <?php echo Gdn_Format::to($signature, 'Markdown'); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php
             $this->fireEvent('AfterDiscussionBody');
 
             // BitsMesh: Modern Forum Style Comment Menu

@@ -39,6 +39,10 @@ if (Gdn::session()->UserID && Gdn::session()->UserID != $userID) {
 // Get user photo - use userPhotoUrl() to ensure correct absolute URL
 $photoUrl = userPhotoUrl($user);
 
+// Get user profile fields (Bio, Readme)
+$bio = val('Bio', $user, '');
+$readme = val('Readme', $user, '');
+
 // Base URL for tabs
 $baseUrl = '/space/' . $userID;
 
@@ -62,7 +66,7 @@ $tabs = [
                 <span class="bits-role-tag bits-level-<?php echo $level; ?>">Lv<?php echo $level; ?></span>
                 <?php endif; ?>
             </h1>
-            <p class="bits-space-bio"><?php echo t('Welcome to my space!', '一句话介绍自己'); ?></p>
+            <p class="bits-space-bio"><?php echo $bio ? htmlspecialchars($bio) : t('No bio yet', '这个人很懒，什么都没写~'); ?></p>
         </div>
         <?php if (Gdn::session()->UserID && Gdn::session()->UserID != $userID): ?>
         <!-- Action buttons for viewing other users -->
@@ -123,6 +127,20 @@ $tabs = [
     <div class="bits-space-content">
         <?php if ($tab === 'general'): ?>
         <!-- General Overview -->
+
+        <?php if (!empty($readme)): ?>
+        <!-- User Readme Section -->
+        <div class="bits-space-section bits-readme-section">
+            <h3 class="bits-section-title">
+                <svg class="iconpark-icon"><use href="#book-open"></use></svg>
+                <?php echo t('About Me', '关于我'); ?>
+            </h3>
+            <div class="bits-readme-content UserContent">
+                <?php echo Gdn_Format::to($readme, 'Markdown'); ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <div class="bits-space-section">
             <h3 class="bits-section-title">
                 <svg class="iconpark-icon"><use href="#edit"></use></svg>

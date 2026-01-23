@@ -161,6 +161,19 @@ function writeComment($comment, $sender, $session, $currentOffset) {
                 </article>
 
                 <?php
+                // BitsMesh: User Signature Display
+                $signature = val('Signature', $author, '');
+                if (!empty($signature)):
+                ?>
+                <div class="bits-user-signature">
+                    <div class="bits-signature-divider"></div>
+                    <div class="bits-signature-content UserContent">
+                        <?php echo Gdn_Format::to($signature, 'Markdown'); ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php
                 $sender->fireEvent('AfterCommentBody');
 
                 // BitsMesh: Modern Forum Style Comment Menu
