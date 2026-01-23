@@ -1,0 +1,634 @@
+/**
+ * BitsMesh Lottery Page Styles
+ *
+ * @package BitsMesh
+ * @since 1.0
+ */
+
+/* Page Container */
+.lottery-page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.lottery-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.lottery-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0 0 8px 0;
+}
+
+.lottery-title .iconpark-icon {
+    color: var(--bits-primary);
+}
+
+.lottery-subtitle {
+    color: var(--bits-text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Card Style */
+.lottery-card {
+    background: var(--bits-bg-main);
+    border: 1px solid var(--bits-border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+/* Section Title */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--bits-border);
+}
+
+.section-title .iconpark-icon {
+    color: var(--bits-primary);
+}
+
+/* Form Styles */
+.lottery-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--bits-text);
+}
+
+.form-group .required {
+    color: #ef4444;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group input[type="number"] {
+    padding: 10px 12px;
+    border: 1px solid var(--bits-border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: var(--bits-bg-main);
+    color: var(--bits-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--bits-primary);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--bits-text-secondary);
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.form-group-half {
+    flex: 1;
+}
+
+/* Checkbox */
+.form-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--bits-primary);
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 8px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--bits-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--bits-primary-dark, #16a34a);
+}
+
+.btn-secondary {
+    background: var(--bits-bg-secondary);
+    color: var(--bits-text);
+    border: 1px solid var(--bits-border);
+}
+
+.btn-secondary:hover {
+    background: var(--bits-bg-hover);
+}
+
+.btn-generate {
+    width: 100%;
+}
+
+.btn-copy {
+    padding: 8px 12px;
+    background: var(--bits-bg-secondary);
+    border: 1px solid var(--bits-border);
+    border-radius: 6px;
+    color: var(--bits-text-secondary);
+}
+
+.btn-copy:hover {
+    background: var(--bits-bg-hover);
+    color: var(--bits-text);
+}
+
+.btn-copy.copied {
+    background: var(--bits-primary);
+    color: white;
+    border-color: var(--bits-primary);
+}
+
+/* Generated Link */
+.generated-link {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--bits-border);
+}
+
+.generated-link label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--bits-text);
+    margin-bottom: 8px;
+}
+
+.link-container {
+    display: flex;
+    gap: 8px;
+}
+
+.link-container input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--bits-border);
+    border-radius: 8px;
+    background: var(--bits-bg-secondary);
+    color: var(--bits-text);
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.link-actions {
+    margin-top: 12px;
+}
+
+/* Loading State */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 16px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--bits-border);
+    border-top-color: var(--bits-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+    color: var(--bits-text-secondary);
+    margin: 0;
+}
+
+/* Error State */
+.error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    gap: 12px;
+}
+
+.error-message .iconpark-icon {
+    color: #ef4444;
+}
+
+.error-message h3 {
+    margin: 0;
+    color: var(--bits-text);
+}
+
+.error-message p {
+    color: var(--bits-text-secondary);
+    margin: 0 0 8px 0;
+}
+
+/* Waiting State */
+.waiting-content {
+    text-align: center;
+}
+
+.lottery-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.info-item {
+    display: flex;
+    gap: 8px;
+}
+
+.info-label {
+    color: var(--bits-text-secondary);
+    min-width: 80px;
+}
+
+.info-value {
+    color: var(--bits-text);
+    font-weight: 500;
+}
+
+.info-link {
+    color: var(--bits-primary);
+    text-decoration: none;
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+/* Countdown */
+.countdown-container {
+    margin: 32px 0;
+}
+
+.countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.countdown-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--bits-primary);
+    font-family: monospace;
+    background: var(--bits-bg-secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    min-width: 70px;
+}
+
+.countdown-label {
+    font-size: 0.8rem;
+    color: var(--bits-text-secondary);
+}
+
+.countdown-separator {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--bits-text-secondary);
+    margin-bottom: 20px;
+}
+
+/* Participation Stats */
+.participation-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin: 24px 0;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bits-text);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--bits-text-secondary);
+}
+
+.waiting-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--bits-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 16px;
+}
+
+.waiting-hint .iconpark-icon {
+    color: var(--bits-primary);
+}
+
+/* Results */
+.results-info {
+    background: var(--bits-bg-secondary);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+/* Winners Section */
+.winners-section {
+    margin-bottom: 24px;
+}
+
+.winners-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0 0 16px 0;
+}
+
+.winners-title .iconpark-icon {
+    color: #f59e0b;
+}
+
+.winners-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.winner-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bits-bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--bits-border);
+}
+
+.winner-floor {
+    font-weight: 600;
+    color: var(--bits-primary);
+    min-width: 50px;
+}
+
+.winner-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.winner-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.winner-name {
+    flex: 1;
+    font-weight: 500;
+    color: var(--bits-text);
+}
+
+.winner-link {
+    color: var(--bits-primary);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.winner-link:hover {
+    text-decoration: underline;
+}
+
+/* @ Message Section */
+.at-message-section {
+    margin-bottom: 24px;
+}
+
+.at-message-section label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--bits-text);
+    margin-bottom: 8px;
+}
+
+.at-message-container {
+    display: flex;
+    gap: 8px;
+}
+
+.at-message-container textarea {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--bits-border);
+    border-radius: 8px;
+    background: var(--bits-bg-secondary);
+    color: var(--bits-text);
+    font-size: 0.9rem;
+    resize: none;
+}
+
+/* Verification Section */
+.verification-section {
+    border: 1px solid var(--bits-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.verification-section summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--bits-bg-secondary);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--bits-text);
+}
+
+.verification-section summary:hover {
+    background: var(--bits-bg-hover);
+}
+
+.verification-section summary .iconpark-icon {
+    color: var(--bits-primary);
+}
+
+.verification-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.verify-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.verify-label {
+    color: var(--bits-text-secondary);
+    font-size: 0.85rem;
+    min-width: 100px;
+}
+
+.verify-item code {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--bits-text);
+    background: var(--bits-bg-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.randomness-code {
+    word-break: break-all;
+    max-width: 400px;
+}
+
+.verify-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--bits-border);
+    color: var(--bits-text-secondary);
+    font-size: 0.85rem;
+}
+
+.verify-hint .iconpark-icon {
+    color: var(--bits-primary);
+}
+
+/* Hidden utility */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .lottery-page {
+        padding: 16px;
+    }
+
+    .lottery-card {
+        padding: 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .countdown-value {
+        font-size: 1.8rem;
+        padding: 6px 12px;
+        min-width: 50px;
+    }
+
+    .countdown-separator {
+        font-size: 1.5rem;
+    }
+
+    .participation-stats {
+        gap: 24px;
+    }
+
+    .winner-item {
+        flex-wrap: wrap;
+    }
+
+    .winner-link {
+        width: 100%;
+        margin-top: 8px;
+    }
+}

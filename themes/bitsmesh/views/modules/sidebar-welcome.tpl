@@ -184,8 +184,8 @@
             </a>
         </li>
         <li>
-            <a href="#">
-                <svg class="iconpark-icon"><use href="#optimize"></use></svg>
+            <a href="/lottery">
+                <svg class="iconpark-icon"><use href="#gift"></use></svg>
                 <span>{t c="Lucky Draw" d="幸运抽奖"}</span>
             </a>
         </li>

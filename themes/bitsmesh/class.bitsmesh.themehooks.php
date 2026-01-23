@@ -262,6 +262,18 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $request->path('profile/notification');
             return;
         }
+
+        // === 8. Lottery API: /lottery/api/{id} → /profile/lotteryapi/{id} ===
+        if (preg_match('#^lottery/api/(\d+)(?:\?.*)?$#i', $path, $matches)) {
+            $request->path('profile/lotteryapi/' . $matches[1]);
+            return;
+        }
+
+        // === 9. Lottery page: /lottery → /profile/lottery ===
+        if (preg_match('#^lottery(?:\?.*)?$#i', $path) || $path === 'lottery') {
+            $request->path('profile/lottery');
+            return;
+        }
     }
 
     /**
@@ -2153,6 +2165,159 @@ body.dark-layout {
 
         // Render
         $sender->render('notification', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * Handle /lottery page.
+     *
+     * Fair lottery tool based on Cloudflare drand random beacon.
+     * Pure frontend implementation with verifiable results.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_lottery_create($sender) {
+        // Lottery page is public (no login required)
+        // Users need to view results without logging in
+
+        $sender->title(t('Lucky Draw', '幸运抽奖'));
+
+        // Set breadcrumbs
+        $sender->setData('Breadcrumbs', [
+            ['Name' => t('Home'), 'Url' => '/'],
+            ['Name' => t('Lucky Draw', '幸运抽奖'), 'Url' => '/lottery']
+        ]);
+
+        // Add assets
+        $sender->addCssFile('bits-lottery.css', 'themes/bitsmesh');
+        $sender->addJsFile('lottery.js', 'themes/bitsmesh');
+
+        // Render
+        $sender->render('lottery', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * Handle /lottery/api endpoint for fetching discussion and comment data.
+     *
+     * This custom endpoint bypasses the broken Vanilla API v2 (PHP 8.x compatibility issues)
+     * and provides the data needed for the lottery feature.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @param int $discussionID The discussion ID.
+     * @return void
+     */
+    public function profileController_lotteryApi_create($sender, $discussionID = 0) {
+        // Set JSON response headers
+        header('Content-Type: application/json; charset=utf-8');
+
+        // Validate discussion ID
+        $discussionID = (int)$discussionID;
+        if ($discussionID <= 0) {
+            echo json_encode(['error' => 'Invalid discussion ID']);
+            exit;
+        }
+
+        try {
+            // Get discussion data
+            $discussionModel = new DiscussionModel();
+            $discussion = $discussionModel->getID($discussionID, DATASET_TYPE_ARRAY);
+
+            if (!$discussion) {
+                echo json_encode(['error' => 'Discussion not found']);
+                exit;
+            }
+
+            // Check view permission for the category
+            $categoryID = val('CategoryID', $discussion, 0);
+            $category = CategoryModel::categories($categoryID);
+            if (!$category || !CategoryModel::checkPermission($category, 'Vanilla.Discussions.View')) {
+                echo json_encode(['error' => 'Permission denied']);
+                exit;
+            }
+
+            // Get author info
+            $userModel = new UserModel();
+            $author = $userModel->getID(val('InsertUserID', $discussion, 0), DATASET_TYPE_ARRAY);
+            $authorPhoto = '';
+            if ($author) {
+                $authorPhoto = val('Photo', $author, '');
+                if ($authorPhoto && !isUrl($authorPhoto)) {
+                    $authorPhoto = Gdn_Upload::url(changeBasename($authorPhoto, 'n%s'));
+                } elseif (!$authorPhoto) {
+                    $authorPhoto = UserModel::getDefaultAvatarUrl($author);
+                }
+            }
+
+            // Build discussion response
+            $discussionData = [
+                'discussionID' => (int)$discussion['DiscussionID'],
+                'name' => $discussion['Name'],
+                'body' => $discussion['Body'],
+                'format' => $discussion['Format'],
+                'dateInserted' => $discussion['DateInserted'],
+                'insertUserID' => (int)$discussion['InsertUserID'],
+                'insertUser' => [
+                    'userID' => (int)val('UserID', $author, 0),
+                    'name' => val('Name', $author, 'Unknown'),
+                    'photoUrl' => $authorPhoto,
+                ],
+                'countComments' => (int)$discussion['CountComments'],
+                'url' => discussionUrl($discussion),
+            ];
+
+            // Get all comments for this discussion
+            $commentModel = new CommentModel();
+            $limit = 1000; // Get up to 1000 comments
+            $commentsData = $commentModel->get($discussionID, $limit, 0);
+
+            $comments = [];
+            $userCache = [];
+
+            if ($commentsData) {
+                foreach ($commentsData as $comment) {
+                    $commentUserID = (int)val('InsertUserID', $comment, 0);
+
+                    // Cache user info
+                    if (!isset($userCache[$commentUserID])) {
+                        $userCache[$commentUserID] = $userModel->getID($commentUserID, DATASET_TYPE_ARRAY);
+                    }
+
+                    $commentUser = $userCache[$commentUserID];
+                    $commentUserPhoto = '';
+                    if ($commentUser) {
+                        $commentUserPhoto = val('Photo', $commentUser, '');
+                        if ($commentUserPhoto && !isUrl($commentUserPhoto)) {
+                            $commentUserPhoto = Gdn_Upload::url(changeBasename($commentUserPhoto, 'n%s'));
+                        } elseif (!$commentUserPhoto) {
+                            $commentUserPhoto = UserModel::getDefaultAvatarUrl($commentUser);
+                        }
+                    }
+
+                    $comments[] = [
+                        'commentID' => (int)val('CommentID', $comment, 0),
+                        'body' => val('Body', $comment, ''),
+                        'format' => val('Format', $comment, 'Html'),
+                        'dateInserted' => val('DateInserted', $comment, ''),
+                        'insertUserID' => $commentUserID,
+                        'insertUser' => [
+                            'userID' => (int)val('UserID', $commentUser, 0),
+                            'name' => val('Name', $commentUser, 'Unknown'),
+                            'photoUrl' => $commentUserPhoto,
+                        ],
+                        'url' => commentUrl($comment),
+                    ];
+                }
+            }
+
+            echo json_encode([
+                'discussion' => $discussionData,
+                'comments' => $comments,
+            ]);
+        } catch (Exception $e) {
+            echo json_encode(['error' => 'Failed to fetch data: ' . $e->getMessage()]);
+        }
+
+        exit;
     }
 
     /**
