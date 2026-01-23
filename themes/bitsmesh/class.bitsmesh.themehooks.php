@@ -299,15 +299,15 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             return;
         }
 
-        // === 13. Partners page: /partners → /plugin/partners ===
+        // === 13. Partners page: /partners → /profile/partners ===
         if (preg_match('#^partners(?:\?.*)?$#i', $path)) {
-            $request->path('plugin/partners');
+            $request->path('profile/partners');
             return;
         }
 
-        // === 14. Friend Links page: /links → /plugin/links ===
+        // === 14. Friend Links page: /links → /profile/links ===
         if (preg_match('#^links(?:\?.*)?$#i', $path)) {
-            $request->path('plugin/links');
+            $request->path('profile/links');
             return;
         }
     }
@@ -3875,13 +3875,14 @@ body.dark-layout {
      * Route: /partners
      * Displays partner cards from configuration.
      *
-     * @param PluginController $sender
+     * @param ProfileController $sender
      * @return void
      */
-    public function pluginController_partners_create($sender) {
-        $sender->permission('Garden.SignIn.Allow');
+    public function profileController_partners_create($sender) {
+        // Public page - no login required
         $sender->title(t('Partners', '合作商家'));
         $sender->setData('Breadcrumbs', [
+            ['Name' => t('Home'), 'Url' => '/'],
             ['Name' => t('Partners', '合作商家'), 'Url' => '/partners']
         ]);
 
@@ -3899,13 +3900,14 @@ body.dark-layout {
      * Route: /links
      * Displays friend link cards from configuration.
      *
-     * @param PluginController $sender
+     * @param ProfileController $sender
      * @return void
      */
-    public function pluginController_links_create($sender) {
-        $sender->permission('Garden.SignIn.Allow');
+    public function profileController_links_create($sender) {
+        // Public page - no login required
         $sender->title(t('FriendLinks', '友站链接'));
         $sender->setData('Breadcrumbs', [
+            ['Name' => t('Home'), 'Url' => '/'],
             ['Name' => t('FriendLinks', '友站链接'), 'Url' => '/links']
         ]);
 
