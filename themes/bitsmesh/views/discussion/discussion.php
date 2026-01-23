@@ -61,7 +61,7 @@ if (c('Vanilla.Categories.Use')) {
 // Floor link URL
 $FloorUrl = $Discussion->Url.'#0';
 ?>
-<div id="<?php echo 'Discussion_'.$Discussion->DiscussionID; ?>" class="<?php echo $CssClass; ?> ItemDiscussion">
+<div id="<?php echo 'Discussion_'.$Discussion->DiscussionID; ?>" class="<?php echo $CssClass; ?> ItemDiscussion bits-discussion-content" data-discussion-id="<?php echo $Discussion->DiscussionID; ?>" data-record-type="discussion" data-record-id="<?php echo $Discussion->DiscussionID; ?>">
     <!-- BitsMesh: Floor anchor for /post-{id}#0 URL format -->
     <span id="0"></span>
     <div class="Discussion">

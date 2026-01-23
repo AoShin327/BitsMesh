@@ -205,4 +205,125 @@ body.dark-layout.bits-bg-grid {
         linear-gradient(to right, var(--bits-text-fade) 1px, transparent 1px);
 }
 
+/* ==========================================================================
+   Comment Menu Interactions
+   ========================================================================== */
+
+/* Menu item base styles */
+.comment-menu .menu-item {
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.comment-menu .menu-item:hover {
+    color: var(--bits-primary);
+}
+
+.comment-menu .menu-item:active {
+    transform: scale(0.95);
+}
+
+/* Loading state */
+.comment-menu .menu-item.bits-loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.comment-menu .menu-item.bits-loading::after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 4px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: bits-spin 0.6s linear infinite;
+}
+
+@keyframes bits-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Active states */
+.comment-menu .menu-like.active {
+    color: var(--bits-primary);
+}
+
+.comment-menu .menu-like.active .iconpark-icon {
+    fill: var(--bits-primary);
+}
+
+.comment-menu .menu-dislike.active {
+    color: #ef4444;
+}
+
+.comment-menu .menu-dislike.active .iconpark-icon {
+    fill: #ef4444;
+}
+
+.comment-menu .menu-credit.given {
+    color: #f59e0b;
+}
+
+.comment-menu .menu-credit.given .iconpark-icon {
+    fill: #f59e0b;
+}
+
+/* Bookmark button improvements */
+.menu-bookmark.bits-loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.menu-bookmark.bookmarked {
+    color: var(--bits-primary);
+}
+
+.menu-bookmark.bookmarked .iconpark-icon {
+    fill: var(--bits-primary);
+}
+
+/* Toast notifications */
+.bits-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10000;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bits-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.bits-toast-success {
+    background: var(--bits-primary);
+    color: white;
+}
+
+.bits-toast-error {
+    background: #ef4444;
+    color: white;
+}
+
+.bits-toast-info {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Dark mode adjustments */
+body.dark-layout .bits-toast {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
 

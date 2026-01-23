@@ -96,7 +96,7 @@ function writeComment($comment, $sender, $session, $currentOffset) {
     // First comment template event
     $sender->fireEvent('BeforeCommentDisplay');
 ?>
-    <li class="<?php echo $cssClass; ?>" id="<?php echo 'Comment_'.$comment->CommentID; ?>">
+    <li class="<?php echo $cssClass; ?>" id="<?php echo 'Comment_'.$comment->CommentID; ?>" data-comment-id="<?php echo $comment->CommentID; ?>" data-record-type="comment" data-record-id="<?php echo $comment->CommentID; ?>">
         <!-- BitsMesh: Floor anchor for /post-{id}#{floor} URL format -->
         <span id="<?php echo $floorNumber; ?>"></span>
         <div class="Comment">
