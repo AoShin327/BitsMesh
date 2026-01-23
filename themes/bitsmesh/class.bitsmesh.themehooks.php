@@ -3991,17 +3991,93 @@ body.dark-layout {
     // =========================================================================
 
     /**
+     * Capture moderation form data directly from POST.
+     * This is called early in the request lifecycle.
+     *
+     * @return array|null
+     */
+    private function getModerationFormData() {
+        // Only capture data from authenticated POST requests
+        if (!Gdn::request()->isAuthenticatedPostBack()) {
+            return null;
+        }
+
+        $session = Gdn::session();
+        if (!$session->isValid()) {
+            return null;
+        }
+
+        // Check if this is a moderation action
+        $isPublic = isset($_POST['IsPublic']) ? 1 : 0;
+        $reason = isset($_POST['Reason']) ? trim($_POST['Reason']) : '';
+        $creditsAction = isset($_POST['CreditsAction']) ? trim($_POST['CreditsAction']) : '';
+        $creditsAmount = isset($_POST['CreditsAmount']) ? abs((int)$_POST['CreditsAmount']) : 0;
+        $creditsReason = isset($_POST['CreditsReason']) ? trim($_POST['CreditsReason']) : '';
+
+        // If no moderation fields found, return null
+        if (!isset($_POST['IsPublic']) && empty($reason) && empty($creditsAction)) {
+            return null;
+        }
+
+        return [
+            'IsPublic' => $isPublic,
+            'Reason' => $reason,
+            'CreditsAction' => $creditsAction,
+            'CreditsAmount' => $creditsAmount,
+            'CreditsReason' => $creditsReason
+        ];
+    }
+
+    /**
+     * Process credits change for a user.
+     *
+     * @param int $userID Target user ID
+     * @param string $action 'add' or 'subtract'
+     * @param int $amount Credits amount
+     * @param string $reason Reason for the change
+     * @return int Actual points change (positive or negative)
+     */
+    private function processCreditsChange($userID, $action, $amount, $reason = '') {
+        if (!$userID || !$amount || !in_array($action, ['add', 'subtract'])) {
+            return 0;
+        }
+
+        $userModel = Gdn::userModel();
+        $user = $userModel->getID($userID, DATASET_TYPE_ARRAY);
+
+        if (!$user) {
+            return 0;
+        }
+
+        $currentPoints = (int)($user['Points'] ?? 0);
+        $pointsChange = ($action === 'add') ? $amount : -$amount;
+        $newPoints = max(0, $currentPoints + $pointsChange); // Don't go below 0
+
+        // Update user points
+        $userModel->setField($userID, 'Points', $newPoints);
+
+        return $pointsChange;
+    }
+
+    /**
      * Log discussion deletion to ModerationLog.
      *
      * @param DiscussionModel $sender
      * @return void
      */
     public function discussionModel_deleteDiscussion_handler($sender) {
-        $this->logModerationAction(
+        $discussionID = $sender->EventArguments['DiscussionID'];
+        $discussion = $sender->EventArguments['Discussion'] ?? null;
+
+        // Get captured form data
+        $formData = $this->getModerationFormData();
+
+        $this->logModerationActionWithFormData(
             'Delete',
             'Discussion',
-            $sender->EventArguments['DiscussionID'],
-            $sender->EventArguments['Discussion'] ?? null
+            $discussionID,
+            $discussion,
+            $formData
         );
     }
 
@@ -4015,11 +4091,15 @@ body.dark-layout {
         $comment = $sender->EventArguments['Comment'] ?? null;
         $commentID = $sender->EventArguments['CommentID'] ?? ($comment['CommentID'] ?? null);
 
-        $this->logModerationAction(
+        // Get captured form data
+        $formData = $this->getModerationFormData();
+
+        $this->logModerationActionWithFormData(
             'Delete',
             'Comment',
             $commentID,
-            $comment
+            $comment,
+            $formData
         );
     }
 
@@ -4044,18 +4124,52 @@ body.dark-layout {
             $discussion = $discussionModel->getID($discussionID, DATASET_TYPE_ARRAY);
 
             if ($discussion) {
+                // Get captured form data
+                $formData = $this->getModerationFormData();
+
                 require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
+
+                // Process credits change if requested
+                $pointsChange = 0;
+                $creditsReason = '';
+                if ($formData && !empty($formData['CreditsAction']) && !empty($formData['CreditsAmount'])) {
+                    $targetUserID = $discussion['InsertUserID'] ?? null;
+                    if ($targetUserID) {
+                        $pointsChange = $this->processCreditsChange(
+                            $targetUserID,
+                            $formData['CreditsAction'],
+                            $formData['CreditsAmount'],
+                            $formData['CreditsReason'] ?? ''
+                        );
+                        $creditsReason = $formData['CreditsReason'] ?? '';
+                    }
+                }
+
+                // Determine reason text
+                $reason = '';
+                if ($formData && !empty($formData['Reason'])) {
+                    $reason = $formData['Reason'];
+                }
+
+                // Build actions array
+                $actions = [];
+                $actions[] = t('CategoryAdjustment', 'Category moved');
+                $actions[] = sprintf(t('MovedToCategory', 'Moved to %s category'), $categoryName);
+
                 $model = new ModerationLogModel();
                 $model->addLog([
-                    'ActionType' => ModerationLogModel::ACTION_MOVE,
-                    'RecordType' => ModerationLogModel::RECORD_DISCUSSION,
+                    'ActionType' => 'Move',
+                    'RecordType' => 'Discussion',
                     'RecordID' => $discussionID,
                     'RecordUserID' => $discussion['InsertUserID'] ?? null,
                     'RecordTitle' => $discussion['Name'] ?? null,
                     'RecordUrl' => discussionUrl($discussion),
+                    'Reason' => $reason,
+                    'Actions' => $actions,
+                    'PointsChange' => $pointsChange,
                     'CategoryID' => $newCategoryID,
                     'CategoryName' => $categoryName,
-                    'IsPublic' => 1, // Default to public
+                    'IsPublic' => $formData ? ($formData['IsPublic'] ?? 1) : 1,
                     'InsertUserID' => Gdn::session()->UserID
                 ]);
             }
@@ -4063,15 +4177,16 @@ body.dark-layout {
     }
 
     /**
-     * Helper method to log moderation actions.
+     * Helper method to log moderation actions with form data.
      *
      * @param string $actionType Action type constant
      * @param string $recordType Record type constant
      * @param int $recordID Record ID
      * @param array|object|null $record Full record data if available
+     * @param array|null $formData Captured form data
      * @return void
      */
-    private function logModerationAction($actionType, $recordType, $recordID, $record = null) {
+    private function logModerationActionWithFormData($actionType, $recordType, $recordID, $record = null, $formData = null) {
         if (!$recordID) {
             return;
         }
@@ -4083,34 +4198,48 @@ body.dark-layout {
 
         require_once PATH_THEMES . '/bitsmesh/models/class.moderationlogmodel.php';
 
+        // Extract record info
+        $record = $record ? (array)$record : [];
+        $targetUserID = null;
+
         $logData = [
             'ActionType' => $actionType,
             'RecordType' => $recordType,
             'RecordID' => $recordID,
-            'IsPublic' => 1, // Default to public
+            'IsPublic' => $formData ? ($formData['IsPublic'] ?? 1) : 1,
+            'Reason' => $formData ? ($formData['Reason'] ?? '') : '',
             'InsertUserID' => Gdn::session()->UserID
         ];
 
-        // Extract record info if available
-        if ($record) {
-            $record = (array)$record;
-
-            if ($recordType === ModerationLogModel::RECORD_DISCUSSION) {
-                $logData['RecordUserID'] = $record['InsertUserID'] ?? null;
-                $logData['RecordTitle'] = $record['Name'] ?? null;
-                $logData['RecordUrl'] = isset($record['DiscussionID']) ? discussionUrl($record) : null;
-            } elseif ($recordType === ModerationLogModel::RECORD_COMMENT) {
-                $logData['RecordUserID'] = $record['InsertUserID'] ?? null;
-                // Comments don't have titles, use discussion info
-                if (isset($record['DiscussionID'])) {
-                    $discussionModel = new DiscussionModel();
-                    $discussion = $discussionModel->getID($record['DiscussionID'], DATASET_TYPE_ARRAY);
-                    if ($discussion) {
-                        $logData['RecordTitle'] = $discussion['Name'] ?? null;
-                        $logData['RecordUrl'] = commentUrl($record);
-                    }
+        if ($recordType === 'Discussion') {
+            $targetUserID = $record['InsertUserID'] ?? null;
+            $logData['RecordUserID'] = $targetUserID;
+            $logData['RecordTitle'] = $record['Name'] ?? null;
+            $logData['RecordUrl'] = isset($record['DiscussionID']) ? discussionUrl($record) : null;
+        } elseif ($recordType === 'Comment') {
+            $targetUserID = $record['InsertUserID'] ?? null;
+            $logData['RecordUserID'] = $targetUserID;
+            // Comments don't have titles, use discussion info
+            if (isset($record['DiscussionID'])) {
+                $discussionModel = new DiscussionModel();
+                $discussion = $discussionModel->getID($record['DiscussionID'], DATASET_TYPE_ARRAY);
+                if ($discussion) {
+                    $logData['RecordTitle'] = $discussion['Name'] ?? null;
+                    $logData['RecordUrl'] = commentUrl($record);
                 }
             }
+        }
+
+        // Process credits change if requested
+        $actions = [];
+        if ($formData && !empty($formData['CreditsAction']) && !empty($formData['CreditsAmount']) && $targetUserID) {
+            $pointsChange = $this->processCreditsChange(
+                $targetUserID,
+                $formData['CreditsAction'],
+                $formData['CreditsAmount'],
+                $formData['CreditsReason'] ?? ''
+            );
+            $logData['PointsChange'] = $pointsChange;
         }
 
         $model = new ModerationLogModel();
