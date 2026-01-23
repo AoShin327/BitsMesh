@@ -22,6 +22,9 @@ $bio = val('Bio', $user, '');
 $signature = val('Signature', $user, '');
 $readme = val('Readme', $user, '');
 
+// Get IP records for security tab
+$ipRecords = $this->data('IPRecords', []);
+
 // Base URL for tabs
 $baseUrl = '/setting';
 
@@ -43,7 +46,7 @@ $transientKey = Gdn::session()->transientKey();
         <div class="bits-setting-selector">
             <?php foreach ($tabs as $tabKey => $tabInfo): ?>
             <a href="<?php echo url($baseUrl . '#' . $tabKey); ?>"
-               class="bits-setting-tab <?php echo ($tab === $tabKey) ? 'active' : ''; ?>"
+               class="bits-setting-tab <?php echo ($tabKey === 'introduction') ? 'active' : ''; ?>"
                data-tab="<?php echo $tabKey; ?>">
                 <svg class="iconpark-icon"><use href="#<?php echo $tabInfo['icon']; ?>"></use></svg>
                 <span><?php echo $tabInfo['label']; ?></span>
@@ -53,9 +56,8 @@ $transientKey = Gdn::session()->transientKey();
 
         <!-- Right Content Area -->
         <div class="bits-setting-content">
-            <?php if ($tab === 'introduction'): ?>
             <!-- Profile Info Tab -->
-            <div class="bits-setting-section" id="introduction">
+            <div class="bits-setting-section active" id="introduction">
                 <h2 class="bits-section-title"><?php echo t('Profile Info', '个人信息'); ?></h2>
 
                 <form id="bits-profile-form" class="bits-setting-form">
@@ -122,16 +124,101 @@ $transientKey = Gdn::session()->transientKey();
                 </form>
             </div>
 
-            <?php elseif ($tab === 'security'): ?>
             <!-- Security Tab -->
             <div class="bits-setting-section" id="security">
                 <h2 class="bits-section-title"><?php echo t('Security', '安全'); ?></h2>
-                <div class="bits-setting-placeholder">
-                    <p><?php echo t('Security settings coming soon...', '安全设置即将上线...'); ?></p>
+
+                <!-- Recent Login IP Records -->
+                <div class="bits-security-block">
+                    <h3 class="bits-block-title">
+                        <svg class="iconpark-icon"><use href="#map"></use></svg>
+                        <?php echo t('Recent Login Records', '最近登录记录'); ?>
+                    </h3>
+                    <?php if (!empty($ipRecords)): ?>
+                    <div class="bits-login-records">
+                        <table class="bits-login-table">
+                            <thead>
+                                <tr>
+                                    <th><?php echo t('IP Address', 'IP 地址'); ?></th>
+                                    <th><?php echo t('Last Access', '最后访问时间'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($ipRecords as $record): ?>
+                                <tr>
+                                    <td class="bits-ip-cell">
+                                        <code><?php echo htmlspecialchars($record['IPAddress']); ?></code>
+                                    </td>
+                                    <td class="bits-time-cell">
+                                        <?php echo Gdn_Format::date($record['DateUpdated'], 'html'); ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php else: ?>
+                    <p class="bits-empty-message"><?php echo t('No login records found.', '暂无登录记录'); ?></p>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Password Change Form -->
+                <div class="bits-security-block">
+                    <h3 class="bits-block-title">
+                        <svg class="iconpark-icon"><use href="#lock"></use></svg>
+                        <?php echo t('Change Password', '修改密码'); ?>
+                    </h3>
+                    <form id="bits-password-form" class="bits-password-form" method="post" action="<?php echo url('/profile/setting/password'); ?>">
+                        <input type="hidden" name="TransientKey" value="<?php echo $transientKey; ?>">
+
+                        <!-- Current Password -->
+                        <div class="bits-form-group">
+                            <label for="OldPassword"><?php echo t('Current Password', '当前密码'); ?></label>
+                            <div class="bits-password-input">
+                                <input type="password" id="OldPassword" name="OldPassword" required autocomplete="current-password">
+                                <button type="button" class="bits-password-toggle" data-target="OldPassword">
+                                    <svg class="iconpark-icon icon-show"><use href="#eye"></use></svg>
+                                    <svg class="iconpark-icon icon-hide"><use href="#preview-close"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="bits-form-group">
+                            <label for="NewPassword"><?php echo t('New Password', '新密码'); ?></label>
+                            <div class="bits-password-input">
+                                <input type="password" id="NewPassword" name="NewPassword" required minlength="6" autocomplete="new-password">
+                                <button type="button" class="bits-password-toggle" data-target="NewPassword">
+                                    <svg class="iconpark-icon icon-show"><use href="#eye"></use></svg>
+                                    <svg class="iconpark-icon icon-hide"><use href="#preview-close"></use></svg>
+                                </button>
+                            </div>
+                            <span class="bits-field-hint"><?php echo t('Minimum 6 characters', '至少 6 个字符'); ?></span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="bits-form-group">
+                            <label for="ConfirmPassword"><?php echo t('Confirm New Password', '确认新密码'); ?></label>
+                            <div class="bits-password-input">
+                                <input type="password" id="ConfirmPassword" name="ConfirmPassword" required minlength="6" autocomplete="new-password">
+                                <button type="button" class="bits-password-toggle" data-target="ConfirmPassword">
+                                    <svg class="iconpark-icon icon-show"><use href="#eye"></use></svg>
+                                    <svg class="iconpark-icon icon-hide"><use href="#preview-close"></use></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="bits-form-actions">
+                            <button type="submit" class="bits-btn-primary" id="bits-change-password">
+                                <svg class="iconpark-icon"><use href="#check-one"></use></svg>
+                                <span><?php echo t('Change Password', '修改密码'); ?></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <?php elseif ($tab === 'contact'): ?>
             <!-- Contact Tab -->
             <div class="bits-setting-section" id="contact">
                 <h2 class="bits-section-title"><?php echo t('Contact', '联系方式'); ?></h2>
@@ -140,7 +227,6 @@ $transientKey = Gdn::session()->transientKey();
                 </div>
             </div>
 
-            <?php elseif ($tab === 'block'): ?>
             <!-- Blocked Users Tab -->
             <div class="bits-setting-section" id="block">
                 <h2 class="bits-section-title"><?php echo t('Blocked Users', '屏蔽用户'); ?></h2>
@@ -149,7 +235,6 @@ $transientKey = Gdn::session()->transientKey();
                 </div>
             </div>
 
-            <?php elseif ($tab === 'preference'): ?>
             <!-- Preferences Tab -->
             <div class="bits-setting-section" id="preference">
                 <h2 class="bits-section-title"><?php echo t('Preferences', '常用偏好'); ?></h2>
@@ -158,7 +243,6 @@ $transientKey = Gdn::session()->transientKey();
                 </div>
             </div>
 
-            <?php elseif ($tab === 'homepage'): ?>
             <!-- Homepage Sections Tab -->
             <div class="bits-setting-section" id="homepage">
                 <h2 class="bits-section-title"><?php echo t('Homepage Sections', '首页版块'); ?></h2>
@@ -167,7 +251,6 @@ $transientKey = Gdn::session()->transientKey();
                 </div>
             </div>
 
-            <?php elseif ($tab === 'extend'): ?>
             <!-- Extensions Tab -->
             <div class="bits-setting-section" id="extend">
                 <h2 class="bits-section-title"><?php echo t('Extensions', '论坛扩展'); ?></h2>
@@ -175,7 +258,6 @@ $transientKey = Gdn::session()->transientKey();
                     <p><?php echo t('Extension settings coming soon...', '论坛扩展设置即将上线...'); ?></p>
                 </div>
             </div>
-            <?php endif; ?>
         </div>
     </div>
 </div>

@@ -13,10 +13,61 @@
 
     // Wait for DOM and Cropper.js to be ready
     document.addEventListener('DOMContentLoaded', function() {
+        initTabSwitcher();
         initProfileForm();
         initAvatarCropper();
         initBioCounter();
+        initPasswordForm();
+        initPasswordToggle();
     });
+
+    /**
+     * Initialize tab switching based on URL hash
+     */
+    function initTabSwitcher() {
+        const tabs = document.querySelectorAll('.bits-setting-tab');
+        const sections = document.querySelectorAll('.bits-setting-section');
+
+        if (!tabs.length || !sections.length) return;
+
+        // Handle initial hash or default to introduction
+        function switchToTab(tabId) {
+            // Remove active from all tabs and sections
+            tabs.forEach(t => t.classList.remove('active'));
+            sections.forEach(s => s.classList.remove('active'));
+
+            // Add active to matching tab and section
+            const targetTab = document.querySelector(`.bits-setting-tab[data-tab="${tabId}"]`);
+            const targetSection = document.getElementById(tabId);
+
+            if (targetTab) targetTab.classList.add('active');
+            if (targetSection) targetSection.classList.add('active');
+        }
+
+        // Get initial tab from hash or default
+        function getTabFromHash() {
+            const hash = window.location.hash.substring(1);
+            const validTabs = ['introduction', 'security', 'contact', 'block', 'preference', 'homepage', 'extend'];
+            return validTabs.includes(hash) ? hash : 'introduction';
+        }
+
+        // Initial switch
+        switchToTab(getTabFromHash());
+
+        // Listen to hash changes
+        window.addEventListener('hashchange', function() {
+            switchToTab(getTabFromHash());
+        });
+
+        // Handle tab clicks (for SPA-like behavior)
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabId = this.getAttribute('data-tab');
+                window.location.hash = tabId;
+            });
+        });
+    }
 
     /**
      * Initialize profile form submission
@@ -94,6 +145,128 @@
             } else {
                 bioCount.style.color = '';
             }
+        });
+    }
+
+    /**
+     * Initialize password visibility toggle
+     */
+    function initPasswordToggle() {
+        const toggleButtons = document.querySelectorAll('.bits-password-toggle');
+        if (!toggleButtons.length) return;
+
+        toggleButtons.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (!input) return;
+
+                // Toggle password visibility
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.add('active');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    /**
+     * Initialize password form submission
+     */
+    function initPasswordForm() {
+        const form = document.getElementById('bits-password-form');
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            changePassword();
+        });
+
+        // Real-time password confirmation validation
+        const newPassword = document.getElementById('NewPassword');
+        const confirmPassword = document.getElementById('ConfirmPassword');
+
+        if (newPassword && confirmPassword) {
+            confirmPassword.addEventListener('input', function() {
+                validatePasswordMatch();
+            });
+
+            newPassword.addEventListener('input', function() {
+                if (confirmPassword.value) {
+                    validatePasswordMatch();
+                }
+            });
+        }
+    }
+
+    /**
+     * Validate password match
+     */
+    function validatePasswordMatch() {
+        const newPassword = document.getElementById('NewPassword');
+        const confirmPassword = document.getElementById('ConfirmPassword');
+        if (!newPassword || !confirmPassword) return true;
+
+        if (confirmPassword.value && newPassword.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('密码不匹配');
+            return false;
+        } else {
+            confirmPassword.setCustomValidity('');
+            return true;
+        }
+    }
+
+    /**
+     * Change password via AJAX
+     */
+    function changePassword() {
+        const form = document.getElementById('bits-password-form');
+        const btn = document.getElementById('bits-change-password');
+        if (!form || !btn) return;
+
+        // Validate password match
+        if (!validatePasswordMatch()) {
+            showToast('新密码与确认密码不匹配', 'error');
+            return;
+        }
+
+        // Disable button and show loading state
+        btn.disabled = true;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="bits-spinner"></span> 修改中...';
+
+        // Gather form data
+        const formData = new FormData(form);
+
+        // Send AJAX request
+        fetch('/profile/setting/password', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.Success) {
+                showToast(data.Message || '密码修改成功', 'success');
+                // Clear form
+                form.reset();
+            } else {
+                showToast(data.Error || '密码修改失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Password change error:', error);
+            showToast('网络错误，请稍后重试', 'error');
+        })
+        .finally(() => {
+            // Restore button state
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         });
     }
 
@@ -332,6 +505,7 @@
     // Expose to global for debugging
     window.BitsSettings = {
         saveProfile: saveProfile,
+        changePassword: changePassword,
         showToast: showToast
     };
 

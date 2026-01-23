@@ -122,7 +122,12 @@ body.dark-layout .bits-section-title {
 
 /* Section Container */
 .bits-setting-section {
+    display: none;
     animation: fadeIn 0.3s ease;
+}
+
+.bits-setting-section.active {
+    display: block;
 }
 
 @keyframes fadeIn {
@@ -794,5 +799,233 @@ body.dark-layout .bits-cropper-controls input[type="range"] {
 @keyframes bits-spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* ===================================
+   Security Tab Styles
+   =================================== */
+.bits-security-block {
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0 0 24px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--bits-border-color);
+}
+
+.bits-security-block:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+body.dark-layout .bits-security-block {
+    background-color: transparent;
+}
+
+.bits-block-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0 0 16px 0;
+}
+
+.bits-block-title .iconpark-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--bits-primary);
+}
+
+/* Login Records Table */
+.bits-login-records {
+    overflow-x: auto;
+}
+
+.bits-login-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.bits-login-table th,
+.bits-login-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.dark-layout .bits-login-table th,
+body.dark-layout .bits-login-table td {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.bits-login-table th {
+    font-weight: 600;
+    color: var(--bits-text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bits-login-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.bits-login-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+body.dark-layout .bits-login-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.bits-ip-cell code {
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    color: var(--bits-text);
+}
+
+body.dark-layout .bits-ip-cell code {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.bits-time-cell {
+    color: var(--bits-text-muted);
+    font-size: 0.9rem;
+}
+
+/* Password Form */
+.bits-password-form {
+    max-width: 400px;
+}
+
+.bits-password-form .bits-form-group {
+    margin-bottom: 20px;
+}
+
+.bits-password-form .bits-form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--bits-text);
+    margin-bottom: 8px;
+}
+
+.bits-password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.bits-password-input input {
+    flex: 1;
+    padding: 10px 44px 10px 14px;
+    font-size: 0.95rem;
+    color: var(--bits-text);
+    background-color: var(--bits-bg-main);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.bits-password-input input:focus {
+    outline: none;
+    border-color: var(--bits-primary);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+body.dark-layout .bits-password-input input {
+    background-color: var(--bits-bg-main);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.bits-password-toggle {
+    position: absolute;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.bits-password-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-layout .bits-password-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bits-password-toggle .iconpark-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--bits-text-muted);
+}
+
+/* Toggle visibility - show/hide icons */
+.bits-password-toggle .icon-hide {
+    display: none;
+}
+
+.bits-password-toggle.active .icon-show {
+    display: none;
+}
+
+.bits-password-toggle.active .icon-hide {
+    display: block;
+}
+
+/* Field hint */
+.bits-field-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--bits-text-muted);
+}
+
+/* Empty message */
+.bits-empty-message {
+    padding: 20px;
+    text-align: center;
+    color: var(--bits-text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Password form actions */
+.bits-password-form .bits-form-actions {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: none;
+}
+
+/* Responsive adjustments for security tab */
+@media screen and (max-width: 500px) {
+    .bits-security-block {
+        padding: 15px;
+    }
+
+    .bits-login-table th,
+    .bits-login-table td {
+        padding: 10px 12px;
+    }
+
+    .bits-password-form {
+        max-width: 100%;
     }
 }

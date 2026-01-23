@@ -1553,6 +1553,11 @@ body.dark-layout {
             return;
         }
 
+        if ($tab === 'password') {
+            $this->handlePasswordChange($sender);
+            return;
+        }
+
         // Get current user
         $userID = Gdn::session()->UserID;
         $userModel = new UserModel();
@@ -1583,6 +1588,10 @@ body.dark-layout {
         $sender->setData('UserID', $userID);
         $sender->setData('Tab', $tab);
         $sender->setData('Tabs', $tabs);
+
+        // Always load IP records for security tab (all tabs render together now)
+        $ipRecords = $this->getRecentIPs($userID, 5);
+        $sender->setData('IPRecords', $ipRecords);
 
         // Page title
         $sender->title(t('Settings', '设置'));
@@ -1732,5 +1741,110 @@ body.dark-layout {
         }
 
         $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Handle password change API.
+     *
+     * POST /setting/password
+     * Validates old password, then updates to new password.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    private function handlePasswordChange($sender) {
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+
+        // Verify CSRF token
+        if (!Gdn::session()->validateTransientKey(Gdn::request()->post('TransientKey'))) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid request. Please refresh and try again.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Get current user
+        $userID = Gdn::session()->UserID;
+        $userModel = new UserModel();
+        $user = $userModel->getID($userID, DATASET_TYPE_ARRAY);
+
+        if (!$user) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('User not found.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Get form values
+        $oldPassword = Gdn::request()->post('OldPassword', '');
+        $newPassword = Gdn::request()->post('NewPassword', '');
+        $confirmPassword = Gdn::request()->post('ConfirmPassword', '');
+
+        // Validate old password
+        $passwordHash = new Gdn_PasswordHash();
+        if (!$passwordHash->checkPassword($oldPassword, $user['Password'], $user['HashMethod'] ?? 'Vanilla')) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Current password is incorrect.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Validate new password length (minimum 6 characters)
+        if (strlen($newPassword) < 6) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('New password must be at least 6 characters.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Validate password confirmation
+        if ($newPassword !== $confirmPassword) {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Passwords do not match.'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Update password
+        $result = $userModel->save([
+            'UserID' => $userID,
+            'Password' => $newPassword
+        ]);
+
+        if ($result) {
+            $sender->setData('Success', true);
+            $sender->setData('Message', t('Password changed successfully.'));
+        } else {
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Failed to change password. Please try again.'));
+        }
+
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Get recent login IP records for a user.
+     *
+     * @param int $userID User ID
+     * @param int $limit Maximum number of records
+     * @return array Array of IP records with decoded IP and last access time
+     */
+    private function getRecentIPs($userID, $limit = 5) {
+        $ipRecords = Gdn::sql()
+            ->select('IPAddress, DateUpdated')
+            ->from('UserIP')
+            ->where('UserID', $userID)
+            ->orderBy('DateUpdated', 'desc')
+            ->limit($limit)
+            ->get()
+            ->resultArray();
+
+        // Decode IP addresses
+        foreach ($ipRecords as &$record) {
+            $record['IPAddress'] = ipDecode($record['IPAddress']);
+        }
+
+        return $ipRecords;
     }
 }

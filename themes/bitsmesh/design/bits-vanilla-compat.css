@@ -277,12 +277,32 @@ ul.DataList .Options {
    Sidebar Panels (.Box)
    ============================================ */
 
-/* Generic Panel Box */
+/* Generic Panel Box - Transparent for main content */
 .Box {
+    background-color: transparent;
+    border-radius: 0;
+    margin-bottom: 16px;
+    padding: 0 0 16px 0;
+    border-bottom: 1px solid var(--bits-border-color);
+}
+
+.Box:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Sidebar Box - Keep original card style */
+#bits-right-panel .Box,
+#bits-left-panel .Box,
+.bits-panel .Box,
+#Panel .Box,
+.Panel .Box {
     background-color: var(--bits-bg-main);
     border-radius: 4px;
     margin-bottom: 15px;
     padding: 12px;
+    border-bottom: none;
 }
 
 .Box h4 {

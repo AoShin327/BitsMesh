@@ -213,4 +213,63 @@
 
   {* book-one - 等级进度/经验值 *}
   <symbol id="book-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M5 7h38v34H11a6 6 0 0 1-6-6V7Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M5 35a6 6 0 0 1 6-6h32" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M23 14v10m-5-5h10" data-follow-stroke="currentColor"/></symbol>
+
+  {* book-open - Readme 图标 *}
+  <symbol id="book-open" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 11.999C20 5.999 10 6 6 8v32c4.5-2 13-2 18 3 5-5 13.5-5 18-3V8c-4-2-14-2-18 4Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 12v31" data-follow-stroke="currentColor"/></symbol>
+
+  {* ============================================
+     Setting Page Icons
+     ============================================ *}
+
+  {* user - 个人信息 Tab *}
+  <symbol id="user" viewBox="0 0 48 48" fill="none"><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="8" cy="12" cx="24" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M42 44c0-9.941-8.059-18-18-18S6 34.059 6 44" data-follow-stroke="currentColor"/></symbol>
+
+  {* phone-telephone - 联系方式 Tab *}
+  <symbol id="phone-telephone" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M8 30h32V6H8v24Zm8-13h16m-16 6h8" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 30v12m20-12v12M4 42h40" data-follow-stroke="currentColor"/></symbol>
+
+  {* people-delete - 屏蔽用户 Tab *}
+  <symbol id="people-delete" viewBox="0 0 48 48" fill="none"><circle stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" r="6" cy="10" cx="20" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 36c0-6.627 6.268-12 14-12 1.685 0 3.306.213 4.82.608m14.18-.366L33.758 30l5.242 5.758m0-5.758L33.758 36 39 41.758" data-follow-stroke="currentColor"/></symbol>
+
+  {* config - 常用偏好 Tab *}
+  <symbol id="config" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18 6H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Zm22 0H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2ZM18 28H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2Zm22 0H30a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V30a2 2 0 0 0-2-2Z" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M13 12.01 13.01 12M35 12.01 35.01 12M13 34.01 13.01 34M35 34.01 35.01 34" data-follow-stroke="currentColor"/></symbol>
+
+  {* puzzle - 论坛扩展 Tab *}
+  <symbol id="puzzle" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M35.5 18h-5V8h-13v5.8a4 4 0 1 0 0 7.2v4h-5v5.8a4 4 0 1 0 0 7.2v5h13v-10h10v-15Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* camera - 更换头像按钮 *}
+  <symbol id="camera" viewBox="0 0 48 48" fill="none"><circle stroke-width="4" stroke="currentColor" r="7" cy="24" cx="24" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M6 38V16h6l3-6h18l3 6h6v22H6Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* check-one - 保存按钮 *}
+  <symbol id="check-one" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4 4 12.954 4 24s8.954 20 20 20Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m16 24 6 6 12-12" data-follow-stroke="currentColor"/></symbol>
+
+  {* close-small - 弹窗关闭按钮 *}
+  <symbol id="close-small" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 14 34 34M14 34 34 14" data-follow-stroke="currentColor"/></symbol>
+
+  {* zoom-out - 缩小按钮 *}
+  <symbol id="zoom-out" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4 4 11.611 4 21s7.611 17 17 17Zm14-3 9 9" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 21h14" data-follow-stroke="currentColor"/></symbol>
+
+  {* zoom-in - 放大按钮 *}
+  <symbol id="zoom-in" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4 4 11.611 4 21s7.611 17 17 17Zm14-3 9 9" data-follow-stroke="currentColor"/><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M21 14v14m-7-7h14" data-follow-stroke="currentColor"/></symbol>
+
+  {* rotate - 旋转按钮 *}
+  <symbol id="rotate" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M42 8v12H30" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M39.6 28c-1.8 7.8-8.8 13.6-17.2 13.2-9.6-.4-17.2-8.4-17-18C5.8 13.6 14 5.6 23.6 6c4 .2 7.6 1.6 10.4 4l8 7.2" data-follow-stroke="currentColor"/></symbol>
+
+  {* folder-open - 选择图片按钮 *}
+  <symbol id="folder-open" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 12v28h39.91l4.09-20H15L4 12Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M4 12V8h14l5 6h15v6" data-follow-stroke="currentColor"/></symbol>
+
+  {* ============================================
+     Security Page Icons
+     ============================================ *}
+
+  {* eye - 显示密码 *}
+  <symbol id="eye" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M24 36c11.046 0 20-12 20-12s-8.954-12-20-12S4 24 4 24s8.954 12 20 12Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M24 29a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* preview-close - 隐藏密码 *}
+  <symbol id="preview-close" viewBox="0 0 48 48" fill="none"><path stroke-linecap="round" stroke-width="4" stroke="currentColor" d="m8 8 32 32" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M44 24s-3.817-5.39-8.4-8.61M4 24s8.954 12 20 12c1.38 0 2.713-.137 4-.385M14.634 33.366A20.49 20.49 0 0 1 4 24" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M18.457 18.328A6 6 0 0 1 24 18m5.9 5.9a6 6 0 0 1-8.9 5.2" data-follow-stroke="currentColor"/></symbol>
+
+  {* map - IP地址图标 *}
+  <symbol id="map" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M24 44s15-12 15-24c0-8.284-6.716-15-15-15S9 11.716 9 20c0 12 15 24 15 24Z" data-follow-stroke="currentColor"/><path stroke-width="4" stroke="currentColor" d="M24 25a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" data-follow-stroke="currentColor"/></symbol>
+
+  {* lock - 密码锁图标 *}
+  <symbol id="lock" viewBox="0 0 48 48" fill="none"><path stroke-linejoin="round" stroke-width="4" stroke="currentColor" d="M8 22h32v20H8V22Z" data-follow-stroke="currentColor"/><path stroke-linejoin="round" stroke-linecap="round" stroke-width="4" stroke="currentColor" d="M14 22v-6a10 10 0 1 1 20 0v6" data-follow-stroke="currentColor"/><circle fill="currentColor" r="3" cy="32" cx="24" data-follow-fill="currentColor"/></symbol>
 </svg>
