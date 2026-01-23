@@ -176,13 +176,13 @@ if (!function_exists('WriteDiscussion')) :
             <div class="ItemContent Discussion">
                 <div class="Title" role="heading" aria-level="3">
                     <?php
-                    echo anchor($discussionName, $discussionUrl);
-                    // Award icon (推荐阅读) - 使用 Announce 字段判断
+                    // Award icon (推荐阅读) - 显示在标题最左边
                     if (!empty($discussion->Announce) && $discussion->Announce > 0) {
-                        echo ' <a href="/award" class="bits-award-icon" title="'.htmlspecialchars(t('Featured', '推荐阅读')).'">';
+                        echo '<a href="/award" class="bits-award-icon" title="'.htmlspecialchars(t('Featured', '推荐阅读')).'">';
                         echo '<svg class="iconpark-icon" width="15" height="15"><use href="#diamonds"></use></svg>';
                         echo '</a>';
                     }
+                    echo anchor($discussionName, $discussionUrl);
                     $sender->fireEvent('AfterDiscussionTitle');
                     ?>
                 </div>

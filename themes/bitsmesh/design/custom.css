@@ -326,12 +326,12 @@ body.dark-layout .bits-toast {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Award Icon (推荐阅读) - Yellow diamond in title */
+/* Award Icon (推荐阅读) - Yellow diamond in title (left side) */
 .bits-award-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-left: 6px;
+    margin-right: 6px;
     vertical-align: middle;
     text-decoration: none;
 }
