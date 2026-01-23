@@ -188,10 +188,6 @@ body.dark-layout .Comment .Author .PhotoWrap img {
     color: var(--bits-text-gray);
 }
 
-.Discussion .DiscussionMeta .Category a:hover {
-    color: var(--bits-link);
-}
-
 /* "楼主" / Original Poster badge */
 .bits-is-poster,
 .isOriginalPoster .Author::after {

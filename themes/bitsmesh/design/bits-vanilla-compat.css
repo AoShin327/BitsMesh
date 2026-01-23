@@ -197,11 +197,6 @@ ul.DataList .Meta .Category a {
     transition: all 0.2s;
 }
 
-ul.DataList .Meta .Category a:hover {
-    background-color: var(--bits-primary);
-    color: #fff;
-}
-
 /* Hide Options Button */
 ul.DataList .Options {
     display: none;
