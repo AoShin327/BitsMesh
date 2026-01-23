@@ -286,6 +286,18 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $request->path('profile/invitegenerate');
             return;
         }
+
+        // === 12. Award page: /award → /discussions/award ===
+        // Featured discussions (推荐阅读) page
+        if (preg_match('#^award(?:/p(\d+))?(?:\?.*)?$#i', $path, $matches)) {
+            $page = isset($matches[1]) ? (int)$matches[1] : '';
+            $newPath = 'discussions/award';
+            if ($page > 0) {
+                $newPath .= '/p' . $page;
+            }
+            $request->path($newPath);
+            return;
+        }
     }
 
     /**
@@ -3650,4 +3662,7 @@ body.dark-layout {
         // Use the code (increment count and link to user)
         $inviteModel->useCode($inviteCode, $userID);
     }
+
+    // Note: Award page functionality is in DiscussionsController::award()
+    // Route rewrite: /award -> /discussions/award (handled in gdn_dispatcher_beforeDispatch_handler above)
 }

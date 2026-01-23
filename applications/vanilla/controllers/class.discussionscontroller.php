@@ -844,4 +844,90 @@ class DiscussionsController extends VanillaController {
         $this->View = c('Vanilla.Discussions.Layout') == 'table' && $this->SyndicationMethod == SYNDICATION_NONE ? 'table' : 'index';
         $this->render($this->View, 'discussions', 'vanilla');
     }
+
+    /**
+     * Award (Featured) page - displays announced/featured discussions.
+     *
+     * Route: /award or /discussions/award/pN
+     * Displays all discussions with Announce > 0.
+     *
+     * @param string $page Page number (e.g., 'p2').
+     * @return void
+     */
+    public function award($page = '') {
+        Gdn_Theme::section('DiscussionList');
+
+        // Page title and description
+        $this->title(t('Featured', '推荐阅读'));
+        $this->setData('Breadcrumbs', [
+            ['Name' => t('Featured', '推荐阅读'), 'Url' => '/award']
+        ]);
+
+        // Determine page number
+        $pageNumber = 1;
+        if (preg_match('/^p(\d+)$/i', $page, $matches)) {
+            $pageNumber = max(1, (int)$matches[1]);
+        }
+
+        // Set up pagination
+        $perPage = c('Vanilla.Discussions.PerPage', 30);
+        $offset = ($pageNumber - 1) * $perPage;
+
+        // Build query for announced discussions
+        $sql = Gdn::sql();
+        $sql->select('d.*')
+            ->from('Discussion d')
+            ->where('d.Announce >', 0)
+            ->orderBy('d.DateLastComment', 'desc')
+            ->limit($perPage, $offset);
+
+        // Apply permission filter for viewable categories
+        $permCategoryIDs = DiscussionModel::categoryPermissions();
+        if ($permCategoryIDs !== true) {
+            if (empty($permCategoryIDs)) {
+                // No categories visible - empty result
+                $this->setData('Discussions', new Gdn_DataSet());
+                $this->setData('_PagerUrl', '/award/{Page}');
+                $this->setData('_Page', $pageNumber);
+                $this->setData('_Limit', $perPage);
+                $this->setData('CountDiscussions', 0);
+                $this->render('award', 'discussions', 'themes/bitsmesh');
+                return;
+            }
+            $sql->whereIn('d.CategoryID', $permCategoryIDs);
+        }
+
+        $discussions = $sql->get();
+
+        // Get total count for pagination
+        $countSql = Gdn::sql();
+        $countSql->select('d.DiscussionID', 'count', 'CountDiscussions')
+            ->from('Discussion d')
+            ->where('d.Announce >', 0);
+
+        if ($permCategoryIDs !== true && !empty($permCategoryIDs)) {
+            $countSql->whereIn('d.CategoryID', $permCategoryIDs);
+        }
+
+        $countResult = $countSql->get()->firstRow();
+        $countDiscussions = $countResult ? (int)$countResult->CountDiscussions : 0;
+
+        // Join user data (use UserModel's joinUsers method)
+        Gdn::userModel()->joinUsers($discussions, ['FirstUserID', 'LastUserID', 'InsertUserID']);
+
+        // Calculate discussion data (expand categories, process attributes, etc.)
+        foreach ($discussions as $discussion) {
+            $this->DiscussionModel->calculate($discussion);
+        }
+
+        // Set data for view
+        $this->setData('Discussions', $discussions);
+        $this->setData('_PagerUrl', '/award/{Page}');
+        $this->setData('_Page', $pageNumber);
+        $this->setData('_Limit', $perPage);
+        $this->setData('CountDiscussions', $countDiscussions);
+
+        // Use custom view from theme
+        $this->render('award', 'discussions', 'themes/bitsmesh');
+    }
 }

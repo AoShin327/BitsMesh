@@ -326,4 +326,59 @@ body.dark-layout .bits-toast {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* Award Icon (推荐阅读) - Yellow diamond in title */
+.bits-award-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-decoration: none;
+}
+
+.bits-award-icon .iconpark-icon {
+    color: #f59e0b;
+    fill: #f59e0b;
+    transition: transform 0.2s ease;
+}
+
+.bits-award-icon:hover .iconpark-icon {
+    transform: scale(1.15);
+    color: #d97706;
+    fill: #d97706;
+}
+
+/* Award Page Styles */
+.award-page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--bits-border);
+}
+
+.award-page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--bits-text);
+    margin: 0;
+}
+
+.award-page-header .iconpark-icon {
+    color: #f59e0b;
+    fill: #f59e0b;
+    width: 24px;
+    height: 24px;
+}
+
+.award-page-description {
+    color: var(--bits-text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
 

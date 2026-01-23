@@ -177,6 +177,12 @@ if (!function_exists('WriteDiscussion')) :
                 <div class="Title" role="heading" aria-level="3">
                     <?php
                     echo anchor($discussionName, $discussionUrl);
+                    // Award icon (推荐阅读) - 使用 Announce 字段判断
+                    if (!empty($discussion->Announce) && $discussion->Announce > 0) {
+                        echo ' <a href="/award" class="bits-award-icon" title="'.htmlspecialchars(t('Featured', '推荐阅读')).'">';
+                        echo '<svg class="iconpark-icon" width="15" height="15"><use href="#diamonds"></use></svg>';
+                        echo '</a>';
+                    }
                     $sender->fireEvent('AfterDiscussionTitle');
                     ?>
                 </div>
@@ -364,13 +370,15 @@ endif;
 
 if (!function_exists('writeTags')) :
     /**
+     * Write discussion tags (Closed only, Award is shown in title).
+     *
      * @param $discussion
      * @throws Exception
      */
     function writeTags($discussion) {
         Gdn::controller()->fireEvent('BeforeDiscussionMeta');
 
-        echo tag($discussion, 'Announce', 'Announcement');
+        // Award (原 Announcement) 已移到标题区域显示，这里只保留 Closed 标签
         echo tag($discussion, 'Closed', 'Closed');
 
         Gdn::controller()->fireEvent('AfterDiscussionLabels');

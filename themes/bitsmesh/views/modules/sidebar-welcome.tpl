@@ -172,7 +172,7 @@
     </h4>
     <ul class="bits-quick-links" role="nav">
         <li>
-            <a href="#">
+            <a href="/award">
                 <svg class="iconpark-icon"><use href="#diamonds"></use></svg>
                 <span>{t c="Featured" d="推荐阅读"}</span>
             </a>
