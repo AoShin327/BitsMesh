@@ -274,6 +274,18 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
             $request->path('profile/lottery');
             return;
         }
+
+        // === 10. Invite page: /invite → /profile/invite ===
+        if (preg_match('#^invite(?:\?.*)?$#i', $path) || $path === 'invite') {
+            $request->path('profile/invite');
+            return;
+        }
+
+        // === 11. Invite API: /invite/generate → /profile/invitegenerate ===
+        if (preg_match('#^invite/generate(?:\?.*)?$#i', $path)) {
+            $request->path('profile/invitegenerate');
+            return;
+        }
     }
 
     /**
@@ -372,6 +384,10 @@ class BitsmeshThemeHooks extends Gdn_Plugin {
         if (empty($existingIndex)) {
             $sql->query("ALTER TABLE {$sql->Database->DatabasePrefix}UserReaction ADD UNIQUE INDEX $indexName (UserID, RecordType, RecordID)");
         }
+
+        // Create InviteCode table for invitation system
+        require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
+        InviteCodeModel::structure();
     }
 
     /**
@@ -547,11 +563,13 @@ body.dark-layout {
         $userFollowingCount = 0;
         $userFollowersCount = 0;
         $unreadNotifications = 0;
+        $userPoints = 0;
 
         if ($isLoggedIn && $session->User) {
             $userDiscussionCount = val('CountDiscussions', $session->User, 0);
             $userCommentCount = val('CountComments', $session->User, 0);
             $userBookmarkCount = val('CountBookmarks', $session->User, 0);
+            $userPoints = val('Points', $session->User, 0);
             $userName = val('Name', $session->User, '');
             $userProfileUrl = userUrl($session->User);
             $userSpaceUrl = url('/space/' . val('UserID', $session->User));
@@ -667,6 +685,25 @@ body.dark-layout {
         $sender->setData('SidebarUserDiscussionCount', $userDiscussionCount);
         $sender->setData('SidebarUserCommentCount', $userCommentCount);
         $sender->setData('SidebarUserBookmarkCount', $userBookmarkCount);
+        $sender->setData('SidebarUserPoints', $userPoints);
+
+        // Calculate user level from credits using Credits plugin or fallback formula
+        $userLevel = 1;
+        if ($userPoints > 0) {
+            if (class_exists('CreditsPlugin') && method_exists('CreditsPlugin', 'calculateLevel')) {
+                $userLevel = CreditsPlugin::calculateLevel($userPoints);
+            } else {
+                // Fallback: Use same thresholds as Credits plugin
+                // Lv1: 0, Lv2: 100, Lv3: 1000, Lv4: 2500, Lv5: 5000, Lv6: 10000
+                $thresholds = [1 => 0, 2 => 100, 3 => 1000, 4 => 2500, 5 => 5000, 6 => 10000];
+                foreach ($thresholds as $lv => $threshold) {
+                    if ($userPoints >= $threshold) {
+                        $userLevel = $lv;
+                    }
+                }
+            }
+        }
+        $sender->setData('SidebarUserLevel', $userLevel);
         $sender->setData('SidebarUserFollowingCount', $userFollowingCount);
         $sender->setData('SidebarUserFollowersCount', $userFollowersCount);
         $sender->setData('SidebarUnreadNotifications', $unreadNotifications);
@@ -1275,6 +1312,143 @@ body.dark-layout {
         $sender->setHighlightRoute('dashboard/settings/bitsmesh');
         $sender->title(t('BitsMesh 主题设置'));
 
+        // Get active tab
+        $activeTab = Gdn::request()->get('tab', 'checkin');
+        if (!in_array($activeTab, ['checkin', 'invite'])) {
+            $activeTab = 'checkin';
+        }
+        $sender->setData('ActiveTab', $activeTab);
+
+        // Get action (for invite tab)
+        $action = Gdn::request()->get('action', '');
+
+        // =====================================================
+        // INVITE TAB LOGIC
+        // =====================================================
+        if ($activeTab === 'invite') {
+            // Load InviteCodeModel
+            require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
+            $inviteModel = InviteCodeModel::instance();
+
+            // Handle actions
+            if ($action === 'toggle') {
+                // Toggle invite code active status
+                $codeID = (int)Gdn::request()->get('id', 0);
+                $tk = Gdn::request()->get('tk', '');
+
+                if ($codeID > 0 && Gdn::session()->validateTransientKey($tk)) {
+                    $inviteModel->toggleActive($codeID);
+                    $sender->informMessage(t('状态已更新'));
+                }
+                // Redirect to remove action from URL
+                redirectTo('/dashboard/settings/bitsmesh?tab=invite');
+            }
+
+            if ($action === 'saveconfig' && $sender->Form->authenticatedPostBack()) {
+                // Save invite configuration
+                $creditCost = (int)$sender->Form->getFormValue('Invite_CreditCost', 1000);
+                $defaultMaxUses = (int)$sender->Form->getFormValue('Invite_DefaultMaxUses', 1);
+                $defaultExpiryDays = (int)$sender->Form->getFormValue('Invite_DefaultExpiryDays', 30);
+                $inviterBonus = (int)$sender->Form->getFormValue('Invite_InviterBonus', 100);
+
+                // Validate
+                $errors = [];
+                if ($creditCost < 0 || $creditCost > 100000) {
+                    $errors[] = t('用户兑换成本必须在 0-100000 之间');
+                }
+                if ($defaultMaxUses < 1 || $defaultMaxUses > 100) {
+                    $errors[] = t('默认可用次数必须在 1-100 之间');
+                }
+                if ($defaultExpiryDays < 1 || $defaultExpiryDays > 365) {
+                    $errors[] = t('默认有效期必须在 1-365 天之间');
+                }
+                if ($inviterBonus < 0 || $inviterBonus > 10000) {
+                    $errors[] = t('邀请奖励必须在 0-10000 之间');
+                }
+
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $sender->Form->addError($error);
+                    }
+                } else {
+                    saveToConfig('BitsMesh.Invite.CreditCost', $creditCost);
+                    saveToConfig('BitsMesh.Invite.DefaultMaxUses', $defaultMaxUses);
+                    saveToConfig('BitsMesh.Invite.DefaultExpiryDays', $defaultExpiryDays);
+                    saveToConfig('BitsMesh.Invite.InviterBonus', $inviterBonus);
+                    $sender->informMessage(t('配置已保存'));
+                }
+            }
+
+            if ($action === 'generate' && $sender->Form->authenticatedPostBack()) {
+                // Generate admin codes
+                $codeCount = (int)$sender->Form->getFormValue('Admin_CodeCount', 1);
+                $maxUses = (int)$sender->Form->getFormValue('Admin_MaxUses', 1);
+                $expiryDays = (int)$sender->Form->getFormValue('Admin_ExpiryDays', 30);
+
+                // Validate
+                $errors = [];
+                if ($codeCount < 1 || $codeCount > 100) {
+                    $errors[] = t('生成数量必须在 1-100 之间');
+                }
+                if ($maxUses < 1 || $maxUses > 1000) {
+                    $errors[] = t('可用次数必须在 1-1000 之间');
+                }
+                if ($expiryDays < 0 || $expiryDays > 365) {
+                    $errors[] = t('有效期必须在 0-365 天之间');
+                }
+
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $sender->Form->addError($error);
+                    }
+                } else {
+                    $generatedCodes = [];
+                    for ($i = 0; $i < $codeCount; $i++) {
+                        $result = $inviteModel->createAdminCode($maxUses, $expiryDays);
+                        if ($result['success']) {
+                            $generatedCodes[] = $result['code'];
+                        }
+                    }
+                    $sender->setData('GeneratedCodes', $generatedCodes);
+                    if (count($generatedCodes) > 0) {
+                        $sender->informMessage(sprintf(t('成功生成 %d 个邀请码'), count($generatedCodes)));
+                    }
+                }
+            }
+
+            // Load invite stats
+            $sender->setData('InviteStats', $inviteModel->getStatistics());
+
+            // Load all invite codes with creator info
+            $inviteCodes = Gdn::sql()
+                ->select('ic.*')
+                ->select('u.Name', '', 'CreatorName')
+                ->from('InviteCode ic')
+                ->join('User u', 'ic.CreatorUserID = u.UserID', 'left')
+                ->orderBy('ic.DateInserted', 'desc')
+                ->limit(100)
+                ->get()
+                ->resultArray();
+            $sender->setData('InviteCodes', $inviteCodes);
+
+            // Load invite configuration values
+            $sender->setData('Invite_CreditCost', c('BitsMesh.Invite.CreditCost', 1000));
+            $sender->setData('Invite_DefaultMaxUses', c('BitsMesh.Invite.DefaultMaxUses', 1));
+            $sender->setData('Invite_DefaultExpiryDays', c('BitsMesh.Invite.DefaultExpiryDays', 30));
+            $sender->setData('Invite_InviterBonus', c('BitsMesh.Invite.InviterBonus', 100));
+
+            // Set form values for invite config
+            $sender->Form->setData([
+                'Invite_CreditCost' => $sender->data('Invite_CreditCost'),
+                'Invite_DefaultMaxUses' => $sender->data('Invite_DefaultMaxUses'),
+                'Invite_DefaultExpiryDays' => $sender->data('Invite_DefaultExpiryDays'),
+                'Invite_InviterBonus' => $sender->data('Invite_InviterBonus'),
+            ]);
+        }
+
+        // =====================================================
+        // CHECKIN TAB LOGIC (default)
+        // =====================================================
         // Configuration keys
         $configKeys = [
             'CheckIn_DistributionN' => 'BitsMesh.CheckIn.DistributionN',
@@ -1294,8 +1468,8 @@ body.dark-layout {
             $sender->setData($formKey, c($configKey, $defaults[$formKey]));
         }
 
-        // Handle form submission
-        if ($sender->Form->authenticatedPostBack()) {
+        // Handle checkin form submission (only if on checkin tab)
+        if ($activeTab === 'checkin' && $sender->Form->authenticatedPostBack()) {
             // Get and validate form values
             $n = (int)$sender->Form->getFormValue('CheckIn_DistributionN', 50);
             $p = (float)$sender->Form->getFormValue('CheckIn_DistributionP', 0.1);
@@ -1335,7 +1509,7 @@ body.dark-layout {
             }
         }
 
-        // Set form values
+        // Set form values for checkin
         $sender->Form->setData([
             'CheckIn_DistributionN' => $sender->data('CheckIn_DistributionN'),
             'CheckIn_DistributionP' => $sender->data('CheckIn_DistributionP'),
@@ -3275,5 +3449,205 @@ body.dark-layout {
             ->set('CountBookmarks', $count)
             ->where('DiscussionID', $discussionID)
             ->put();
+    }
+
+    // ==========================================================================
+    // INVITATION CODE SYSTEM
+    // ==========================================================================
+
+    /**
+     * Handle /invite page - User invite code management.
+     *
+     * Allows users to:
+     * - Generate invite codes (costs credits)
+     * - View their generated codes
+     * - View users who registered using their codes
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_invite_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            redirectTo('/entry/signin?Target=' . urlencode('/invite'));
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        // Load InviteCodeModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
+        $inviteModel = InviteCodeModel::instance();
+
+        $userID = Gdn::session()->UserID;
+        $user = Gdn::userModel()->getID($userID);
+
+        // Get user's credits
+        $credits = (int)val('Points', $user, 0);
+
+        // Get configuration
+        $creditCost = InviteCodeModel::getCreditCost();
+        $defaultMaxUses = InviteCodeModel::getDefaultMaxUses();
+        $defaultExpiryDays = InviteCodeModel::getDefaultExpiryDays();
+
+        // Get user's invite codes
+        $inviteCodes = $inviteModel->getUserCodes($userID);
+
+        // Get users invited by this user
+        $invitedUsers = $inviteModel->getInvitedUsers($userID);
+        $invitedCount = $inviteModel->getInvitedUsersCount($userID);
+
+        // Set data
+        $sender->setData('Credits', $credits);
+        $sender->setData('CreditCost', $creditCost);
+        $sender->setData('DefaultMaxUses', $defaultMaxUses);
+        $sender->setData('DefaultExpiryDays', $defaultExpiryDays);
+        $sender->setData('InviteCodes', $inviteCodes);
+        $sender->setData('InvitedUsers', $invitedUsers);
+        $sender->setData('InvitedCount', $invitedCount);
+        $sender->setData('CanGenerate', $credits >= $creditCost);
+
+        // Set page info
+        $sender->title(t('Invite Friends', '邀请好友'));
+        $sender->setData('Breadcrumbs', [
+            ['Name' => t('Home'), 'Url' => '/'],
+            ['Name' => t('Invite Friends', '邀请好友'), 'Url' => '/invite']
+        ]);
+
+        // Add assets
+        $sender->addCssFile('bits-invite.css', 'themes/bitsmesh');
+        $sender->addJsFile('invite.js', 'themes/bitsmesh');
+
+        // Render
+        $sender->render('invite', '', 'themes/bitsmesh');
+    }
+
+    /**
+     * Handle /invite/generate API - Generate new invite code.
+     *
+     * @param ProfileController $sender The controller instance.
+     * @return void
+     */
+    public function profileController_inviteGenerate_create($sender) {
+        // Require login
+        if (!Gdn::session()->isValid()) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Please sign in first.', '请先登录'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        $sender->permission('Garden.SignIn.Allow');
+
+        // CSRF protection
+        if (!Gdn::session()->validateTransientKey(Gdn::request()->post('TransientKey'))) {
+            $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+            $sender->deliveryType(DELIVERY_TYPE_DATA);
+            $sender->setData('Success', false);
+            $sender->setData('Error', t('Invalid request.', '无效请求'));
+            $sender->render('blank', 'utility', 'dashboard');
+            return;
+        }
+
+        // Load InviteCodeModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
+        $inviteModel = InviteCodeModel::instance();
+
+        $userID = Gdn::session()->UserID;
+
+        // Generate code
+        $result = $inviteModel->createUserCode($userID);
+
+        // Return JSON response
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
+        $sender->setData('Success', $result['success']);
+
+        if ($result['success']) {
+            $sender->setData('Code', $result['code']);
+            $sender->setData('ExpiresAt', $result['expiresAt']);
+            $sender->setData('MaxUses', $result['maxUses']);
+            $sender->setData('NewBalance', $result['newBalance']);
+            $sender->setData('Message', $result['message']);
+        } else {
+            $sender->setData('Error', $result['message']);
+        }
+
+        $sender->render('blank', 'utility', 'dashboard');
+    }
+
+    /**
+     * Add invite code field to registration form.
+     *
+     * @param EntryController $sender The controller instance.
+     * @param array $args Event arguments.
+     * @return void
+     */
+    public function entryController_registerBeforePassword_handler($sender, $args) {
+        // Add invite code input field
+        echo '<li class="form-group">';
+        echo '<label for="InviteCode">' . t('Invite Code', '邀请码') . ' <span class="Required">*</span></label>';
+        echo '<div class="TextBoxWrapper">';
+        echo $sender->Form->textBox('InviteCode', [
+            'class' => 'InputBox',
+            'maxlength' => 32,
+            'placeholder' => t('Enter your invite code', '请输入邀请码'),
+            'autocomplete' => 'off'
+        ]);
+        echo '</div>';
+        echo '</li>';
+    }
+
+    /**
+     * Validate invite code during registration.
+     *
+     * @param EntryController $sender The controller instance.
+     * @param array $args Event arguments.
+     * @return void
+     */
+    public function entryController_registerValidation_handler($sender, $args) {
+        // Load InviteCodeModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
+        $inviteModel = InviteCodeModel::instance();
+
+        // Get submitted invite code
+        $inviteCode = $sender->Form->getFormValue('InviteCode', '');
+
+        // Validate the code
+        $validation = $inviteModel->validateCode($inviteCode);
+
+        if (!$validation['valid']) {
+            $sender->Form->addError($validation['message'], 'InviteCode');
+        }
+    }
+
+    /**
+     * Process invite code after successful registration.
+     *
+     * @param EntryController $sender The controller instance.
+     * @param array $args Event arguments containing UserID.
+     * @return void
+     */
+    public function entryController_registrationSuccessful_handler($sender, $args) {
+        // User is already logged in at this point, get UserID from session
+        $userID = Gdn::session()->UserID;
+        if (!$userID) {
+            return;
+        }
+
+        // Get the invite code used from form
+        $inviteCode = $sender->Form->getFormValue('InviteCode', '');
+        if (empty($inviteCode)) {
+            return;
+        }
+
+        // Load InviteCodeModel
+        require_once PATH_THEMES . '/bitsmesh/models/class.invitecodemodel.php';
+        $inviteModel = InviteCodeModel::instance();
+
+        // Use the code (increment count and link to user)
+        $inviteModel->useCode($inviteCode, $userID);
     }
 }

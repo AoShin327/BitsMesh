@@ -186,6 +186,11 @@ jQuery(document).ready(function($) {
         var interval = 1000 / 60;
 
         function update() {
+            // If element already has 'final' class (set by showResult), stop animation
+            if ($element.hasClass('final')) {
+                return;
+            }
+
             var elapsed = Date.now() - startTime;
             var progress = Math.min(elapsed / duration, 1);
 
@@ -194,8 +199,11 @@ jQuery(document).ready(function($) {
                 $element.text('+' + randomNum);
                 setTimeout(update, interval);
             } else {
-                $element.text('+' + finalValue);
-                $element.addClass('final');
+                // Only set finalValue if not already finalized by showResult
+                if (!$element.hasClass('final')) {
+                    $element.text('+' + finalValue);
+                    $element.addClass('final');
+                }
             }
         }
 

@@ -57,13 +57,13 @@
             <div>
                 <a href="/progress">
                     <svg class="iconpark-icon"><use href="#level"></use></svg>
-                    <span>{t c='Level' d='等级'} Lv 1</span>
+                    <span>{t c='Level' d='等级'} Lv {$SidebarUserLevel|default:1}</span>
                 </a>
             </div>
             <div>
                 <a href="/credit">
                     <svg class="iconpark-icon"><use href="#chicken-leg"></use></svg>
-                    <span>{t c='Credits' d='鸡腿'} 0</span>
+                    <span>{t c='Credits' d='鸡腿'} {$SidebarUserPoints|default:0}</span>
                 </a>
             </div>
             <div>
@@ -190,7 +190,7 @@
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="/invite">
                 <svg class="iconpark-icon"><use href="#key"></use></svg>
                 <span>{t c="Invite Friends" d="邀请好友"}</span>
             </a>
