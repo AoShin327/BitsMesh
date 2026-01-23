@@ -176,13 +176,12 @@ if (!function_exists('WriteDiscussion')) :
             <div class="ItemContent Discussion">
                 <div class="Title" role="heading" aria-level="3">
                     <?php
-                    // Award icon (推荐阅读) - 显示在标题最左边
+                    // Award icon (推荐阅读) - 嵌入标题链接内部
+                    $awardIcon = '';
                     if (!empty($discussion->Announce) && $discussion->Announce > 0) {
-                        echo '<a href="/award" class="bits-award-icon" title="'.htmlspecialchars(t('Featured', '推荐阅读')).'">';
-                        echo '<svg class="iconpark-icon" width="15" height="15"><use href="#diamonds"></use></svg>';
-                        echo '</a>';
+                        $awardIcon = '<svg class="iconpark-icon" style="color:#f59e0b;fill:#f59e0b;width:15px;height:15px;margin-right:6px;vertical-align:middle;" width="15" height="15"><use href="#diamonds"></use></svg>';
                     }
-                    echo anchor($discussionName, $discussionUrl);
+                    echo anchor($awardIcon . $discussionName, $discussionUrl);
                     $sender->fireEvent('AfterDiscussionTitle');
                     ?>
                 </div>
