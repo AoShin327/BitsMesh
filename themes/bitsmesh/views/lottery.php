@@ -238,7 +238,7 @@ $this->title(t('Lucky Draw', '幸运抽奖'));
         </div>
 
         <!-- Verification Info -->
-        <details class="verification-section">
+        <details class="verification-section" open>
             <summary>
                 <svg class="iconpark-icon" width="16" height="16"><use href="#check-one"></use></svg>
                 <?php echo t('Verification Info', '验证信息'); ?>
@@ -259,6 +259,19 @@ $this->title(t('Lucky Draw', '幸运抽奖'));
                 <div class="verify-item">
                     <span class="verify-label"><?php echo t('Random Source', '随机源'); ?>:</span>
                     <code id="verify-source"></code>
+                </div>
+                <div class="verify-links">
+                    <span class="verify-label"><?php echo t('Verify Links', '验证链接'); ?>:</span>
+                    <div class="verify-link-list">
+                        <a id="verify-drand-link" href="#" target="_blank" rel="noopener noreferrer" class="verify-external-link">
+                            <svg class="iconpark-icon" width="14" height="14"><use href="#link-one"></use></svg>
+                            drand API
+                        </a>
+                        <a id="verify-random-link" href="#" target="_blank" rel="noopener noreferrer" class="verify-external-link">
+                            <svg class="iconpark-icon" width="14" height="14"><use href="#link-one"></use></svg>
+                            random.org
+                        </a>
+                    </div>
                 </div>
                 <p class="verify-hint">
                     <svg class="iconpark-icon" width="14" height="14"><use href="#info"></use></svg>

@@ -97,7 +97,9 @@ class LotteryTool {
             verifyTimestamp: document.getElementById('verify-timestamp'),
             verifyRound: document.getElementById('verify-round'),
             verifyRandomness: document.getElementById('verify-randomness'),
-            verifySource: document.getElementById('verify-source')
+            verifySource: document.getElementById('verify-source'),
+            verifyDrandLink: document.getElementById('verify-drand-link'),
+            verifyRandomLink: document.getElementById('verify-random-link')
         };
     }
 
@@ -373,23 +375,42 @@ class LotteryTool {
 
     /**
      * Get drand random beacon for given timestamp
+     * Uses multiple API endpoints with fallback
      */
     async getDrandBeacon(timestamp) {
         const round = Math.floor((timestamp - this.DRAND_GENESIS) / this.DRAND_PERIOD);
 
-        const response = await fetch(`https://api.drand.sh/${this.DRAND_CHAIN}/public/${round}`);
-        if (!response.ok) {
-            if (response.status === 404) {
-                throw new Error('随机信标尚未生成，请等待开奖时间');
+        // drand API endpoints with fallback
+        const endpoints = [
+            `https://api.drand.sh/${this.DRAND_CHAIN}/public/${round}`,
+            `https://drand.cloudflare.com/${this.DRAND_CHAIN}/public/${round}`,
+            `https://api2.drand.sh/${this.DRAND_CHAIN}/public/${round}`,
+            `https://api3.drand.sh/${this.DRAND_CHAIN}/public/${round}`
+        ];
+
+        let lastError = null;
+
+        for (const url of endpoints) {
+            try {
+                const response = await fetch(url, { timeout: 5000 });
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        round: data.round,
+                        randomness: data.randomness
+                    };
+                }
+                if (response.status === 404) {
+                    throw new Error('随机信标尚未生成，请等待开奖时间');
+                }
+            } catch (e) {
+                lastError = e;
+                console.warn(`drand API failed: ${url}`, e.message);
+                continue;
             }
-            throw new Error('获取随机信标失败');
         }
 
-        const data = await response.json();
-        return {
-            round: data.round,
-            randomness: data.randomness
-        };
+        throw lastError || new Error('获取随机信标失败：所有 API 端点均不可用');
     }
 
     /**
@@ -561,6 +582,20 @@ class LotteryTool {
         this.elements.verifyRound.textContent = beacon.round;
         this.elements.verifyRandomness.textContent = beacon.randomness;
         this.elements.verifySource.textContent = source;
+
+        // Verification external links
+        const drandUrl = `https://api.drand.sh/${this.DRAND_CHAIN}/public/${beacon.round}`;
+        this.elements.verifyDrandLink.href = drandUrl;
+
+        const maxFloor = validComments.length;
+        if (maxFloor > 0 && source === 'random.org') {
+            const randomUrl = `https://www.random.org/sequences/?min=1&max=${maxFloor}&col=1&format=plain&rnd=id.${beacon.randomness}`;
+            this.elements.verifyRandomLink.href = randomUrl;
+            this.elements.verifyRandomLink.style.display = '';
+        } else {
+            // Hide random.org link if using local PRNG or no valid comments
+            this.elements.verifyRandomLink.style.display = 'none';
+        }
 
         this.elements.resultsSection.classList.remove('hidden');
     }
